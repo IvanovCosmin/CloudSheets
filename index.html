@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nu conteaza</title>
+    <style>
+        h1 {
+           background-color: pink;
+           color: rgb(250, 55, 100); 
+        }
+    </style>
+</head>
+<body>
+    <h1 id="text">Paul ghei</h1>
+    <button onclick="randomColor();">Click</button>
+    <script>
+        async function randomColor() {
+            
+
+            while(true) {
+                var output = "#";
+                var options = "1234567890FABCDE";
+                for(i = 0; i < 6; i++) {
+                    output += options[Math.floor(Math.random() * 100000) % options.length];
+                }
+                await sleep(10);    
+                document.getElementById("text").style.color = output;
+            }
+
+
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+
+    </script>
+</body>
+</html>
