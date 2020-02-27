@@ -4,11 +4,11 @@ var config = require('./config');
 var router = require('./router');   
 
 var options = {
-    key: fs.readFileSync(config.config['keypath']),
-    cert: fs.readFileSync(config.config['certpath'])
+    key: fs.readFileSync(config['keypath']),
+    cert: fs.readFileSync(config['certpath'])
 };
 
-console.log("listening on port" + config.config['port'])
-https.createServer(options, router.resolve).listen(8000);
+console.log("listening on port" + config['port'])
+https.createServer(options, router.resolve).listen(config['port']);
 
 
