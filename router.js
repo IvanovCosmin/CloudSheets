@@ -91,6 +91,10 @@ let sendTemplate = (req, res, path, context, statusCode) => {
     res.end(prepareServita(content, context));
 }
 
+let sendJson = (statusCode,res,data) =>  {
+    res.writeHead(statusCode, {'Content-type':'application/json'});
+    res.end(JSON.stringify(data));   
+}
 
 let resolver = (req, res) => { 
     let requestBody = "";
@@ -114,17 +118,14 @@ let resolver = (req, res) => {
             let userPromise = db.getUserByUsername(router.getParam('username'));
             
             userPromise.then( (result) => {
-                    // TODO facut functie pentru trimis jsoane asemenea sendTemplate
-                    res.writeHead(200, {'Content-type':'application/json'});
-                    res.end(JSON.stringify(result[0]));
+                    sendJson(200,res,result[0]);
                 }
             );
         }
 
         else {
             if(!staticResourceDropper(router.requestInfo.urlPathname, res)) {
-                res.writeHead(404, {'Content-type':'application/json'});
-                res.end(JSON.stringify(router.requestInfo));
+                sendJson(404,res,router.requestInfo);
             }
         }
 
