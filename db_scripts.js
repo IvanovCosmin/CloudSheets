@@ -46,6 +46,21 @@ const getUserByUsername = (username) => {
     });
 }
 
+const getAllUsers = () => {
+    let db = new sq3.Database(config['dbpath']);
+
+    return new Promise((resolve,reject)=>{
+        let result=[];
+        db.each('select * from user;',(err,row) =>{
+            if(err) {reject(err);}
+            result.push(row);
+            
+        } , () => {
+            resolve(result);
+        })
+    })
+}
+
 // createTable();  //async, will not work with insert at the same time if not waited for. use a promise
 // insertUser("Cosmin", "co@gm.com");
 // insertUser("Paul", "pl@gm.com");
@@ -55,5 +70,6 @@ const getUserByUsername = (username) => {
 
 module.exports = {
     "insertUser": insertUser,
-    "getUserByUsername": getUserByUsername
-}
+    "getUserByUsername": getUserByUsername,
+    "getAllUsers" : getAllUsers
+};

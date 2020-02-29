@@ -2,7 +2,7 @@ let url = require('url');
 let qs = require('querystring');
 let fs = require('fs');
 let db = require('./db_scripts');
-
+let utils = require('./router-utils');
 let staticResourceDropper = (route, res) => {
     let path = "./static" + route;
     if(fs.existsSync(path)) {
@@ -62,40 +62,6 @@ let routerObjectConstructor = (req) => {
         }
 }
 
-
-
-// the function that parses the template
-let prepareServita = (templateBody, context) => {
-    // TODO sa se faca tempalteuri care sa poata si evalua anumite expresii sau un for :P
-    // TODO mutat cod servite in alt fisier
-    let parsedResult = String(templateBody);
-    let objectFindRegEx = /\{\{(?<objdata>.*?)\}\}/g; // this regex finds words inside {{ }}
-
-    searchResult = objectFindRegEx.exec(parsedResult);
-    
-    if(searchResult == null) { // there is nothing more to be replaced
-        return parsedResult;
-    }
-
-    parsedResult = parsedResult.replace(searchResult[0], context[searchResult[1].trim()]);
-    return prepareServita(parsedResult, context);
-
-}
-
-// context represents a object that contains the variables that will be
-// used in the template
-let sendTemplate = (req, res, path, context, statusCode) => {
-    res.writeHead(statusCode, {'Content-type': 'text/html'})
-    let content = fs.readFileSync(path);
-    
-    res.end(prepareServita(content, context));
-}
-
-let sendJson = (statusCode,res,data) =>  {
-    res.writeHead(statusCode, {'Content-type':'application/json'});
-    res.end(JSON.stringify(data));   
-}
-
 let resolver = (req, res) => { 
     let requestBody = "";
     req.on('data', (data) => {
@@ -112,20 +78,27 @@ let resolver = (req, res) => {
                 "gheiString": "Paul ultra ghei", 
                 "orNot" : "E doar o gluma ca sa demonstrez templateurile :)"
             };
-            sendTemplate(req, res,"index.html", testContext, 200);
+            utils.sendTemplate(req, res,"index.html", testContext, 200);
         }
         else if (router.is('/user')) {
             let userPromise = db.getUserByUsername(router.getParam('username'));
             
             userPromise.then( (result) => {
-                    sendJson(200,res,result[0]);
+                    utils.sendJson(200,res,result[0]);
                 }
             );
+        }
+        else if(router.is('/allusers')) {
+            let userPromise = db.getAllUsers();
+
+            userPromise.then( (result)=>{
+                    utils.sendJson(200,res,result);
+            });
         }
 
         else {
             if(!staticResourceDropper(router.requestInfo.urlPathname, res)) {
-                sendJson(404,res,router.requestInfo);
+                utils.sendJson(404,res,router.requestInfo);
             }
         }
 
