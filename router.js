@@ -88,6 +88,13 @@ let resolver = (req, res) => {
                 }
             );
         }
+        else if(router.is('/allusers')) {
+            let userPromise = db.getAllUsers();
+
+            userPromise.then( (result)=>{
+                    utils.sendJson(200,res,result);
+            });
+        }
 
         else {
             if(!staticResourceDropper(router.requestInfo.urlPathname, res)) {

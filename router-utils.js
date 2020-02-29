@@ -29,7 +29,8 @@ let sendTemplate = (req, res, path, context, statusCode) => {
 
 let sendJson = (statusCode,res,data) =>  {
     res.writeHead(statusCode, {'Content-type':'application/json'});
-    res.end(JSON.stringify(data));   
+    res.write(JSON.stringify(data,null,2));
+    res.end();   
 }
 
 module.exports = {
