@@ -98,7 +98,8 @@ let resolver = (req, res) => {
 
         else {
             if(!staticResourceDropper(router.requestInfo.urlPathname, res)) {
-                utils.sendJson(404,res,router.requestInfo);
+               // utils.sendJson(404,res,router.requestInfo);
+               utils.sendTemplate(req,res,"static/404.html",{},404);
             }
         }
 
