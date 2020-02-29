@@ -3,11 +3,21 @@ let qs = require('querystring');
 let fs = require('fs');
 let db = require('./db_scripts');
 
+let staticResourceDropper = (route, res) => {
+    let path = "./static" + route;
+    if(fs.existsSync(path)) {
+        res.writeHead(200)
+        let content = fs.readFileSync(path);
+        res.end(content);
+        return true;
+    }
+    return false;
+} 
 
 let routerObjectConstructor = (req) => {
     console.log("req.url", req.url);
     if(req.url === undefined) return {
-        is: (route) => false
+        is: (route, verb = "GET") => false
     }
     let urlObject = url.parse(req.url);
     let urlQuery = urlObject.query;
@@ -16,6 +26,7 @@ let routerObjectConstructor = (req) => {
     requestInfo.urlPathname = urlPathname;
     requestInfo.urlQuery = urlQuery; 
     requestInfo.urlObject = urlObject;
+    requestInfo.method = req.method;
     
     // poate e putin ineficienta abordarea asta
     // dar memorie--, viteza++
@@ -43,8 +54,8 @@ let routerObjectConstructor = (req) => {
 
     return {
             __parsedParams: undefined,
-            is: (route) => {
-                return route === requestInfo.urlPathname;
+            is: (route, verb = "GET") => {
+                return route === requestInfo.urlPathname && verb == requestInfo.method;
             },
             requestInfo: requestInfo,
             getParam: (param) => {return getParam(this, param)}
@@ -109,9 +120,12 @@ let resolver = (req, res) => {
                 }
             );
         }
+
         else {
-            res.writeHead(200, {'Content-type':'application/json'});
-            res.end(JSON.stringify(router.requestInfo));
+            if(!staticResourceDropper(router.requestInfo.urlPathname, res)) {
+                res.writeHead(404, {'Content-type':'application/json'});
+                res.end(JSON.stringify(router.requestInfo));
+            }
         }
 
         //console.log(router.requestInfo);
