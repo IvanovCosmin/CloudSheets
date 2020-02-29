@@ -4,7 +4,7 @@
 
 
 //TODO redenumit fisier
-
+//TODO acum sunt sanse sa se piarda date. facut obiect separat db care sa mentina conexiunea deschisa si sa o inchida la process.on('SIGINT', callback)
 var sq3 = require('sqlite3');
 var config = require('./config');
 
@@ -13,7 +13,7 @@ var config = require('./config');
 function createTable() {
     let db = new sq3.Database(config['dbpath']);
     db.run('CREATE TABLE user(username text, email text)');
-    db.close()
+    db.close();
 }
 
 function insertUser(username, email) {
