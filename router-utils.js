@@ -33,7 +33,39 @@ let sendJson = (statusCode,res,data) =>  {
     res.end();   
 }
 
+let redirect = (res, url) => {    
+    //weird bug in simple-oauth2 doesnt understand that i am using oauth2 not oauth
+    //TODO dat replace doar la oauthul din https://www.dropbox.com/oauth in functie separata
+    url = url.replace("oauth", "oauth2");
+    console.log(url);
+    res.writeHead(302, {
+        'Location': url
+        });
+    res.end();  
+}
+
+let temporaryRedirect = (headers, url) => {    
+    //weird bug in simple-oauth2 doesnt understand that i am using oauth2 not oauth
+    //TODO dat replace doar la oauthul din https://www.dropbox.com/oauth in functie separata
+    console.log("redirected", url);
+    res.writeHead(307, headers);
+    res.end();  
+} 
+
+let uploadDropbox = (req, res) => {
+    // curl -X POST https://content.dropboxapi.com/2/files/upload \
+    // --header "Authorization: Bearer BQOYyAxkcAkAAAAAAAAPvY3KUT0axICwT-M_5TFlIG5Fx-5W1DveR7sovtysqt4M" \
+    // --header "Dropbox-API-Arg: {\"path\": \"/Homework/math/Matrices.txt\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
+    // --header "Content-Type: application/octet-stream" \
+    // --data-binary @local_file.txt
+    res.writeHead(200);
+    temporaryRedirect()
+    res.end();
+}
+
 module.exports = {
     "sendTemplate" : sendTemplate,
-    "sendJson" : sendJson
+    "sendJson" : sendJson,
+    "redirect": redirect,
+    "upload": uploadDropbox
 };

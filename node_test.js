@@ -13,17 +13,17 @@ let options = {
 };
 
 
-server = https.createSecureServer(options, router.resolve);
-server.on('session', (session) => {
-    session.on('connect', (socket) => {
-        // console.log(session);
-        // console.log(socket);
-        console.log("a client has connected");
+  server = https.createSecureServer(options, router.resolve);
+  server.on('session', (session) => {
+      session.on('connect', (socket) => {
+          // console.log(session);
+          // console.log(socket);
+          console.log("a client has connected");
+        });
     });
-});
-
-
-server.listen(config['port']);
-console.log("listening on port " + config['port']);
-
+    
+    
+    server.listen(config['port']);
+    console.log("listening on port " + config['port']);
+    
 

@@ -43,10 +43,6 @@ let routerObjectConstructor = (req) => {
         let params = requestInfo.urlQuery.split("&");
         for(par of params) {
             let [key,value] = par.split('=');
-            console.log("obj",object.__parsedParams);
-            console.log(key);
-            console.log(value);
-            console.log(par);
             object.__parsedParams[key] = value;
         }
         return getParam(object, param);
@@ -94,6 +90,41 @@ let resolver = (req, res) => {
             userPromise.then( (result)=>{
                     utils.sendJson(200,res,result);
             });
+        }
+        else if(router.is('/callback')) {
+            utils.sendTemplate(req, res,"callback.html",
+            {
+                "code": router.getParam("code")
+            },
+            200);
+        }
+
+        else if(router.is('/oauth')) {
+            async function run() {
+                const credentials = {
+                    client: {
+                      id: 'pz5akpcc0yc3mc3',
+                      secret: 'qer0wpi81ifx91v'
+                    },
+                    auth: {
+                      tokenHost: 'https://www.dropbox.com/oauth2/authorize'
+                    }
+                  };
+                const oauth2 = require('simple-oauth2').create(credentials);
+               
+                const authorizationUri = oauth2.authorizationCode.authorizeURL({
+                  redirect_uri: 'https://localhost:8000/callback',
+                  scope: '',
+                  state: '<state>'
+                });
+               
+                utils.redirect(res, authorizationUri);
+              }
+
+            run();
+        }
+        else if(router.is('/upload', "POST")) {
+            utils.upload(requestBody, res);
         }
 
         else {
