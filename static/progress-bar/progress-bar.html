@@ -7,12 +7,13 @@
     <title>Progress bar example</title>
 </head>
 <body>
-    <p id="progressBarText">Progress: 0%</p>
-    <div id="progresBarWrapper">
-        <div id="progressBar"></div>
+    <div class="halfSize">
+        <p id="progressBarText">Progress: 0%</p>
+        <div id="progresBarWrapper">
+            <div id="progressBar"></div>
+        </div>
+        <button id="startButton" onclick="progressBar.run();">Startmoving</button>
     </div>
-    <button id="startButton" onclick="progressBar.run();">Startmoving</button>
-    
     <script src="./progress-bar.js"></script>
 </body>
 </html>
