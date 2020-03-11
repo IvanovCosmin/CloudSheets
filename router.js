@@ -1,7 +1,8 @@
 let url = require('url');
 let qs = require('querystring');
 let fs = require('fs');
-let db = require('./db_scripts');
+
+bazadate=require( './node_test');
 let utils = require('./router-utils');
 let staticResourceDropper = (route, res) => {
     let path = "./static" + route;
@@ -81,7 +82,7 @@ let resolver = (req, res) => {
             utils.sendTemplate(req, res,"index.html", testContext, 200);
         }
         else if (router.is('/user')) {
-            let userPromise = db.getUserByUsername(router.getParam('username'));
+            let userPromise = bazadate.getUserByUsername(router.getParam('username'));
             
             userPromise.then( (result) => {
                     utils.sendJson(200,res,result[0]);
@@ -89,7 +90,7 @@ let resolver = (req, res) => {
             );
         }
         else if(router.is('/allusers')) {
-            let userPromise = db.getAllUsers();
+            let userPromise = bazadate.getAllUsers();
 
             userPromise.then( (result)=>{
                     utils.sendJson(200,res,result);
