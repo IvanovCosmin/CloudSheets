@@ -1,25 +1,43 @@
 @import "../utils/colors.css";
 
-body {
+body{
+    margin:0;
+}
+
+.mainContainer {
     background-image: linear-gradient(var(--malibu), var(--onahau), #ffffff);
     display: flex;
+    flex:1;
+    height: 100vh;
     flex-direction:column;
+    align-content: space-evenly;
+}
+
+.container {
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 0;   
 }
 
 .titleArea {
-    width:100%;
     display: flex;
-    justify-content: center;
-    height: 200px;
+    flex:1;
+    margin-left: auto;
+    margin-right: auto;
     
 }
 
 .titleArea  p {
     padding-left: auto;
     padding-right: auto;
-    font-size: 80px;
+    font-size: 4vw;
     color:var(--mardiGras);
     font-family:OCR A Std, monospace;
+    vertical-align: middle;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .welcomeButton {
@@ -28,7 +46,8 @@ background: var(--mardiGras);
 color: var(--aliceBlue) !important;
 font-weight: 100;
 padding: 20px;
-width:50%;
+height: 50pt;
+width:200pt;
 text-transform: uppercase;
 border-radius: 6px;
 display: inline-block;
@@ -36,7 +55,7 @@ transition: all 0.3s ease 0s;
 margin-top: 20px;
 margin-bottom: 20px;
 font-family:OCR A Std, monospace;
-font-size: 25px;
+font-size: 2vw;
 }
 
   #getStarted{
@@ -55,9 +74,9 @@ font-size: 25px;
     letter-spacing: 3px;
     background: var(--aliceBlue);
     box-shadow: 0px 5px 40px -10px var(--mardiGras);
-    transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s ;
     font-family:OCR A Std, monospace;
-    font-size: 25px;
+    font-size: 2vw;
     }
 
 .delimitator {
@@ -86,30 +105,48 @@ font-size: 25px;
     justify-content: center;
     margin-top: 5em;
     margin-bottom: 10em;
+    margin-left: auto;
+    margin-right: auto;
 }
 .images{
-    flex:1;
+
     display: flex;
+    flex:2;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: space-around;
 }
 .presentationArea {
     display: flex;
     flex-direction: row;
-    margin-left: auto;
-    margin-right: auto;
+    align-self: center;
     width:80%;
+    flex:2;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 0;
 }
 
 #bigCloud {
-    flex:2;
-    margin-top: 100px;
+    
+    transition : margin-top 200px;
     margin-bottom: 0px;
-    margin-right: 10%;
     
 }
 
+#bigCloud:hover {
+    margin-bottom: 40px;
+}
+
+
+
 #littleCloud {
-   margin-top: 0px;
-   margin-bottom: 200px;
-  flex:1;
+    transition: margin-top 10px;
+    margin-bottom :150px;
+   
+}
+
+#littleCloud:hover {
+ margin-bottom: 200px;
 }
 
