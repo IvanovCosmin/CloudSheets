@@ -21,7 +21,7 @@
 
 
 .log-option-title {
-    font-family:OCR A Std, monospace;
+    font-family: 'Averia Sans Libre', cursive;
     position: absolute;
     z-index: 10;
     color:var(--aliceBlue);
