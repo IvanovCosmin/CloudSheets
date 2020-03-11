@@ -1,0 +1,152 @@
+@import "../utils/colors.css";
+
+body{
+    margin:0;
+}
+
+.mainContainer {
+    background-image: linear-gradient(var(--malibu), var(--onahau), #ffffff);
+    display: flex;
+    flex:1;
+    height: 100vh;
+    flex-direction:column;
+    align-content: space-evenly;
+}
+
+.container {
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 0;   
+}
+
+.titleArea {
+    display: flex;
+    flex:1;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+.titleArea  p {
+    padding-left: auto;
+    padding-right: auto;
+    font-size: 4vw;
+    color:var(--mardiGras);
+    font-family:OCR A Std, monospace;
+    vertical-align: middle;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.welcomeButton {
+border: none;
+background: var(--mardiGras);
+color: var(--aliceBlue) !important;
+font-weight: 100;
+padding: 20px;
+height: 50pt;
+width:200pt;
+text-transform: uppercase;
+border-radius: 6px;
+display: inline-block;
+transition: all 0.3s ease 0s;
+margin-top: 20px;
+margin-bottom: 20px;
+font-family:OCR A Std, monospace;
+font-size: 2vw;
+}
+
+  #getStarted{
+   margin-right: auto;
+   margin-left: 20%;
+}
+
+#logIn {
+    margin-left: auto;
+    margin-right: 20%;
+}
+
+.welcomeButton:hover {
+    color:var(--mardiGras) !important;
+    font-weight: 700 !important;
+    letter-spacing: 3px;
+    background: var(--aliceBlue);
+    box-shadow: 0px 5px 40px -10px var(--mardiGras);
+    transition: all 0.3s ease 0s ;
+    font-family:OCR A Std, monospace;
+    font-size: 2vw;
+    }
+
+.delimitator {
+    height: 1px;
+    background-color: var(--mardiGras);
+    width: 40% ;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 10%
+}
+
+.delimitationArea {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 20px;
+
+}
+
+.navigationArea{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 5em;
+    margin-bottom: 10em;
+    margin-left: auto;
+    margin-right: auto;
+}
+.images{
+
+    display: flex;
+    flex:2;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: space-around;
+}
+.presentationArea {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    width:80%;
+    flex:2;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 0;
+}
+
+#bigCloud {
+    
+    transition : margin-top 200px;
+    margin-bottom: 0px;
+    
+}
+
+#bigCloud:hover {
+    margin-bottom: 40px;
+}
+
+
+
+#littleCloud {
+    transition: margin-top 10px;
+    margin-bottom :150px;
+   
+}
+
+#littleCloud:hover {
+ margin-bottom: 200px;
+}
+
