@@ -1,10 +1,13 @@
+/*Ia ca argumente numele fisierului si pathul folderului B creat cu fisierul de split in care se gasesc chunckurile. Reconstruieste fisierul pe baza chunkurilor */
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <windows.h>
-
 #include <string>
+
+#define chunkDimension 16777216 
 using namespace std;
 void bzero(char sir[]) {
 	for (int i = 0; i < strlen(sir); i++) sir[i] = 0;
@@ -75,17 +78,17 @@ int main(int argc, char* argv[]) {
 							fwrite(&bitList, getSizeInBytes(inFile), 1, outFile);
 						}
 						else {
-							while (size + 4096 <= 16777216 && !feof(inFile)) {
+							while (size + 4096 <= chunkDimension && !feof(inFile)) {
 								bzero(bitList);
 								fread(&bitList, 4096, 1, inFile);
 								fwrite(&bitList, 4096, 1, outFile);
 								size += 4096;
 							}
 
-							if (size < 16777216) {
+							if (size < chunkDimension) {
 								bzero(bitList);
-								fread(&bitList, 16777216 - size, 1, inFile);
-								fwrite(&bitList, 16777216, 1, outFile);
+								fread(&bitList, chunkDimension - size, 1, inFile);
+								fwrite(&bitList, chunkDimension, 1, outFile);
 							}
 						}
 						fclose(inFile);

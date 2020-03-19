@@ -1,3 +1,5 @@
+/*Takes the path to a file A and the path to a folder B . Splits A into multiple 16M files that are stored in a folder inside B*/
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
@@ -5,6 +7,9 @@
 #include <windows.h>
 #include <direct.h>
 #include <fileapi.h>
+
+#define chunkDimension 16777216  
+
 using namespace std;
 void bzero(char sir[]) {
 	for (int i = 0; i < strlen(sir); i++) sir[i] = 0;
@@ -137,9 +142,9 @@ int main(int argc,char* argv[]) {
 		createDir(argv[2],numeFisier);
 
 		
-		int nrFisiere = size / 16777216;
+		int nrFisiere = size / chunkDimension;
 		int newFileSize = 0;
-		float nrFisiereReal = float(size) / 16777216;
+		float nrFisiereReal = float(size) / chunkDimension;
 		if (nrFisiereReal != nrFisiere) {
 			nrFisiere++;
 		}
@@ -167,17 +172,17 @@ int main(int argc,char* argv[]) {
 				//printf("DASDA\n");
 				fprintf(detali, "%s\n", createFileDirName(argv[2],numeFisier, i));
 				size = 0;
-				while (size + 4096 <= 16777216 && !feof(inFile)) {
+				while (size + 4096 <= chunkDimension && !feof(inFile)) {
 					bzero(bitList);
 					fread(&bitList, 4096, 1, inFile);
 					fwrite(&bitList, 4096, 1, outFile);
 					size += 4096;
 					wholeSize += 4096;
 				}
-				if (size < 16777216) {
+				if (size < chunkDimension) {
 					bzero(bitList);
-					fread(&bitList, 16777216 - size, 1, inFile);
-					fwrite(&bitList, 16777216 - size, 1, outFile);
+					fread(&bitList, chunkDimension - size, 1, inFile);
+					fwrite(&bitList, chunkDimension - size, 1, outFile);
 				}
 				fclose(outFile);
 			}
