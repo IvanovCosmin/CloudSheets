@@ -40,6 +40,8 @@ let routerObjectConstructor = (req) => {
             }
         }
         object.__parsedParams = {};
+        console.log(object.__parsedParams);
+        
         let params = requestInfo.urlQuery.split("&");
         for(par of params) {
             let [key,value] = par.split('=');

@@ -2,9 +2,6 @@
 // To be taken into consideration is that in node the methods that are called
 // on the db object are async so they must be wrapped in a promise.
 
-
-//TODO redenumit fisier
-//TODO acum sunt sanse sa se piarda date. facut obiect separat db care sa mentina conexiunea deschisa si sa o inchida la process.on('SIGINT', callback)
 var sq3 = require('sqlite3');
 var config = require('./config');
 
