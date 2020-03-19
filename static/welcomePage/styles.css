@@ -32,12 +32,13 @@ body{
 .titleArea  p {
     padding-left: auto;
     padding-right: auto;
-    font-size: 4vw;
+    font-size: 500%;
     color:var(--mardiGras);
-    font-family:OCR A Std, monospace;
+    font-family: 'Courgette', cursive;
     vertical-align: middle;
     margin-top: auto;
     margin-bottom: auto;
+    word-wrap: middle;
 }
 
 .welcomeButton {
@@ -54,8 +55,8 @@ display: inline-block;
 transition: all 0.3s ease 0s;
 margin-top: 20px;
 margin-bottom: 20px;
-font-family:OCR A Std, monospace;
-font-size: 2vw;
+font-family: 'Averia Sans Libre', cursive;
+font-size: 180%;
 }
 
   #getStarted{
@@ -75,8 +76,8 @@ font-size: 2vw;
     background: var(--aliceBlue);
     box-shadow: 0px 5px 40px -10px var(--mardiGras);
     transition: all 0.3s ease 0s ;
-    font-family:OCR A Std, monospace;
-    font-size: 2vw;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 200%;
     }
 
 .delimitator {
@@ -95,6 +96,7 @@ font-size: 2vw;
     flex-direction: row;
     justify-content: center;
     height: 20px;
+    font-family: 'Averia Sans Libre', cursive;
 
 }
 

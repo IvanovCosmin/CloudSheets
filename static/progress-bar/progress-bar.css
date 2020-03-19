@@ -28,7 +28,8 @@
     color: var(--aliceBlue) !important;
     font-weight: 100;
     padding: 20px;
-    width: 30%;
+    height: 50pt;
+   
     text-transform: uppercase;
     border-radius: 6px;
     display: inline-block;
@@ -36,6 +37,6 @@
     margin-top: 20px;
     margin-bottom: 20px;
     font-family:OCR A Std, monospace;
-    font-size: 19px;
+    font-size: 200%;
 }
 
