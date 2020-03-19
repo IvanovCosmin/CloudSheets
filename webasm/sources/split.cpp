@@ -98,7 +98,7 @@ void createDir(char *dir,char* numeFisier) {
 	strcat(aux, getFileDirNoExtension(numeFisier));
 	const char* fisierFinal = aux;
 	//printf("%s\n", fisierFinal);
-	printf("%d\n", _mkdir(fisierFinal));
+	//printf("%d\n", _mkdir(fisierFinal));
 	delete(aux);
 	//delete(fisierFinal);
 }
@@ -151,8 +151,7 @@ int main(int argc,char* argv[]) {
 		if (nrFisiereReal != nrFisiere) {
 			nrFisiere++;
 		}
-		printf("%s\n", getDetailsDir(argv[2], numeFisier));
-		printf("%s\n", getDetailsDir(argv[2], numeFisier));
+		
 		detali = fopen(getDetailsDir(argv[2],numeFisier), "w");
 		if (detali == NULL) {
 			// Error, as expected.
@@ -170,22 +169,16 @@ int main(int argc,char* argv[]) {
 		int i = 1;
 		SHA256_CTX mexicana;
 		unsigned char hash[64];
-		while (!feof(inFile)) {
-			//printf("%s\n", createFileDirName(argv[2], numeFisier, i));
-			//printf("%s\n",getFileName(createFileDirName(argv[2],numeFisier, i)));
-			sha256_init(&mexicana);
-			sha256_update(&mexicana,(const unsigned char*)getFileName(createFileDirName(argv[2],numeFisier, i)),strlen(getFileName(createFileDirName(argv[2],numeFisier, i))) );
-			bzero((char*)hash);
-			sha256_final(&mexicana,hash);
-			printf("%s\n\n\n",hash);
+		while (!feof(inFile)) {			
 			outFile = fopen(createFileDirName(argv[2],numeFisier, i), "wb");
 			if (outFile) {
-				//printf("DASDA\n");
+				sha256_init(&mexicana);
 				fprintf(detali, "%s\n", createFileDirName(argv[2],numeFisier, i));
 				size = 0;
 				while (size + 4096 <= chunkDimension && !feof(inFile)) {
 					bzero(bitList);
 					fread(&bitList, 4096, 1, inFile);
+					sha256_update(&mexicana,(const unsigned char*) bitList,strlen(bitList) );
 					fwrite(&bitList, 4096, 1, outFile);
 					size += 4096;
 					wholeSize += 4096;
@@ -196,6 +189,9 @@ int main(int argc,char* argv[]) {
 					fwrite(&bitList, chunkDimension - size, 1, outFile);
 				}
 				fclose(outFile);
+				bzero((char*)hash);
+				sha256_final(&mexicana,hash);
+				printf("%s\n\n\n",hash);
 			}
 			
 			i++;
@@ -204,7 +200,7 @@ int main(int argc,char* argv[]) {
 
 
 
-//		fclose(detali);
+		fclose(detali);
 		delete(numeFisier);
 	}
 
