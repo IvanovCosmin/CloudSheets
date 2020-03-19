@@ -1,5 +1,15 @@
 let fs = require('fs');
 
+let macacpeviata = () =>
+{
+    var output = "";
+    var options = "1234567890FABCDEF";
+    for(i = 0; i < 40; i++) {
+        output += options[Math.floor(Math.random() * 100000) % options.length];
+    }   
+    return output;
+}
+
 // the function that parses the template
 let prepareServita = (templateBody, context) => {
     // TODO sa se faca tempalteuri care sa poata si evalua anumite expresii sau un for :P
@@ -21,7 +31,7 @@ let prepareServita = (templateBody, context) => {
 // context represents a object that contains the variables that will be
 // used in the template
 let sendTemplate = (req, res, path, context, statusCode) => {
-    res.writeHead(statusCode, {'Content-type': 'text/html'})
+    res.writeHead(statusCode, {'Content-type': 'text/html',"Cache-Control": "no-cache", "Last-Modified": new Date(), "ETag": macacpeviata(),"max-age":"1" })
     let content = fs.readFileSync(path);
     
     res.end(prepareServita(content, context));
@@ -36,7 +46,11 @@ let sendJson = (statusCode,res,data) =>  {
 let redirect = (res, url) => {    
     //weird bug in simple-oauth2 doesnt understand that i am using oauth2 not oauth
     //TODO dat replace doar la oauthul din https://www.dropbox.com/oauth in functie separata
-    url = url.replace("oauth", "oauth2");
+    
+    // libraria vietii simple-oauth2 nu este in stare sa te lase sa setezi pathul.
+    // pentru ca nu puteam folosi nimic
+    // pana la urma imi iau inima in dinti si o sa scriu eu ce trebuie.
+    //url = url.replace("oauth", "oauth2");
     console.log(url);
     res.writeHead(302, {
         'Location': url
@@ -44,28 +58,8 @@ let redirect = (res, url) => {
     res.end();  
 }
 
-let temporaryRedirect = (headers, url) => {    
-    //weird bug in simple-oauth2 doesnt understand that i am using oauth2 not oauth
-    //TODO dat replace doar la oauthul din https://www.dropbox.com/oauth in functie separata
-    console.log("redirected", url);
-    res.writeHead(307, headers);
-    res.end();  
-} 
-
-let uploadDropbox = (req, res) => {
-    // curl -X POST https://content.dropboxapi.com/2/files/upload \
-    // --header "Authorization: Bearer BQOYyAxkcAkAAAAAAAAPvY3KUT0axICwT-M_5TFlIG5Fx-5W1DveR7sovtysqt4M" \
-    // --header "Dropbox-API-Arg: {\"path\": \"/Homework/math/Matrices.txt\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
-    // --header "Content-Type: application/octet-stream" \
-    // --data-binary @local_file.txt
-    res.writeHead(200);
-    temporaryRedirect()
-    res.end();
-}
-
 module.exports = {
     "sendTemplate" : sendTemplate,
     "sendJson" : sendJson,
     "redirect": redirect,
-    "upload": uploadDropbox
 };

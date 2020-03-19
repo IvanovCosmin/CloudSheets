@@ -93,7 +93,39 @@ let resolver = (req, res) => {
                     utils.sendJson(200,res,result);
             });
         }
-        else if(router.is('/callback')) {
+        else if(router.is('/get-client-secret')) {
+            const credentials = {
+                client: {
+                  id: 'pz5akpcc0yc3mc3',
+                  secret: 'qer0wpi81ifx91v'
+                },
+                auth: {
+                  tokenHost: 'https://www.dropbox.com/oauth2/authorize'
+                }
+              };
+            const oauth2 = require('simple-oauth2').create(credentials);
+            const tokenConfig = {
+                code: router.getParam("code"),
+                redirect_uri: 'http://localhost:8000/callback',
+                scope: '<scope>',
+              };
+             
+              try {
+                console.log("test");
+                oauth2.authorizationCode.getToken(tokenConfig).then(
+                    (result) => {
+                        console.log("test");
+                        console.log(result);
+                        const accessToken = oauth2.accessToken.create(result);
+                        console.log(accessToken);
+                    }
+                ).catch((error) => console.log("error"));
+        
+              } catch (error) {
+                console.log('Access Token Error', error.message);
+              }
+        }
+        else if (router.is("/callback")){
             utils.sendTemplate(req, res,"callback.html",
             {
                 "code": router.getParam("code")
@@ -115,7 +147,7 @@ let resolver = (req, res) => {
                 const oauth2 = require('simple-oauth2').create(credentials);
                
                 const authorizationUri = oauth2.authorizationCode.authorizeURL({
-                  redirect_uri: 'https://localhost:8000/callback',
+                  redirect_uri: 'https://localhost:8000/get-client-secret',
                   scope: '',
                   state: '<state>'
                 });

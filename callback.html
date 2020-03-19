@@ -1,52 +1,23 @@
 <html>
     <head>
         <script src="dropbox-sdk\Dropbox-sdk.min.js"></script>
+        <script src="/utils.js"></script>
+        <style>
+            input {
+                width: 50%;
+            };
+        </style>
     </head>
     <body>
         <h1> {{ code }} </h1>
         <form onSubmit="return uploadFile()">
+            <input type="text" id="access-token" value="" disabled>
             <label for="file-upload">Select a file:</label>
-            <input type="text" id="access-token" value="{{ code }}" disabled>
             <input type="file" id="file-upload" name="file-upload">
             <button id="submitButton"type="submit">Submit</button>
         </form>
         <script>
-            function getHttpRequest() {
-                var xmlhttp;
-                if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-                    xmlhttp=new XMLHttpRequest();
-                } else { //got it from https://stackoverflow.com/questions/18592679/xmlhttprequest-to-post-html-form
-                    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-                }
-
-                return xmlhttp;
-            }
-            // curl -X POST https://content.dropboxapi.com/2/files/upload \
-            // --header "Authorization: Bearer " \
-            // --header "Dropbox-API-Arg: {\"path\": \"/Homework/math/Matrices.txt\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
-            // --header "Content-Type: application/octet-stream" \
-            // --data-binary @local_file.txt
-            
-            // var dropboxapiRequestString = "{ \"path\": \"/CloudSheets/{folder_name}/{file_name}\",\"mode\": \"add\", \"autorename\": true, \"mute\": false, \"strict_conflict\": false\"}";
-            // document.getElementById("submitButton").addEventListener("click",
-            //     function (event) {
-            //         event.preventDefault();
-            //         var fileInput = document.getElementById("fileInput").value;
-                    
-            //         var formData = new FormData();
-            //         formData.append("body", fileInput);
-                    
-            //         var request = getHttpRequest();
-            //         request.open("POST", "https://content.dropboxapi.com/2/files/upload", true);
-            //         request.setRequestHeader("Authorization", "Bearer");
-            //         dropboxapiRequestString.replace("{folder_name}", "test");
-            //         dropboxapiRequestString.replace("{file_name}", "test");
-            //         request.setRequestHeader("Dropbox-API-Arg", dropboxapiRequestString);
-            //         request.setRequestHeader("Content-Type", "application/octet-stream");
-            //         request.send(formData);
-            //     }
-            // );
-
+            document.getElementById("access-token").value = utils.parseQueryString(window.location.href).code;
             function uploadFile() {
         
                 const UPLOAD_FILE_SIZE_LIMIT = 150 * 1024 * 1024;
