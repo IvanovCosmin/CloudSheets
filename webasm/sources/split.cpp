@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <windows.h>
+//#include <windows.h>
 #include <direct.h>
-#include <fileapi.h>
+//#include <fileapi.h>
+#include "sha256.h"
 
 #define chunkDimension 16777216  
 
@@ -114,6 +115,8 @@ char* getDetailsDir(char* dir,char* numeFisier) {
 	return caleFinala;
 }
 
+
+
 int main(int argc,char* argv[]) {
 	FILE *inFile;
 	FILE *outFile;
@@ -165,8 +168,16 @@ int main(int argc,char* argv[]) {
 
 		int wholeSize = 0;
 		int i = 1;
+		SHA256_CTX mexicana;
+		unsigned char hash[64];
 		while (!feof(inFile)) {
 			//printf("%s\n", createFileDirName(argv[2], numeFisier, i));
+			//printf("%s\n",getFileName(createFileDirName(argv[2],numeFisier, i)));
+			sha256_init(&mexicana);
+			sha256_update(&mexicana,(const unsigned char*)getFileName(createFileDirName(argv[2],numeFisier, i)),strlen(getFileName(createFileDirName(argv[2],numeFisier, i))) );
+			bzero((char*)hash);
+			sha256_final(&mexicana,hash);
+			printf("%s\n\n\n",hash);
 			outFile = fopen(createFileDirName(argv[2],numeFisier, i), "wb");
 			if (outFile) {
 				//printf("DASDA\n");
