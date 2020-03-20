@@ -168,7 +168,7 @@ int main(int argc,char* argv[]) {
 		int wholeSize = 0;
 		int i = 1;
 		SHA256_CTX mexicana;
-		unsigned char hash[64];
+		 char hash[64];
 		while (!feof(inFile)) {			
 			outFile = fopen(createFileDirName(argv[2],numeFisier, i), "wb");
 			if (outFile) {
@@ -189,9 +189,13 @@ int main(int argc,char* argv[]) {
 					fwrite(&bitList, chunkDimension - size, 1, outFile);
 				}
 				fclose(outFile);
-				bzero((char*)hash);
-				sha256_final(&mexicana,hash);
-				printf("%s\n\n\n",hash);
+				bzero(hash);
+				sha256_final(&mexicana,(unsigned char*)hash);
+				for(int j=0;j<strlen(hash);j++){
+					printf("%x",hash[j]);
+					fflush(stdout);
+				}
+				printf("\n");
 			}
 			
 			i++;
