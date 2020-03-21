@@ -58,8 +58,30 @@ let redirect = (res, url) => {
     res.end();  
 }
 
+let staticResourceDropper = (route, res) => {
+    let path = "./static" + route;
+    while(!fs.existsSync(path)){
+        var result = route.search("/");
+        route=route.slice(result+1);
+        result = route.search("/");
+        route=route.slice(result);
+        path="./static"+route;
+        console.log("DECI:"+path);
+    }
+    
+    if(fs.existsSync(path)) {
+        
+        res.writeHead(200)
+        let content = fs.readFileSync(path);
+        res.end(content);
+        return true;
+    }
+    return false;
+} 
+
 module.exports = {
     "sendTemplate" : sendTemplate,
     "sendJson" : sendJson,
     "redirect": redirect,
+    "staticResourceDropper": staticResourceDropper,
 };

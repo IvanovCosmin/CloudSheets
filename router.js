@@ -7,26 +7,7 @@ let utils = require('./router-utils');
 let fetch = require('isomorphic-fetch'); // aduce fetchul si pe server. e nevoie pentru dropbox
 let Dropbox = require('dropbox').Dropbox;
 
-let staticResourceDropper = (route, res) => {
-    let path = "./static" + route;
-    while(!fs.existsSync(path)){
-        var result = route.search("/");
-        route=route.slice(result+1);
-        result = route.search("/");
-        route=route.slice(result);
-        path="./static"+route;
-        console.log("DECI:"+path);
-    }
-    
-    if(fs.existsSync(path)) {
-        
-        res.writeHead(200)
-        let content = fs.readFileSync(path);
-        res.end(content);
-        return true;
-    }
-    return false;
-} 
+
 
 let routerObjectConstructor = (req) => {
     console.log("req.url", req.url);
@@ -170,7 +151,7 @@ let resolver = (req, res) => {
         }
 
         else {
-            if(!staticResourceDropper(router.requestInfo.urlPathname, res)) {
+            if(!utils.staticResourceDropper(router.requestInfo.urlPathname, res)) {
                // utils.sendJson(404,res,router.requestInfo);
                utils.sendTemplate(req,res,"static/404.html",{},404);
             }
