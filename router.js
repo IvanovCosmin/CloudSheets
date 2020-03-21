@@ -143,6 +143,18 @@ let resolver = (req, res) => {
             utils.upload(requestBody, res);
         }
 
+        // TODO de sters astea dupa ce se rezolva redirectul si static resource dropper
+        else if(router.is("/auth/dropbox-sdk/Dropbox-sdk.min.js")) {
+            res.writeHead(200)
+            let content = fs.readFileSync("static/dropbox-sdk/Dropbox-sdk.min.js");
+            res.end(content);
+        }
+        else if(router.is("/auth/utils.js")) {
+            res.writeHead(200)
+            let content = fs.readFileSync("static/Dropbox-sdk.min.js");
+            res.end(content);
+        }
+
         else {
             if(!staticResourceDropper(router.requestInfo.urlPathname, res)) {
                // utils.sendJson(404,res,router.requestInfo);

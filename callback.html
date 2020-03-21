@@ -4,20 +4,22 @@
         <script src="/utils.js"></script>
         <style>
             input {
-                width: 50%;
+                width: 65%;
             };
         </style>
     </head>
     <body>
-        <h1> {{ code }} </h1>
         <form onSubmit="return uploadFile()">
+            <label for="access-token">Access token</label>
             <input type="text" id="access-token" value="" disabled>
+            <br>
             <label for="file-upload">Select a file:</label>
             <input type="file" id="file-upload" name="file-upload">
+            <br>
             <button id="submitButton"type="submit">Submit</button>
         </form>
         <script>
-            document.getElementById("access-token").value = utils.parseQueryString(window.location.href).code;
+            document.getElementById("access-token").value = utils.parseQueryString(window.location.hash).access_token;
             function uploadFile() {
         
                 const UPLOAD_FILE_SIZE_LIMIT = 150 * 1024 * 1024;
