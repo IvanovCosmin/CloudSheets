@@ -3,6 +3,9 @@ let qs = require('querystring');
 let fs = require('fs');
 let db = require('./db_scripts');
 let utils = require('./router-utils');
+let fetch = require('isomorphic-fetch'); // aduce fetchul si pe server. e nevoie pentru dropbox
+let Dropbox = require('dropbox').Dropbox;
+
 let staticResourceDropper = (route, res) => {
     let path = "./static" + route;
     if(fs.existsSync(path)) {
@@ -42,6 +45,7 @@ let routerObjectConstructor = (req) => {
         object.__parsedParams = {};
         console.log(object.__parsedParams);
         
+        if(requestInfo.urlQuery === null) return undefined;
         let params = requestInfo.urlQuery.split("&");
         for(par of params) {
             let [key,value] = par.split('=');
@@ -93,70 +97,48 @@ let resolver = (req, res) => {
                     utils.sendJson(200,res,result);
             });
         }
-        else if(router.is('/get-client-secret')) {
-            const credentials = {
-                client: {
-                  id: 'pz5akpcc0yc3mc3',
-                  secret: 'qer0wpi81ifx91v'
-                },
-                auth: {
-                  tokenHost: 'https://www.dropbox.com/oauth2/authorize'
-                }
-              };
-            const oauth2 = require('simple-oauth2').create(credentials);
-            const tokenConfig = {
-                code: router.getParam("code"),
-                redirect_uri: 'http://localhost:8000/callback',
-                scope: '<scope>',
-              };
-             
-              try {
-                console.log("test");
-                oauth2.authorizationCode.getToken(tokenConfig).then(
-                    (result) => {
-                        console.log("test");
-                        console.log(result);
-                        const accessToken = oauth2.accessToken.create(result);
-                        console.log(accessToken);
-                    }
-                ).catch((error) => console.log("error"));
+        else if(router.is("/auth")) {
+            utils.sendTemplate(req, res, "templates/login_page.html", {}, 200);
+
+        }
+        else if(router.is("/auth/dropbox")) {
+            // let redirectUri = "https://localhost:8000/auth/dropbox";
+            // console.log("entered auth dropbox");
+            // const config = {
+            //     fetch: fetch,
+            //     clientId: ["pz5akpcc0yc3mc3"],
+            //     clientSecret: ["qer0wpi81ifx91v"]
+            // };
+
+
+            // let dbx = new Dropbox(config);
+            // const authUrl = dbx.getAuthenticationUrl(redirectUri, null, 'code');
+            
+            // console.log("auth url", authUrl);
+
+            // let code = router.getParam("access_token");
+            // console.log(code);
+
+            // var options = Object.assign({
+            //     code,
+            //     redirectUri
+            // }, config);
+            
+            
+            // dbx.getAccessTokenFromCode(redirectUri, code)
+            //     .then(function(token) {
+            //         console.log(token);
+            //         utils.sendTemplate(req, res, "callback.html", {code:code}, 200);
+            //     })
+            //     .catch(function(error) {
+            //         console.log(error);
+            //         utils.redirect(res, "500.html");
+            //     });
+            
+            let code = router.getParam("access_token");
+            utils.sendTemplate(req, res, "callback.html", {code:code}, 200);
+        }
         
-              } catch (error) {
-                console.log('Access Token Error', error.message);
-              }
-        }
-        else if (router.is("/callback")){
-            utils.sendTemplate(req, res,"callback.html",
-            {
-                "code": router.getParam("code")
-            },
-            200);
-        }
-
-        else if(router.is('/oauth')) {
-            async function run() {
-                const credentials = {
-                    client: {
-                      id: 'pz5akpcc0yc3mc3',
-                      secret: 'qer0wpi81ifx91v'
-                    },
-                    auth: {
-                      tokenHost: 'https://www.dropbox.com/oauth2/authorize'
-                    }
-                  };
-                const oauth2 = require('simple-oauth2').create(credentials);
-               
-                const authorizationUri = oauth2.authorizationCode.authorizeURL({
-                  redirect_uri: 'https://localhost:8000/get-client-secret',
-                  scope: '',
-                  state: '<state>'
-                });
-               
-                utils.redirect(res, authorizationUri);
-              }
-
-            run();
-        }
         else if(router.is('/upload', "POST")) {
             utils.upload(requestBody, res);
         }
@@ -174,4 +156,4 @@ let resolver = (req, res) => {
 
 module.exports = {
     "resolve": resolver
-}
+} 
