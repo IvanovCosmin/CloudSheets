@@ -8,7 +8,17 @@ let Dropbox = require('dropbox').Dropbox;
 
 let staticResourceDropper = (route, res) => {
     let path = "./static" + route;
+    while(!fs.existsSync(path)){
+        var result = route.search("/");
+        route=route.slice(result+1);
+        result = route.search("/");
+        route=route.slice(result);
+        path="./static"+route;
+        console.log("DECI:"+path);
+    }
+    
     if(fs.existsSync(path)) {
+        
         res.writeHead(200)
         let content = fs.readFileSync(path);
         res.end(content);
@@ -101,6 +111,9 @@ let resolver = (req, res) => {
             utils.sendTemplate(req, res, "templates/login_page.html", {}, 200);
 
         }
+        else if(router.is("/auth/mama/tata")){
+            utils.sendTemplate(req,res,"static/test.html",{},200);
+        }
         else if(router.is("/auth/dropbox")) {
             // let redirectUri = "https://localhost:8000/auth/dropbox";
             // console.log("entered auth dropbox");
@@ -148,6 +161,8 @@ let resolver = (req, res) => {
                // utils.sendJson(404,res,router.requestInfo);
                utils.sendTemplate(req,res,"static/404.html",{},404);
             }
+            else
+            {console.log("DA"+router.requestInfo.urlPathname);}
         }
 
         //console.log(router.requestInfo);
