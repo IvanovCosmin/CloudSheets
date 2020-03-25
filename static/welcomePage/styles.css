@@ -4,7 +4,19 @@ body{
     margin:0;
 }
 
+header {
+    display:flex;
+    
+    justify-content: flex-end;
+    width: 100%;
+    align-self: start;
+   
+    background: white;
+    box-shadow:  -5px 5px 6px 6px white;
+}
 .mainContainer {
+    /* background-image: url("../assets/cloudBackground.jpeg"); */
+    background-size: 100% 100%;
     background-image: linear-gradient(var(--malibu), var(--onahau), #ffffff);
     display: flex;
     flex:1;
@@ -16,9 +28,13 @@ body{
 .container {
     display: flex;
     flex:1;
-    flex-direction: column;
-    align-items: stretch;
-    margin-bottom: 0;   
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 3em;   
+    margin-top:3em;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .titleArea {
@@ -26,129 +42,130 @@ body{
     flex:1;
     margin-left: auto;
     margin-right: auto;
-    
+    justify-content: center;
+    text-align: center;
 }
 
 .titleArea  p {
-    padding-left: auto;
-    padding-right: auto;
-    font-size: 500%;
+    padding-left: 10%;
+    padding-right: 10%;
+    font-size: 400%;
     color:var(--mardiGras);
     font-family: 'Courgette', cursive;
     vertical-align: middle;
     margin-top: auto;
     margin-bottom: auto;
     word-wrap: middle;
+    flex:1;
+}
+img {
+    align-self: flex-start;
+    margin-left: 80px;
+}
+
+.imgContainer {
+   flex:1;
 }
 
 .welcomeButton {
-border: none;
-background: var(--mardiGras);
-color: var(--aliceBlue) !important;
-font-weight: 100;
-padding: 20px;
-height: 50pt;
-width:200pt;
-text-transform: uppercase;
-border-radius: 6px;
-display: inline-block;
-transition: all 0.3s ease 0s;
-margin-top: 20px;
-margin-bottom: 20px;
-font-family: 'Averia Sans Libre', cursive;
-font-size: 180%;
-}
-
-  #getStarted{
-   margin-right: auto;
-   margin-left: 20%;
-}
-
-#logIn {
-    margin-left: auto;
-    margin-right: 20%;
+    background: #ffffff;
+    padding: 5px;
+    background: transparent;
+    border:none !important;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
+    width:30%;
+    color: var(--malibu) !important;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+     font-size: 180%;
+    border-radius: 6px;
 }
 
 .welcomeButton:hover {
-    color:var(--mardiGras) !important;
-    font-weight: 700 !important;
-    letter-spacing: 3px;
-    background: var(--aliceBlue);
-    box-shadow: 0px 5px 40px -10px var(--mardiGras);
-    transition: all 0.3s ease 0s ;
-    font-family: 'Averia Sans Libre', cursive;
-    font-size: 200%;
+    color: #ffffff !important;
+background: var(--violetBlue);
+
+transition: all 0.4s ease 0s;
     }
-
-.delimitator {
-    height: 1px;
-    background-color: var(--mardiGras);
-    width: 40% ;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: 10px;
-    margin-right: 10px;
-    width: 10%
-}
-
-.delimitationArea {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    height: 20px;
-    font-family: 'Averia Sans Libre', cursive;
-
-}
+  
 
 .navigationArea{
     flex:1;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-top: 5em;
-    margin-bottom: 10em;
-    margin-left: auto;
-    margin-right: auto;
-}
-.images{
-
-    display: flex;
-    flex:2;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: space-around;
-}
-.presentationArea {
-    display: flex;
     flex-direction: row;
-    align-self: center;
-    width:80%;
-    flex:2;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-bottom: 0;
+    justify-content: center;
+     width: 40%;
+    align-self: flex-end;
+    margin-right: 10%;
 }
 
-#bigCloud {
-    
-    transition : margin-top 200px;
-    margin-bottom: 0px;
-    
-}
+input[type=text], select {
+    background-color: white;
+    display: flex;
+    width:90%;
+    padding: 12px 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    /* border: 2px solid var(--mardiGras); */
+    border-radius: 6px;
+    /* background: white; */
+    box-shadow:  5px 6px 6px var(--mardiGras);
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+  }
 
-#bigCloud:hover {
-    margin-bottom: 40px;
-}
+  input[type=password], select {
+    background-color: white;
+    display: flex;
+    width:90%;
+    padding: 12px 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    /* border: 2px solid var(--mardiGras); */
+    border-radius: 6px;
+    /* background: white; */
+    box-shadow:  5px 6px 6px var(--mardiGras);
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+  }
+  
+input[type=submit] {
+    display: flex;
+    background-color:white;
+    color: var(--malibu) !important;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 100;
+  font-family: 'Averia Sans Libre', cursive;
+   font-size: 180%;
+  margin-top: 10px;
+  box-shadow:  5px 6px 6px var(--mardiGras);
+  }
+  form {
+      width:100%;
+  }
 
-
-
-#littleCloud {
-    transition: margin-top 10px;
-    margin-bottom :150px;
-   
-}
-
-#littleCloud:hover {
- margin-bottom: 200px;
+  .labelTitle {
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+  }
+  
+  input[type=submit]:hover {
+    background-color: var(--violetBlue);
+  }
+  
+.formArea {
+    display: flex;
+    flex-direction: column;
+    flex:1;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    min-width: 40%;
 }
 
