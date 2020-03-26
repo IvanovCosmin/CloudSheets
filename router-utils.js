@@ -60,12 +60,18 @@ let redirect = (res, url) => {
 
 let staticResourceDropper = (route, res) => {
     let path = "./static" + route;
-    while(!fs.existsSync(path)){
+    let oldpath = path;
+    let flag = 1;
+    while(!fs.existsSync(path) && flag == 1){
         var result = route.search("/");
         route=route.slice(result+1);
         result = route.search("/");
         route=route.slice(result);
+        oldpath = path;
         path="./static"+route;
+        if(path == oldpath){
+            flag = 0;
+        }
         console.log("DECI:"+path);
     }
     
