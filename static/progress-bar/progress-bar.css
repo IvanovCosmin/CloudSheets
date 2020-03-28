@@ -1,0 +1,42 @@
+@import "../utils/colors.css";
+@import "../utils/sizes.css";
+
+#progresBarWrapper {
+    width: 100%;
+    background-color:var(--aliceBlue);
+    border-radius: 25px;
+}
+
+#progressBar {
+    width: 10%;
+    height: 30px;
+    background-color: var(--malibu);
+    text-align: center; /* To center it horizontally (if you want) */
+    line-height: 30px; /* To center it vertically */
+    color: white;
+    border-radius: 25px;
+}
+
+#progressBarText {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#startButton {
+    border: none;
+    background: var(--mardiGras);
+    color: var(--aliceBlue) !important;
+    font-weight: 100;
+    padding: 20px;
+    height: 50pt;
+   
+    text-transform: uppercase;
+    border-radius: 6px;
+    display: inline-block;
+    transition: all 0.3s ease 0s;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family:OCR A Std, monospace;
+    font-size: 200%;
+}
+

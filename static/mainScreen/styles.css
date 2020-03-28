@@ -1,0 +1,33 @@
+@import "../utils/colors.css";
+
+body {
+    margin:0
+}
+
+.mainContainer {
+    /* background-image: url("../assets/cloudBackground.jpeg"); */
+    background-size: 100% 100%;
+    background-image: linear-gradient(var(--malibu), var(--onahau), #ffffff);
+    display: flex;
+    flex:1;
+    height: 100vh;
+    flex-direction:column;
+    align-content: space-evenly;
+}
+
+header {
+    display:flex;
+    
+   
+    width: 100%;
+    align-self: start;
+   
+    background: white;
+    box-shadow:  -5px 5px 6px 6px white;
+}
+
+img {
+    align-self: flex-start;
+    margin-left: 80px;
+    flex:1;
+}
