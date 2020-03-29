@@ -72,7 +72,7 @@ let resolver = (req, res) => {
                 "gheiString": "Paul ultra ghei", 
                 "orNot" : "E doar o gluma ca sa demonstrez templateurile :)"
             };
-            utils.sendTemplate(req, res,"index.html", testContext, 200);
+            utils.sendTemplate(req, res,"static/welcomePage/index.html", testContext, 200);
         }
         else if (router.is('/user')) {
             let userPromise = bazadate.getUserByUsername(router.getParam('username'));
