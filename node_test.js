@@ -4,7 +4,6 @@ let config = require('./config');
 let router = require('./router');   
 let oauth2orize = require('oauth2orize');
 let db=require('./database');
-let oauthServer = oauth2orize.createServer();
 
 
 let options = {

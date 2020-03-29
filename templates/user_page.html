@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User page</title>
+</head>
+<body>
+
+  <input type="file" id="file-input" value="/metadata">
+  <button onclick="readFile()">Read file</button>
+  <a hidden download="metadata.txt" id="metadata-link" href="#">Download metadata</a>
+
+  <script src="wasm/splitter.js"></script>
+  <script>
+    function readFile() {
+      var files = document.getElementById("file-input").files;
+      var file = files[0];
+
+      var fileReader = new FileReader();
+      fileReader.onload = function() {
+        var data = new Uint8Array(fileReader.result);
+        console.log(data);
+        Module['FS_createDataFile']('/', 'fileinput', data, true, true, true);
+        Module['FS_createDataFile']('/', 'metadata', new Uint8Array([]), true, true, true);
+        var nrOfFiles = Module.ccall('readFile', 'number', [], null);
+        console.log("nrOfFiles returned by readFile", nrOfFiles);
+        for(var i = 0; i < Math.min(nrOfFiles, 10); i++) {
+          Module.ccall('generateNthSplitFile', 'boolean', ['number'], [i + 1]);
+        }
+        Module.ccall('showMetadata', null, [], []);
+        var stream = FS.open("/metadata", "r");
+        var textStream = new TextDecoder("utf-8").decode(stream.node.contents);
+        var blob = new Blob([textStream.toString()], {type: "text/plain;charset=utf-8"});
+        var link = document.getElementById("metadata-link");
+        link.href = URL.createObjectURL(blob);
+        link.hidden = false;
+      }
+      console.log(file);
+      fileReader.readAsArrayBuffer(file);
+      
+
+      return fileReader;
+    }
+  </script>
+</body>
+</html>
