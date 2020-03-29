@@ -61,23 +61,26 @@ let redirect = (res, url) => {
 let resourceDropper = (folder, contentType = undefined) => {
     return (route, res) => {
         let path = folder + route;
-        while(!fs.existsSync(path)){
+        let oldpath = path;
+        let flag = 1;
+        while(!fs.existsSync(path) && flag == 1){
             var result = route.search("/");
             route=route.slice(result+1);
             result = route.search("/");
-            route = route.slice(result);
+            route=route.slice(result);
+            oldpath = path;
             path= folder + route;
-        }
-        if(fs.existsSync(path)) {
-            let headers = {};
-            if(contentType) {
-                headers["Content-Type"] = contentType;
+            if(path == oldpath){
+                flag = 0;
             }
-            res.writeHead(200, headers);
+        }
+        if(fs.existsSync(path)) {   
+            res.writeHead(200)
             let content = fs.readFileSync(path);
             res.end(content);
             return true;
         }
+        return false;
     }
 }
 
