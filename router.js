@@ -5,32 +5,6 @@ let fs = require('fs');
 bazadate=require( './node_test');
 let utils = require('./router-utils');
 
-let resourceDropper = (folder, contentType = undefined) => {
-    return (route, res) => {
-        let path = folder + route;
-        while(!fs.existsSync(path)){
-            var result = route.search("/");
-            route=route.slice(result+1);
-            result = route.search("/");
-            route = route.slice(result);
-            path= folder + route;
-        }
-        if(fs.existsSync(path)) {
-            let headers = {};
-            if(contentType) {
-                headers["Content-Type"] = contentType;
-            }
-            res.writeHead(200, headers);
-            let content = fs.readFileSync(path);
-            res.end(content);
-            return true;
-        }
-    }
-}
-
-let staticResourceDropper = resourceDropper('./static');
-let wasmResourceDropper = resourceDropper('./webasm/bin', 'application/wasm');
-
 let routerObjectConstructor = (req) => {
     console.log("req.url", req.url);
     if(req.url === undefined) return {
@@ -133,13 +107,13 @@ let resolver = (req, res) => {
         }
 
         else if(router.endswith(".wasm")) {
-            if(!wasmResourceDropper(router.requestInfo.urlPathname, res)) {
+            if(!utils.wasmResourceDropper(router.requestInfo.urlPathname, res)) {
                 utils.sendTemplate(req,res,"static/404.html",{},404);
             }
         }
 
         else {
-            if(!staticResourceDropper(router.requestInfo.urlPathname, res)) {
+            if(!utils.staticResourceDropper(router.requestInfo.urlPathname, res)) {
                // utils.sendJson(404,res,router.requestInfo);
                utils.sendTemplate(req,res,"static/404.html",{},404);
             }
