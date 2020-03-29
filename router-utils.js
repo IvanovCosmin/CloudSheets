@@ -58,36 +58,36 @@ let redirect = (res, url) => {
     res.end();  
 }
 
-let staticResourceDropper = (route, res) => {
-    let path = "./static" + route;
-    let oldpath = path;
-    let flag = 1;
-    while(!fs.existsSync(path) && flag == 1){
-        var result = route.search("/");
-        route=route.slice(result+1);
-        result = route.search("/");
-        route=route.slice(result);
-        oldpath = path;
-        path="./static"+route;
-        if(path == oldpath){
-            flag = 0;
+let resourceDropper = (folder, contentType = undefined) => {
+    return (route, res) => {
+        let path = folder + route;
+        while(!fs.existsSync(path)){
+            var result = route.search("/");
+            route=route.slice(result+1);
+            result = route.search("/");
+            route = route.slice(result);
+            path= folder + route;
         }
-        console.log("DECI:"+path);
+        if(fs.existsSync(path)) {
+            let headers = {};
+            if(contentType) {
+                headers["Content-Type"] = contentType;
+            }
+            res.writeHead(200, headers);
+            let content = fs.readFileSync(path);
+            res.end(content);
+            return true;
+        }
     }
-    
-    if(fs.existsSync(path)) {
-        
-        res.writeHead(200)
-        let content = fs.readFileSync(path);
-        res.end(content);
-        return true;
-    }
-    return false;
-} 
+}
+
+let staticResourceDropper = resourceDropper('./static');
+let wasmResourceDropper = resourceDropper('./webasm/bin', 'application/wasm');
 
 module.exports = {
     "sendTemplate" : sendTemplate,
     "sendJson" : sendJson,
     "redirect": redirect,
     "staticResourceDropper": staticResourceDropper,
+    "wasmResourceDropper": wasmResourceDropper
 };
