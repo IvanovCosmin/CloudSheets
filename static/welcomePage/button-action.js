@@ -6,13 +6,6 @@ function changeColor(idName1, idName2) {
   }
 
  const getStarted = `<form >
- <label for="account" class="labelTitle">Acount type</label>
-<select id="account" name="account">
-    <option value="google">Google</option>
-    <option value="dropbox">DropBox</option>
-    <option value="onedrive">One Drive</option>
-  </select>
-
 
 <label for="fname" class="labelTitle">First Name</label>
 <input type="text" id="fname" name="firstname" placeholder="Your name..">
@@ -30,18 +23,11 @@ function changeColor(idName1, idName2) {
 <input type="password" id="passwordC" name="passwordC" >
 
 
-
-
-<input type="submit" value="Submit">
-</form>`
+</form>
+<input type="submit" onclick="submitBtn()" id="submitBtn" value="Submit">`;
 
 const logIn=`<form >
-<label for="account" class="labelTitle">Acount type</label>
-<select id="account" name="account">
-    <option value="google">Google</option>
-    <option value="dropbox">DropBox</option>
-    <option value="onedrive">One Drive</option>
-  </select>
+
 
 <label for="email" class="labelTitle">Email</label>
 <input type="text" id="email" name="lastname" placeholder="Your email..">
@@ -49,11 +35,17 @@ const logIn=`<form >
 <label for="password" class="labelTitle">Password</label>
 <input type="password" id="password" name="password" >
 
+</form>
+<input type="submit" onclick="submitBtn()" id="submitBtn1" value="Submit">`;
 
+function submitBtn() {
+  // document.getElementById("submitBtn1").onclick = function () {
+    console.log("heeelllpppp");
+    location.href = "../mainScreen/index.html";
+// };
+  
+}
 
-
-<input type="submit" value="Submit">
-</form>`
 
 function openForm (idName, formContent) {
   var myDiv=document.getElementById(idName);
@@ -61,3 +53,10 @@ function openForm (idName, formContent) {
   myDiv.innerHTML=html;
   console.log(html)
 }
+
+{/* <label for="account" class="labelTitle">Acount type</label>
+<select id="account" name="account">
+    <option value="google">Google</option>
+    <option value="dropbox">DropBox</option>
+    <option value="onedrive">One Drive</option>
+  </select> */}
