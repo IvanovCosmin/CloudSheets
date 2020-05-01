@@ -62,7 +62,6 @@ let staticResourceDropper = (route, res) => {
     let path = "./static" + route;
     let oldpath = path;
     let flag = 1;
-    console.log("DECI:"+path);
     var result = route.search("/");
     route=route.slice(result+1);
     while(!fs.existsSync(path) && flag == 1){

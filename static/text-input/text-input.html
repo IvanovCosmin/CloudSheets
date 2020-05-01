@@ -1,41 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text input example</title>
 </head>
 <body>
-    <form action="">
+    
         <div>
             <label for="email">Email address:</label>
-            <input type="email" id="email" minlength="3" maxlength="90"
+            <input type="email" name="email" id="email" minlength="3" maxlength="90"
                    pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
                    title="Please enter a valid email address."
                    required>
         </div>
         <div>
             <label for="username">Username:</label>
-            <input type="text" id="username" minlength="3" maxlength="12"
+            <input type="text" name="username" id="username" minlength="3" maxlength="12"
                    pattern="[a-zA-Z0-9][a-zA-Z0-9_]*[a-zA-Z0-9]"
                    title="The username must contain only letters and numbers."
                    required> 
         </div>
         <div>
             <label for="password">Choose a password:</label>
-            <input type="password" id="password" minlength="7" maxlength="30" 
+            <input type="password" name="password" id="password" minlength="7" maxlength="30" 
             pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$"
             title="Please include at least 1 uppercase character, 1 lowercase character, and 1 number." 
             required>
         </div>
         <div>
             <label for="second_password">Retype the password:</label>
-            <input type="password" id="second_password" minlength="7" maxlength="30" 
+            <input type="password" name="second_password" id="second_password" minlength="7" maxlength="30" 
             pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$"
             title="Please include at least 1 uppercase character, 1 lowercase character, and 1 number." 
             required>
         </div>
-        <button type="submit">Submit</button>
-    </form>
+        <button onclick="onSubmit()" >Submit</button>
 </body>
+<script>
+    function onSubmit(){
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        window.location.href=`https://localhost:8000/auth/onRegister?username=${username}&email=${email}`;
+    }
+</script>
 </html>

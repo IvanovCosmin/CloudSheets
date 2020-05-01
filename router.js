@@ -93,8 +93,12 @@ let resolver = (req, res) => {
             utils.sendTemplate(req, res, "templates/login_page.html", {}, 200);
 
         }
-        else if(router.is("/auth/mama/tata")){
-            utils.sendTemplate(req,res,"static/test.html",{},200);
+        else if(router.is("/auth/homepage")){
+            utils.sendTemplate(req,res,"static/text-input/text-input.html",{},200);
+        }
+        else if (router.is('/auth/onRegister')){
+            bazadate.insertUser(router.getParam('username'),router.getParam('email'));
+            utils.redirect(res,`https://localhost:8000/auth/homepage`);
         }
         else if(router.is("/auth/dropbox")) {
             // let redirectUri = "https://localhost:8000/auth/dropbox";
