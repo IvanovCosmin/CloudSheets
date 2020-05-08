@@ -35,6 +35,3 @@ let createProgressBar = (idOfBar, idOfBarText) => {
 
 let progressBar = createProgressBar("progressBar", "progressBarText");
 
-let showProgressBar =(id)=> {
-    document.getElementById(id).style.display ='block';
-}
