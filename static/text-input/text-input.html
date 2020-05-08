@@ -7,7 +7,7 @@
     <title>Text input example</title>
 </head>
 <body>
-    
+    <form id="form" action="/text-input/onRegister" method="POST">
         <div>
             <label for="email">Email address:</label>
             <input type="email" name="email" id="email" minlength="3" maxlength="90"
@@ -36,13 +36,9 @@
             title="Please include at least 1 uppercase character, 1 lowercase character, and 1 number." 
             required>
         </div>
-        <button onclick="onSubmit()" >Submit</button>
+        <button type="submit" onclick="">Submit</button>
+    </form>
+    <script src="text-input.js"></script>
 </body>
-<script>
-    function onSubmit(){
-        const username = document.getElementById("username").value;
-        const email = document.getElementById("email").value;
-        window.location.href=`https://localhost:8000/auth/onRegister?username=${username}&email=${email}`;
-    }
-</script>
+
 </html>
