@@ -14,7 +14,7 @@ function DataBase(){
 
     createTable:function() {
         let db = new sq3.Database(config['dbpath']);
-        db.run('CREATE TABLE user(email text, password text, name text , surname text , acctype text)');
+        db.run('CREATE TABLE user(email text, password text, name text , surname text )');
         db.close();
     },
     
@@ -24,8 +24,8 @@ function DataBase(){
         db.close();
     },
     
-     insertUser :function(email, password, name, surname, acctype)  {
-        this.db.run(`INSERT INTO user(email, password, name, surname, acctype) VALUES(?,?,?,?,?)`, [email, password, name, surname, acctype], function(err) {
+     insertUser :function(email, password, name, surname)  {
+        this.db.run(`INSERT INTO user(email, password, name, surname) VALUES(?,?,?,?)`, [email, password, name, surname], function(err) {
             if (err) {
               return console.log(err.message);
             }
