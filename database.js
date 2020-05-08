@@ -14,7 +14,7 @@ function DataBase(){
 
     createTable:function() {
         let db = new sq3.Database(config['dbpath']);
-        db.run('CREATE TABLE user(username text, email text, password text)');
+        db.run('CREATE TABLE user(email text, password text, name text , surname text , acctype text)');
         db.close();
     },
     
@@ -24,8 +24,8 @@ function DataBase(){
         db.close();
     },
     
-     insertUser :function(username, email, password)  {
-        this.db.run(`INSERT INTO user(username, email, password) VALUES(?,?,?)`, [username, email,password], function(err) {
+     insertUser :function(email, password, name, surname, acctype)  {
+        this.db.run(`INSERT INTO user(email, password, name, surname, acctype) VALUES(?,?,?,?,?)`, [email, password, name, surname, acctype], function(err) {
             if (err) {
               return console.log(err.message);
             }
@@ -35,19 +35,6 @@ function DataBase(){
     },
     
     
-    // example of function inside a promise
-     getUserByUsername  :function(username)  {
-        return new Promise((resolve, reject) => {
-            let result = [];
-            this.db.each(`select * from user where username='${username}' LIMIT 1;`, (err, row) => {
-                if(err) { reject(err); }
-                result.push(row);
-                console.log(row);
-            }, () => {
-                resolve(result);
-            });
-        });
-    },
     getUserByEmail  :function(email)  {
 
         return new Promise((resolve, reject) => {

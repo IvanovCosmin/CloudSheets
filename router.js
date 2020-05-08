@@ -93,43 +93,31 @@ let resolver = (req, res) => {
             utils.sendTemplate(req,res,"static/text-input/login.html",{},200);
         }
         else if (router.is('/text-input/onRegister',"POST")){
-            username=requestBody.username;
             email=requestBody.email;
-             bazadate.getUserByUsername(username).then(
-               (user)=>{
-                console.log(user[0]);
-                   if(user[0] === undefined){
-                        bazadate.getUserByEmail(email).then(
-                         (user)=>{
-                            if(user[0]==undefined){
-                                bazadate.insertUser(requestBody.username,requestBody.email,requestBody.password);
-                                res.writeHead(301,{"Location":"https://localhost:8000/text-input/login"});
-                                res.end();
-                            }
-                            else{
-                                res.writeHead(301,{"Location":"https://localhost:8000/text-input/homepage"});
-                                res.end();
-                            }
+            password=requestBody.password;
+            name=requestBody.name;
+            surname=requestBody.surname;
+            acctype=requestBody.acctype;
+            bazadate.getUserByEmail(email).then(
+                (user)=>{
+                    if(user[0]==undefined){
+                        bazadate.insertUser(email, password, name, surname, acctype);
+                        res.writeHead(301,{"Location":"https://localhost:8000/text-input/login"});
+                        res.end();
                         }
-                        );
-                   }
-                   else{
-                    res.writeHead(301,{"Location":"https://localhost:8000/text-input/homepage"});
-                    res.end();
-                   }
-                    
-                });
-                
-            //utils.sendTemplate(req, res, "static/text-input/text-input.html", {}, 200);
-            
+                        else{
+                            res.writeHead(301,{"Location":"https://localhost:8000/text-input/homepage"});
+                            res.end();
+                        }
+                }
+            );
         }
         else if (router.is('/text-input/onLogin',"POST")){
-            username=requestBody.username;
-            
-             bazadate.getUserByUsername(username).then(
+            email=requestBody.email;
+            password = requestBody.password;
+             bazadate.getUserByEmail(email).then(
                (user)=>{
-                    
-                   if(user[0] !== undefined && requestBody.password === user[0].password){
+                   if(user[0] !== undefined && password === user[0].password){
                     res.writeHead(301,{"Location":"https://localhost:8000/"});
                     res.end();
                    }else{
@@ -139,9 +127,6 @@ let resolver = (req, res) => {
                    }
                     
                 });
-                
-            //utils.sendTemplate(req, res, "static/text-input/text-input.html", {}, 200);
-            
         }
         else if(router.is("/auth/dropbox")) {
             // let redirectUri = "https://localhost:8000/auth/dropbox";
