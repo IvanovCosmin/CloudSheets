@@ -9,8 +9,17 @@
 <body>
     <form id="form" action="/text-input/onLogin" method="POST">
         <div>
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username" required > 
+            <label for="account" class="labelTitle">Acount type</label>
+            <select id="acctype" name="acctype">
+                <option value="google">Google</option>
+                <option value="dropbox">DropBox</option>
+                <option value="onedrive">One Drive</option>
+              </select>
+            </div>
+        <div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" name="email" id="email" required > 
         </div>
         <div>
             <label for="password">Password:</label>
