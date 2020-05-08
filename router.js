@@ -2,7 +2,7 @@ let url = require('url');
 let qs = require('querystring');
 let fs = require('fs');
 
-bazadate=require( './node_test');
+bazadate=require( './index');
 let utils = require('./router-utils');
 let fetch = require('isomorphic-fetch'); // aduce fetchul si pe server. e nevoie pentru dropbox
 let Dropbox = require('dropbox').Dropbox;
@@ -10,6 +10,7 @@ let Dropbox = require('dropbox').Dropbox;
 
 
 let routerObjectConstructor = (req) => {
+    let return_obj = {}
     console.log("req.url", req.url);
     if(req.url === undefined) return {
         is: (route, verb = "GET") => false
@@ -22,38 +23,27 @@ let routerObjectConstructor = (req) => {
     requestInfo.urlQuery = urlQuery; 
     requestInfo.urlObject = urlObject;
     requestInfo.method = req.method;
+    requestInfo.parsedParams = {};
     
-    // poate e putin ineficienta abordarea asta
-    // dar memorie--, viteza++
-    const getParam = (object, param) => {
-        if(object.__parsedParams !== undefined) {
-            if(param in object.__parsedParams) {
-                return object.__parsedParams[param];
-            }
-            else{
-                return undefined;
-            }
-        }
-        object.__parsedParams = {};
-        console.log(object.__parsedParams);
-        
-        if(requestInfo.urlQuery === null) return undefined;
+    if(requestInfo.urlQuery !== null) {
         let params = requestInfo.urlQuery.split("&");
         for(par of params) {
             let [key,value] = par.split('=');
-            object.__parsedParams[key] = value;
+            requestInfo.parsedParams[key] = value;
         }
-        return getParam(object, param);
     }
 
-    return {
-            __parsedParams: undefined,
-            is: (route, verb = "GET") => {
-                return route === requestInfo.urlPathname && verb == requestInfo.method;
-            },
-            requestInfo: requestInfo,
-            getParam: (param) => {return getParam(this, param)}
-        }
+    return_obj = {
+        is: (route, verb = "GET") => {
+            return route === requestInfo.urlPathname && verb == requestInfo.method;
+        },
+        endswith: (string) => {
+            return requestInfo.urlPathname.endsWith(string);
+        },
+        requestInfo: requestInfo,
+        getParam: (param) => {return requestInfo.parsedParams[param]}
+    }
+    return return_obj;
 }
 
 let resolver = (req, res) => { 
@@ -76,9 +66,8 @@ let resolver = (req, res) => {
         }
         else if (router.is('/user')) {
             let userPromise = bazadate.getUserByUsername(router.getParam('username'));
-            
             userPromise.then( (result) => {
-                    utils.sendJson(200,res,result[0]);
+                    utils.sendJson(200,res,result);
                 }
             );
         }
@@ -88,17 +77,71 @@ let resolver = (req, res) => {
             userPromise.then( (result)=>{
                     utils.sendJson(200,res,result);
             });
+        }else if(router.is('/dropDB')) {
+            bazadate.dropTable();
+        }else if(router.is('/createDB')) {
+            bazadate.createTable();
         }
         else if(router.is("/auth")) {
             utils.sendTemplate(req, res, "templates/login_page.html", {}, 200);
 
         }
-        else if(router.is("/auth/homepage")){
+        else if(router.is("/text-input/homepage")){
             utils.sendTemplate(req,res,"static/text-input/text-input.html",{},200);
         }
-        else if (router.is('/auth/onRegister')){
-            bazadate.insertUser(router.getParam('username'),router.getParam('email'));
-            utils.redirect(res,`https://localhost:8000/auth/homepage`);
+        else if(router.is("/text-input/login")){
+            utils.sendTemplate(req,res,"static/text-input/login.html",{},200);
+        }
+        else if (router.is('/text-input/onRegister',"POST")){
+            username=requestBody.username;
+            email=requestBody.email;
+             bazadate.getUserByUsername(username).then(
+               (user)=>{
+                console.log(user[0]);
+                   if(user[0] === undefined){
+                        bazadate.getUserByEmail(email).then(
+                         (user)=>{
+                            if(user[0]==undefined){
+                                bazadate.insertUser(requestBody.username,requestBody.email,requestBody.password);
+                                res.writeHead(301,{"Location":"https://localhost:8000/text-input/login"});
+                                res.end();
+                            }
+                            else{
+                                res.writeHead(301,{"Location":"https://localhost:8000/text-input/homepage"});
+                                res.end();
+                            }
+                        }
+                        );
+                   }
+                   else{
+                    res.writeHead(301,{"Location":"https://localhost:8000/text-input/homepage"});
+                    res.end();
+                   }
+                    
+                });
+                
+            //utils.sendTemplate(req, res, "static/text-input/text-input.html", {}, 200);
+            
+        }
+        else if (router.is('/text-input/onLogin',"POST")){
+            username=requestBody.username;
+            
+             bazadate.getUserByUsername(username).then(
+               (user)=>{
+                    
+                   if(user[0] !== undefined && requestBody.password === user[0].password){
+                    res.writeHead(301,{"Location":"https://localhost:8000/"});
+                    res.end();
+                   }else{
+                    
+                    res.writeHead(301,{"Location":"https://localhost:8000/text-input/login"});
+                    res.end(); 
+                   }
+                    
+                });
+                
+            //utils.sendTemplate(req, res, "static/text-input/text-input.html", {}, 200);
+            
         }
         else if(router.is("/auth/dropbox")) {
             // let redirectUri = "https://localhost:8000/auth/dropbox";
@@ -153,14 +196,14 @@ let resolver = (req, res) => {
             let content = fs.readFileSync("static/Dropbox-sdk.min.js");
             res.end(content);
         }
-
+        
         else {
             if(!utils.staticResourceDropper(router.requestInfo.urlPathname, res)) {
                // utils.sendJson(404,res,router.requestInfo);
                utils.sendTemplate(req,res,"static/404.html",{},404);
             }
             else
-            {console.log("DA"+router.requestInfo.urlPathname);}
+            {console.log(router.requestInfo.urlPathname);}
         }
 
         //console.log(router.requestInfo);

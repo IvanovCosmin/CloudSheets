@@ -65,7 +65,6 @@ let staticResourceDropper = (route, res) => {
     var result = route.search("/");
     route=route.slice(result+1);
     while(!fs.existsSync(path) && flag == 1){
-        console.log("1:"+route);
         result = route.search("/");
         route=route.slice(result+1);
         oldpath = path;
@@ -73,7 +72,6 @@ let staticResourceDropper = (route, res) => {
         if(path == oldpath){
             flag = 0;
         }
-        console.log("2:"+path);
     }
     
     if(fs.existsSync(path) ) {

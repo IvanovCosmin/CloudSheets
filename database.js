@@ -12,12 +12,20 @@ function DataBase(){
         console.log("wtf");
     },
 
-     createTable :function(){
-        this.db.run('CREATE TABLE user(username text, email text)');
+    createTable:function() {
+        let db = new sq3.Database(config['dbpath']);
+        db.run('CREATE TABLE user(username text, email text, password text)');
+        db.close();
     },
     
-     insertUser :function(username, email)  {
-        this.db.run(`INSERT INTO user(username, email) VALUES(?,?)`, [username, email], function(err) {
+    dropTable:function() {
+        let db = new sq3.Database(config['dbpath']);
+        db.run('drop TABLE user');
+        db.close();
+    },
+    
+     insertUser :function(username, email, password)  {
+        this.db.run(`INSERT INTO user(username, email, password) VALUES(?,?,?)`, [username, email,password], function(err) {
             if (err) {
               return console.log(err.message);
             }
@@ -32,6 +40,19 @@ function DataBase(){
         return new Promise((resolve, reject) => {
             let result = [];
             this.db.each(`select * from user where username='${username}' LIMIT 1;`, (err, row) => {
+                if(err) { reject(err); }
+                result.push(row);
+                console.log(row);
+            }, () => {
+                resolve(result);
+            });
+        });
+    },
+    getUserByEmail  :function(email)  {
+
+        return new Promise((resolve, reject) => {
+            let result = [];
+            this.db.each(`select * from user where email='${email}' LIMIT 1;`, (err, row) => {
                 if(err) { reject(err); }
                 result.push(row);
                 console.log(row);
