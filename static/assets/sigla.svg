@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="230" height="85" viewBox="0 0 267 98">
+  <defs>
+    <filter id="Union_1" x="0" y="0" width="141" height="98" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#0eb185" flood-opacity="0.451"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Cloud" x="9" y="24" width="123" height="74" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur-2"/>
+      <feFlood flood-color="#0eb185" flood-opacity="0.451"/>
+      <feComposite operator="in" in2="blur-2"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Sheets" x="123" y="24" width="144" height="74" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur-3"/>
+      <feFlood flood-color="#0eb185" flood-opacity="0.451"/>
+      <feComposite operator="in" in2="blur-3"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_1" data-name="Group 1" transform="translate(-134 -203)">
+    <g transform="matrix(1, 0, 0, 1, 134, 203)" filter="url(#Union_1)">
+      <path id="Union_1-2" data-name="Union 1" d="M26.53,80a26.531,26.531,0,0,1-2.272-52.965c0-.167,0-.336,0-.5A26.531,26.531,0,0,1,50.784,0h3.242a26.53,26.53,0,0,1,26.53,26.53c0,.137,0,.272,0,.409H96.469a26.531,26.531,0,1,1,0,53.061Z" transform="translate(9 6)" fill="ivory"/>
+    </g>
+    <g transform="matrix(1, 0, 0, 1, 134, 203)" filter="url(#Cloud)">
+      <text id="Cloud-2" data-name="Cloud" transform="translate(18 75)" fill="#076aff" font-size="42" font-family="SegoeUI-SemilightItalic, Segoe UI" font-weight="300" font-style="italic"><tspan x="0" y="0">Cloud</tspan></text>
+    </g>
+    <g transform="matrix(1, 0, 0, 1, 134, 203)" filter="url(#Sheets)">
+      <text id="Sheets-2" data-name="Sheets" transform="translate(132 75)" fill="ivory" font-size="42" font-family="SegoeUI-BoldItalic, Segoe UI" font-weight="700" font-style="italic"><tspan x="0" y="0">Sheets</tspan></text>
+    </g>
+  </g>
+</svg>

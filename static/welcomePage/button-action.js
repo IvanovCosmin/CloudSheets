@@ -1,14 +1,14 @@
 
 
 function changeColor(idName1, idName2) {
-    document.getElementById(idName1).style.background ="#3F1842";
-    document.getElementById(idName2).style.background="white"
-  }
+  document.getElementById(idName1).style.background = "#0BD54F";
+  document.getElementById(idName2).style.background = "#000514";
+}
 
- const getStarted = `<form >
+const getStarted = `<form >
 
 <label for="fname" class="labelTitle">First Name</label>
-<input type="text" id="fname" name="firstname" placeholder="Your name..">
+<input type="text" id="fname" name="firstname" placeholder="Your first name..">
 
 <label for="lname" class="labelTitle">Last Name</label>
 <input type="text" id="lname" name="lastname" placeholder="Your last name..">
@@ -26,7 +26,7 @@ function changeColor(idName1, idName2) {
 </form>
 <input type="submit" onclick="submitBtn()" id="submitBtn" value="Submit">`;
 
-const logIn=`<form >
+const logIn = `<form >
 
 
 <label for="email" class="labelTitle">Email</label>
@@ -40,17 +40,17 @@ const logIn=`<form >
 
 function submitBtn() {
   // document.getElementById("submitBtn1").onclick = function () {
-    console.log("heeelllpppp");
-    location.href = "../mainScreen/index.html";
-// };
-  
+  console.log("heeelllpppp");
+  location.href = "../mainScreen/index.html";
+  // };
+
 }
 
 
-function openForm (idName, formContent) {
-  var myDiv=document.getElementById(idName);
-  var html=formContent;
-  myDiv.innerHTML=html;
+function openForm(idName, formContent) {
+  var myDiv = document.getElementById(idName);
+  var html = formContent;
+  myDiv.innerHTML = html;
   console.log(html)
 }
 

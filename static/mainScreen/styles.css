@@ -1,26 +1,23 @@
-@import "../utils/colors.css";
-
 body {
-    margin:0
+    margin:0;
+    background:#000514;
+    display: flex;
+    flex-direction: column;
 }
 
 .mainContainer {
-    /* background-image: url("../assets/cloudBackground.jpeg"); */
     background-size: 100% 100%;
-    background-image: linear-gradient(var(--malibu), var(--onahau), #ffffff);
     display: flex;
     flex:1;
     height: 100vh;
     flex-direction:column;
-    align-content: space-evenly;
 }
 
 header {
     display:flex;
     width: 100%;
-    align-self: start;
-    background: white;
-    box-shadow:  -5px 5px 6px 6px white;
+    align-self: flex-start;
+
 }
 
 img {
@@ -30,7 +27,7 @@ img {
 }
 
 .userCircle {
-   background: var(--mardiGras);
+   background: #60BFF2;
    display: flex;
    justify-content:center ;
    width:50px;
@@ -40,13 +37,14 @@ img {
    margin-bottom: auto;
    margin-left:10px;
    margin-right:10px;
+   border:none !important;
 
 } 
 
 .userInitials {
     font-family: 'Averia Sans Libre', cursive;
     font-size: 18px;
-    color:white;
+    color:#000514;
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -54,7 +52,7 @@ img {
 .userName {
     font-family: 'Averia Sans Libre', cursive;
     font-size: 18px;
-    color:var(--malibu);
+    color:#FFFFF0;
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -68,29 +66,23 @@ img {
 }
 
 
-#progresBarWrapper {
+.progresBarWrapper {
     width: 70%;
-    background-color:var(--aliceBlue);
+    background-color:#FFFFF0;
     border-radius: 25px;
     margin-left: 50px;
 }
 
-#progressBar {
+.progressBar {
     width: 3%;
     height: 30px;
-    background-color: var(--mardiGras);
-    text-align: center; /* To center it horizontally (if you want) */
-    line-height: 30px; /* To center it vertically */
+    background-color: #0BD54F;
+    text-align: center;
+    line-height: 30px; 
     color: white;
     border-radius: 25px;
 }
 
-/* #progressBarText {
-    font-family: 'Averia Sans Libre', cursive;
-    font-size: 18px;
-    color:var(--mardiGras);
-    margin-left: 50px;
-} */
 
 .uploadDetails{
     margin-top: 20px;
@@ -98,36 +90,34 @@ img {
 .progressText {
     font-family: 'Averia Sans Libre', cursive;
     font-size: 18px;
-    color:var(--mardiGras);
+    color:#FFFFF0;
     margin-left: 50px;
     
 }
 
-#startButton {
-    background: #ffffff;
+.startButton {
     padding: 5px;
-    background: white;
+    background: #FFFFF0;
     border:none !important;
     display: inline-block;
     transition: all 0.4s ease 0s;
     min-width:20%;
-    color: var(--malibu) !important;
+    color: #000514 !important;
     font-weight: 100;
     font-family: 'Averia Sans Libre', cursive;
-     font-size: 180%;
+     font-size: 150%;
     border-radius: 6px;
     margin-left: 50px;
     margin-top: 20px;
 }
 
-#startButton:hover {
+.startButton:hover {
     color: #ffffff !important;
-background: var(--violetBlue);
+     background: #0BD54F;
+     transition: all 0.4s ease 0s;
+ }
 
-transition: all 0.4s ease 0s;
-    }
-
-#progressBarContainer {
+.progressBarContainer {
     display: none;
 }    
 
@@ -138,17 +128,19 @@ table {
     width: 70%;
     margin-left: auto;
     margin-right: auto;
+    color:#FFFFF0;
+    margin-bottom: 100px;
   }
   
   td, th {
-    border: 1px solid var(--mardiGras);
+    border: 1px solid #60BFF2;
     text-align: left;
     padding: 8px;
   }
 
-#firstRow {
-    background-color: var(--mardiGras);
-    color:white;
+.firstRow {
+    background-color: #60BFF2;
+    color:#000514;
 }  
   
 .dropdown-content {
@@ -157,29 +149,25 @@ table {
     background-color: #f1f1f1;
     border-radius: 6px;;
     min-width: 200px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     margin-top: 50px;
   }
 
 
   .dropdown-content a {
-    color: black;
     padding: 12px 16px;
     font-family: 'Averia Sans Libre', cursive;
-    color:var(--mardiGras);
+    color:#3F1842;
     text-decoration: none;
     display: block;
   }
   .dropdown-content a:hover {
-    color: #fc037b;
+    color: #EF626C;
 }
 
-  .profileDetails:hover .dropdown-content {display: block;}
 
   input[type=text] {
-    background-color: white;
-    height: 10px;
+    background-color: #FFFFF0;
     min-width: 10%;
     display: flex;
     padding: 12px 20px;
@@ -188,7 +176,6 @@ table {
     margin-left: 5px;
     margin-right:5px;
     border-radius: 6px;
-    box-shadow:  5px 6px 6px var(--mardiGras);
     font-weight: 100;
     font-family: 'Averia Sans Libre', cursive;
   }
@@ -206,11 +193,13 @@ table {
     margin-top: 50px;
   }
   
-  #errorMessage {
-      color:red;
+  .errorMessage {
+      color:#FF0000;
       margin-top: auto;
       margin-bottom: auto;
       margin-left: 5px;
       font-family: 'Averia Sans Libre', cursive;
       font-size: 18px;
   }
+
+

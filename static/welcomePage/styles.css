@@ -1,28 +1,24 @@
-@import "../utils/colors.css";
-
 body{
     margin:0;
+    background: #000514;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
     display:flex;
-    
     justify-content: flex-end;
-    width: 100%;
-    align-self: start;
+    /* width: 100%; */
+    align-self: flex-start;
    
-    background: white;
-    box-shadow:  -5px 5px 6px 6px white;
 }
 .mainContainer {
-    /* background-image: url("../assets/cloudBackground.jpeg"); */
     background-size: 100% 100%;
-    background-image: linear-gradient(var(--malibu), var(--onahau), #ffffff);
+    background: #000514;
     display: flex;
     flex:1;
-    height: 100vh;
     flex-direction:column;
-    align-content: space-evenly;
 }
 
 .container {
@@ -31,34 +27,25 @@ header {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 3em;   
     margin-top:3em;
     margin-left: 10%;
     margin-right: 10%;
 }
 
 .titleArea {
-    display: flex;
-    flex:1;
     margin-left: auto;
     margin-right: auto;
-    justify-content: center;
-    text-align: center;
+    min-width:500px;
 }
 
-.titleArea  p {
-    padding-left: 10%;
-    padding-right: 10%;
-    font-size: 400%;
-    color:var(--mardiGras);
-    font-family: 'Courgette', cursive;
-    vertical-align: middle;
-    margin-top: auto;
-    margin-bottom: auto;
-    word-wrap: middle;
-    flex:1;
+
+.titleImg {
+    margin-left:auto;
+    margin-right: auto;
+    margin-top: 100px;
+
 }
-img {
+.siglaImg {
     align-self: flex-start;
     margin-left: 80px;
 }
@@ -68,23 +55,22 @@ img {
 }
 
 .welcomeButton {
-    background: #ffffff;
     padding: 5px;
     background: transparent;
     border:none !important;
     display: inline-block;
     transition: all 0.4s ease 0s;
     width:30%;
-    color: var(--malibu) !important;
+    color: #FFFFF0 !important;
     font-weight: 100;
     font-family: 'Averia Sans Libre', cursive;
-     font-size: 180%;
+     font-size: 150%;
     border-radius: 6px;
 }
 
 .welcomeButton:hover {
-    color: #ffffff !important;
-background: var(--violetBlue);
+    color: #8f5694 !important;
+background: #0BD54F;
 
 transition: all 0.4s ease 0s;
     }
@@ -100,6 +86,10 @@ transition: all 0.4s ease 0s;
     margin-right: 10%;
 }
 
+input {
+    min-height: 3vh;
+}
+
 input[type=text], select {
     background-color: white;
     display: flex;
@@ -107,12 +97,10 @@ input[type=text], select {
     padding: 12px 20px;
     margin-top: 5px;
     margin-bottom: 10px;
-    /* border: 2px solid var(--mardiGras); */
     border-radius: 6px;
-    /* background: white; */
-    box-shadow:  5px 6px 6px var(--mardiGras);
     font-weight: 100;
     font-family: 'Averia Sans Libre', cursive;
+    font-size: 18px;
   }
 
   input[type=password], select {
@@ -122,10 +110,7 @@ input[type=text], select {
     padding: 12px 20px;
     margin-top: 5px;
     margin-bottom: 10px;
-    /* border: 2px solid var(--mardiGras); */
     border-radius: 6px;
-    /* background: white; */
-    box-shadow:  5px 6px 6px var(--mardiGras);
     font-weight: 100;
     font-family: 'Averia Sans Libre', cursive;
   }
@@ -133,28 +118,29 @@ input[type=text], select {
 input[type=submit] {
     display: flex;
     background-color:white;
-    color: var(--malibu) !important;
-    padding: 14px 20px;
+    color: #000514 !important;
+    padding: 5px 5px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 100;
   font-family: 'Averia Sans Libre', cursive;
-   font-size: 180%;
+   font-size: 150%;
   margin-top: 10px;
-  box-shadow:  5px 6px 6px var(--mardiGras);
   }
   form {
       width:100%;
   }
 
   .labelTitle {
+      color: #0BD54F;
     font-weight: 100;
     font-family: 'Averia Sans Libre', cursive;
+    font-size: 2.5vh;
   }
   
   input[type=submit]:hover {
-    background-color: var(--violetBlue);
+    background-color: #0BD54F;
   }
   
 .formArea {
@@ -169,3 +155,29 @@ input[type=submit] {
     min-width: 40%;
 }
 
+footer {
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
+    align-self: flex-end;
+}
+.doc{
+    color: #000514;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    background-color: #EF626C !important;
+    padding: 5px;
+    background: transparent;
+    border:none !important;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+     font-size: 100%;
+    border-radius: 6px;
+}
+
+.doc:hover {
+   background-color: #FFFFF0 !important;
+}
