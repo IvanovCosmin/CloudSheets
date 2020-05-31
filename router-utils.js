@@ -58,35 +58,52 @@ let redirect = (res, url) => {
     res.end();  
 }
 
-let staticResourceDropper = (route, res) => {
-    let path = "./static" + route;
-    let oldpath = path;
-    let flag = 1;
-    var result = route.search("/");
-    route=route.slice(result+1);
-    while(!fs.existsSync(path) && flag == 1){
-        result = route.search("/");
-        route=route.slice(result+1);
-        oldpath = path;
-        path="./static/"+route;
-        if(path == oldpath){
-            flag = 0;
+let resourceDropper = (folder, contentType = undefined) => {
+    return (route, res) => {
+        let path = folder + route;
+        let oldpath = path;
+        let flag = 1;
+
+        // paul start
+        while(!fs.existsSync(path) && flag == 1){
+            var result = route.search("/");
+            route=route.slice(result+1);
+            result = route.search("/");
+            route=route.slice(result);
+            oldpath = path;
+            path= folder + route;
+            if(path == oldpath){
+                flag = 0;
+            }
         }
+        if(fs.existsSync(path)) { 
+            let headers = {
+                "Content-Type": contentType
+            };
+            if(contentType) {
+                res.writeHead(200, headers);
+            }
+            else {
+                res.writeHead(200);
+            }
+            let content = fs.readFileSync(path);
+            res.end(content);
+            return true;
+        }
+        return false;
+
+        // paul stop
     }
-    
-    if(fs.existsSync(path) ) {
-        
-        res.writeHead(200)
-        let content = fs.readFileSync(path);
-        res.end(content);
-        return true;
-    }
-    return false;
-} 
+}
+
+let staticResourceDropper = resourceDropper('./static');
+let wasmResourceDropper = resourceDropper('./webasm/bin', 'application/wasm');
 
 module.exports = {
     "sendTemplate" : sendTemplate,
     "sendJson" : sendJson,
     "redirect": redirect,
     "staticResourceDropper": staticResourceDropper,
+    "wasmResourceDropper": wasmResourceDropper,
+    "randomString": macacpeviata
 };

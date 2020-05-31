@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your files</title>
+  <script src="dropbox-sdk\Dropbox-sdk.min.js"></script>
+</head>
+<body>
+
+  <div>
+      {{ list of files here }}
+  </div>
+
+  <div>
+      Or chose a metadata file
+    <input type="file" id = "metadata-input" onchange="checkmetadata()">
+    <button onclick="dropElementFromDropbox(null)">Drop dropbox elements</button>
+  </div>
+
+  <script>
+      function checkmetadata() {
+          let metainput = document.getElementById("metadata-input");
+          // ne asiguram ca exista elementul si avem fisierul de metadata pus
+          if(metainput && metainput.files && metainput.files[0]) {
+            let file = metainput.files[0];
+            let fileReader = new FileReader();
+            fileReader.onload = () => {
+                let parsedMeta = parseMetaFile(fileReader.result);
+                
+            };
+            fileReader.onerror = () => {console.log(fileReader.error)};
+            fileReader.readAsText(file);
+          }
+      }
+      function parseMetaFile(metafile) {
+          let metaarray = metafile.split("\n");
+          metaarray.splice(metaarray.length - 1, 1); // stergem ultimul element e plin doar de bytes goi
+          console.log(metaarray);
+          let res = {};
+          res["size"] = parseInt(metaarray[0]);
+          for (let i = 1; i < metaarray.length; i++) {
+            let chunkData = metaarray[i].split(" ");
+            res[chunkData[1]] = chunkData[0];
+          }
+          return res;
+      }
+      function dropElementFromDropbox(element) {
+        var ACCESS_TOKEN = "BQOYyAxkcAkAAAAAAAAP5CzzjBmVnvS2SrHZWPpj3EcIbXwhHpB1FEzrHxkIHPu8";
+        var dbx = new Dropbox.Dropbox({ accessToken: ACCESS_TOKEN });
+        dbx.sharingCreateSharedLinkWithSettings({path: "/cloudsheets"})
+            .then(function(response) {
+            console.log(response);
+            })
+            .catch(function(error) {
+            console.log(error);
+            });
+        dbx.filesListFolder({path: "/cloudsheets"}).then(
+            (response) => {
+                console.log(response);
+            }).catch(
+                (err) => console.log(err)
+            );
+        
+      }
+
+  </script>
+
+</body>
+</html>
