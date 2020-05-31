@@ -23,7 +23,6 @@ function insertUser(username, email) {
         console.log(`A row has been inserted with rowid ${this.lastID}`);
     });
      
-    db.close();
 }
 
 
