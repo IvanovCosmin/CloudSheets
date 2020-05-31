@@ -1,25 +1,38 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="./styles.css">
-    </head>
-    <body>
-        <div class="mainContainer">
-            <header>
-                <div class="imgContainer">
-                 <img src='../assets/black_cloud.svg'/>
+<html lang="en">
+
+<head>
+    <title>Your files</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+    <script src='../mainScreen/options.js'></script>
+    <script src='./files.js'></script>
+</head>
+
+<body>
+    <div class="mainContainer">
+        <header>
+            <div class="imgContainer">
+                <img class="logo" src='../assets/sigla.svg' alt="logo image" />
+            </div>
+            <div class="profileDetails">
+                <span class="userName">Ioana Maniga</span>
+                <button onclick="showMenu(); " class="userCircle">
+                    <span class="userInitials">IM</span>
+                </button>
+                <div id="dropdown-content" class="dropdown-content">
+                    <a href="../mainScreen/index.html">Upload a file</a>
+                    <a href="./index.html">Your files</a>
+                    <a href="">See documentation</a>
+                    <a href="../welcomePage/index.html">Log out</a>
                 </div>
-                <div class="profileDetails">
-                    <span class="userName">Ioana Maniga</span>
-                    <div class="userCircle">
-                        <span class="userInitials">IM</span>
-                    </div>
-                    <div class="dropdown-content">
-                        <a href="../mainScreen/index.html">Upload a file</a>
-                        <a href="./index.html">Your files</a>
-                      </div>
-                </div>
-            </header>   
+            </div>
+        </header>
+        <div>
+            <div id="filesList" class="filesList">
+            </div>
         </div>
-    </body>
+    </div>
+
+</body>
+
 </html>

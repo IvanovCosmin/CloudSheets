@@ -1,20 +1,20 @@
 
 
 function changeColor(idName1, idName2) {
-    document.getElementById(idName1).style.background ="#3F1842";
-    document.getElementById(idName2).style.background="white"
-  }
+  document.getElementById(idName1).style.background = "#0BD54F";
+  document.getElementById(idName2).style.background = "#000514";
+}
 
  const getStarted = `<form action="/welcomePage/onRegister" method="POST" >
 
 <label for="name" class="labelTitle">Name:</label>
-<input type="text" name="name" id="name" placeholder="Your first name.." minlength="3" maxlength="12"
+<input type="text" name="name" id="fname" placeholder="Your first name.." minlength="3" maxlength="12"
        pattern="[a-zA-Z][a-zA-Z_]*[a-zA-Z]"
        title="The name must contain only letters."
        required> 
 
 <label for="surname" class="labelTitle">Surname:</label>
-<input type="text" name="surname" id="surname" placeholder="Your last name.." minlength="3" maxlength="12"
+<input type="text" name="surname" id="lname" placeholder="Your last name.." minlength="3" maxlength="12"
        pattern="[a-zA-Z][a-zA-Z_]*[a-zA-Z]"
        title="The surname must contain only letters."
        required> 
@@ -33,7 +33,7 @@ function changeColor(idName1, idName2) {
        required>
 
 <label for="cpassword" class="labelTitle">Confirm your password:</label>
-<input type="password" name="cpassword" id="cpassword" placeholder="Enter your password.." minlength="7" maxlength="30" 
+<input type="password" name="cpassword" id="passwordC" placeholder="Enter your password.." minlength="7" maxlength="30" 
        pattern=^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$
        title="Please include at least 1 uppercase character, 1 lowercase character, and 1 number." 
        required>
@@ -56,15 +56,17 @@ const logIn=`<form action="/welcomePage/onLogin" method="POST" >
 `;
 
 function submitBtn() {
-  
-  
+  // document.getElementById("submitBtn1").onclick = function () {
+  console.log("heeelllpppp");
+  location.href = "../mainScreen/index.html";
+  // };
 }
 
 
-function openForm (idName, formContent) {
-  var myDiv=document.getElementById(idName);
-  var html=formContent;
-  myDiv.innerHTML=html;
+function openForm(idName, formContent) {
+  var myDiv = document.getElementById(idName);
+  var html = formContent;
+  myDiv.innerHTML = html;
   console.log(html)
 }
 

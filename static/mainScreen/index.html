@@ -1,62 +1,65 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="./styles.css">
-    </head>
-    <body>
-        <div class="mainContainer">
+<html lang="en">
+
+<head>
+    <title>Your account</title>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
+    <script src='./options.js'></script>
+    <script src="./progress-bar.js"></script>
+</head>
+
+<body>
+    <div class="mainContainer">
         <header>
             <div class="imgContainer">
-             <img src='../assets/black_cloud.svg'/>
+                <img src='../assets/sigla.svg' alt="logo image" />
             </div>
             <div class="profileDetails">
                 <span class="userName">Ioana Maniga</span>
-                <div class="userCircle">
+                <button onclick="showMenu(); " class="userCircle">
                     <span class="userInitials">IM</span>
-                </div>
-                <div class="dropdown-content">
+                </button>
+                <div id="dropdown-content" class="dropdown-content">
                     <a href="./index.html">Upload a file</a>
                     <a href="../filesPage/index.html">Your files</a>
+                    <a href="">See documentation</a>
                     <a href="../welcomePage/index.html">Log out</a>
-                  </div>
+                </div>
             </div>
         </header>
-       
+
         <div class="halfSize">
-            <form class="accounts">  
-          
-            <input type="text" required id="dropbox" name="email" placeholder="Your Dropbox..">
+            <form class="accounts">
 
-           
-            <input type="text" required id="drive" name="email" placeholder="Your Google Drive..">
+                <input type="text" required id="dropbox" name="email" placeholder="Your Dropbox..">
 
-            <input type="text" required id="cloud" name="email" placeholder="Your Cloud..">  
-            <span id="errorMessage"></span>
-           </form> 
-            
-            <button id="startButton" onclick="upload();  ">Upload your file here</button>
+
+                <input type="text" required id="drive" name="email" placeholder="Your Google Drive..">
+
+                <input type="text" required id="cloud" name="email" placeholder="Your Cloud..">
+                <span id="errorMessage" class="errorMessage"></span>
+            </form>
+
+            <button id="startButton" class="startButton"
+                onclick="upload(); showProgressBar(); progressBar.run(); ">Upload your file
+                here</button>
             <input type="file" id="file-input" onchange="showname()" name="myfile" style="display: none;">
-           </div>
-           <!-- showProgressBar(); progressBar.run(); -->
-            <div id="progressBarContainer">
+        </div>
+        <!-- showProgressBar(); progressBar.run(); -->
+        <div id="progressBarContainer" class="progressBarContainer">
             <div class="uploadDetails">
-            <span class="progressText" id="fileTitle">Name</span>
-            <size class="progressText" id="fileSize">Size:  </size>    
-            <span class="progressText" id="progressBarText">Progress: 0%</span>
+                <span class="progressText" id="fileTitle">Name</span>
+                <span class="progressText" id="fileSize">Size: </span>
+                <span class="progressText" id="progressBarText">Progress: 0%</span>
             </div>
-            <div id="progresBarWrapper">
-                <div id="progressBar"></div>
+            <div id="progresBarWrapper" class="progresBarWrapper">
+                <div id="progressBar" class="progressBar"></div>
             </div>
-            </div>     
-      
-
+        </div>
         <div id="tableContainer">
-           
         </div>
-        </div>
-        
-        <script src='./options.js'></script>
-        <script src="./progress-bar.js"></script>
     </div>
-    </body>
+
+</body>
+
 </html>

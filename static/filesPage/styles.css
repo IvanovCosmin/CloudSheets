@@ -1,36 +1,33 @@
-@import "../utils/colors.css";
-
 body {
-    margin:0
+    margin:0;
+    background: #000514;
+    display: flex;
+    flex:1;
+    flex-direction: column;
 }
 
 .mainContainer {
-    /* background-image: url("../assets/cloudBackground.jpeg"); */
     background-size: 100% 100%;
-    background-image: linear-gradient(var(--malibu), var(--onahau), #ffffff);
     display: flex;
     flex:1;
     height: 100vh;
     flex-direction:column;
-    align-content: space-evenly;
 }
 
 header {
     display:flex;
     width: 100%;
-    align-self: start;
-    background: white;
-    box-shadow:  -5px 5px 6px 6px white;
+    align-self: flex-start;
 }
 
-img {
+.logo {
     align-self: flex-start;
     margin-left: 80px;
     flex:1;
 }
 
 .userCircle {
-   background: var(--mardiGras);
+   background: #60BFF2;
    display: flex;
    justify-content:center ;
    width:50px;
@@ -40,13 +37,13 @@ img {
    margin-bottom: auto;
    margin-left:10px;
    margin-right:10px;
-
+   border:none !important;
 } 
 
 .userInitials {
     font-family: 'Averia Sans Libre', cursive;
     font-size: 18px;
-    color:white;
+    color:#FFFFF0;
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -54,7 +51,7 @@ img {
 .userName {
     font-family: 'Averia Sans Libre', cursive;
     font-size: 18px;
-    color:var(--malibu);
+    color:#60BFF2;
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -68,68 +65,19 @@ img {
 }
 
 
-#progresBarWrapper {
-    width: 70%;
-    background-color:var(--aliceBlue);
-    border-radius: 25px;
-    margin-left: 50px;
-}
-
-#progressBar {
-    width: 3%;
-    height: 30px;
-    background-color: var(--mardiGras);
-    text-align: center; /* To center it horizontally (if you want) */
-    line-height: 30px; /* To center it vertically */
-    color: white;
-    border-radius: 25px;
-}
-
-/* #progressBarText {
-    font-family: 'Averia Sans Libre', cursive;
-    font-size: 18px;
-    color:var(--mardiGras);
-    margin-left: 50px;
-} */
-
 .uploadDetails{
     margin-top: 20px;
 }
 .progressText {
     font-family: 'Averia Sans Libre', cursive;
     font-size: 18px;
-    color:var(--mardiGras);
+    color:#3F1842;
     margin-left: 50px;
     
 }
 
-#startButton {
-    background: #ffffff;
-    padding: 5px;
-    background: white;
-    border:none !important;
-    display: inline-block;
-    transition: all 0.4s ease 0s;
-    width:20%;
-    color: var(--malibu) !important;
-    font-weight: 100;
-    font-family: 'Averia Sans Libre', cursive;
-     font-size: 180%;
-    border-radius: 6px;
-    margin-left: 50px;
-    margin-top: 50px;
-}
 
-#startButton:hover {
-    color: #ffffff !important;
-background: var(--violetBlue);
 
-transition: all 0.4s ease 0s;
-    }
-
-#progressBarContainer {
-    display: none;
-}    
 
 table {
     margin-top:20px;
@@ -141,15 +89,11 @@ table {
   }
   
   td, th {
-    border: 1px solid var(--mardiGras);
+    border: 1px solid #3F1842;
     text-align: left;
     padding: 8px;
   }
 
-#firstRow {
-    background-color: var(--mardiGras);
-    color:white;
-}  
   
 .dropdown-content {
     display: none;
@@ -157,16 +101,14 @@ table {
     background-color: #f1f1f1;
     border-radius: 6px;;
     min-width: 200px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     margin-top: 50px;
   }
 
   .dropdown-content a {
-    color: black;
     padding: 12px 16px;
     font-family: 'Averia Sans Libre', cursive;
-    color:var(--mardiGras);
+    color:#3F1842;
     text-decoration: none;
     display: block;
   }
@@ -175,4 +117,44 @@ table {
       color: #fc037b;
   }
 
-  .profileDetails:hover .dropdown-content {display: block;}
+
+.filesList{
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+
+.file {
+    display: flex;
+    flex-direction: row;
+    margin-top:50px;
+    
+}
+
+.fileTitle {
+    color:#FFFFF0;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 120%;
+}
+
+.fileLink {
+    color:#FFFFF0;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 90%;
+}
+
+.fileInfo {
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 30px;
+}
+
+.fileIcon {
+    margin-left: 100px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+
+  

@@ -3,14 +3,14 @@
 
 #progresBarWrapper {
     width: 100%;
-    background-color:var(--aliceBlue);
+    background-color:#E2F1FF;
     border-radius: 25px;
 }
 
 #progressBar {
     width: 10%;
     height: 30px;
-    background-color: var(--malibu);
+    background-color: #60BFF2;
     text-align: center; /* To center it horizontally (if you want) */
     line-height: 30px; /* To center it vertically */
     color: white;
@@ -24,8 +24,8 @@
 
 #startButton {
     border: none;
-    background: var(--mardiGras);
-    color: var(--aliceBlue) !important;
+    background: #3F1842;
+    color:#E2F1FF !important;
     font-weight: 100;
     padding: 20px;
     height: 50pt;
