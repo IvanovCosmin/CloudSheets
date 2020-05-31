@@ -166,18 +166,20 @@ table {
 }
 
 
-  input[type=text] {
-    background-color: #FFFFF0;
-    min-width: 10%;
-    display: flex;
-    padding: 12px 20px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right:5px;
-    border-radius: 6px;
+ .accountBtn{
+    color: #000514;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    background-color: #EF626C !important;
+    padding: 10px;
+    background: transparent;
+    border:none !important;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
     font-weight: 100;
     font-family: 'Averia Sans Libre', cursive;
+     font-size: 110%;
+    border-radius: 6px;
   }
 
   .labelTitle {
@@ -188,6 +190,7 @@ table {
   .accounts {
       display:flex;
       flex-wrap: wrap;
+      min-width:50%;
     border-radius: 25px;
     margin-left: 50px;
     margin-top: 50px;

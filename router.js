@@ -82,17 +82,6 @@ let resolver = (req, res) => {
             userPromise.then( (result)=>{
                     utils.sendJson(200,res,result);
             });
-<<<<<<< HEAD
-        }else if(router.is('/dropDB')) {
-            bazadate.dropTable();
-            res.writeHead(301);
-            res.end();
-        }else if(router.is('/createDB')) {
-            bazadate.createTable();
-            res.writeHead(301);
-            res.end();
-=======
->>>>>>> f947af4aa5b994a9c13664b414bd85d3afaa9aab
         }
         else if(router.is('/dropDB')) {
             bazadate.dropTable(); // sigur e o idee incredibila. sa ii facem si documentatie?
@@ -150,7 +139,9 @@ let resolver = (req, res) => {
         else if(router.is("/get-files")) {
             utils.sendTemplate(req, res, "templates/get-files.html", {}, 200);
         } 
-        
+        else if(router.is("/olt")) {
+            utils.sendTemplate(req, res, "templates/onedrive-redirect.html",{},200);
+        }
         else if(router.is("/glt")) {
             utils.redirect(res, google.login_link());
         }

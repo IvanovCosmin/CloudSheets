@@ -25,12 +25,8 @@ function DataBase(){
         db.close();
     },
     
-<<<<<<< HEAD
-    insertUser :function(email, password, name, surname)  {
-=======
      insertUser :function(email, password, name, surname)  {
         // vezi ca s ar putea sa intri pe contul lui ma ta
->>>>>>> f947af4aa5b994a9c13664b414bd85d3afaa9aab
         this.db.run(`INSERT INTO user(email, password, name, surname) VALUES(?,?,?,?)`, [email, password, name, surname], function(err) {
             if (err) {
               return console.log(err.message);

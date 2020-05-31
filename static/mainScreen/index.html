@@ -29,19 +29,19 @@
         </header>
 
         <div class="halfSize">
-            <form class="accounts">
+            <div class="accounts">
 
-                <input type="text" required id="dropbox" name="email" placeholder="Your Dropbox..">
+                <button class="accountBtn">Your Dropbox</button>
 
 
-                <input type="text" required id="drive" name="email" placeholder="Your Google Drive..">
+                <button class="accountBtn">Your Google Drive</button>
 
-                <input type="text" required id="cloud" name="email" placeholder="Your Cloud..">
+                <button class="accountBtn">Your One Drive</button>
                 <span id="errorMessage" class="errorMessage"></span>
-            </form>
+            </div>
 
-            <button id="startButton" class="startButton"
-                onclick="upload(); showProgressBar(); progressBar.run(); ">Upload your file
+            <button id="startButton" class="startButton" onclick="showProgressBar(); progressBar.run(); ">Upload your
+                file
                 here</button>
             <input type="file" id="file-input" onchange="showname()" name="myfile" style="display: none;">
         </div>
