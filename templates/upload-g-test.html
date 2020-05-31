@@ -5,61 +5,47 @@
     <input type="file" id="file-input" value="/metadata">
     <button onclick="readFile()">Read file</button>
     <a hidden download="metadata.txt" id="metadata-link" href="#">Download metadata</a>
+    <br>
+    <input type="file" id="metadata-input" value="/metadata">
     <div id="upload-files"></div>
     <script src="wasm/splitter.js"></script>
+    <a href="/glt">Refresh google token</a>
+    <a href="/dlt">Refresh dropbox token</a>
+
     
     <script>
+        var localStorage = window.localStorage;
 
-        var CODE = "{{ code }}"; // will be set by the server. {{ code }} is just a placeholder
+        localStorage.setItem("{{ codeType }}", "{{ code }}");
+        var CODE = localStorage.getItem("{{ codeType }}");
+        console.log(CODE);
+
         var URL_UPLOAD = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
-        var URL_GENERATE_IDS = "https://www.googleapis.com/drive/v3/files/generateIds?fields=*";
         var URL_LIST_FILES = "https://www.googleapis.com/drive/v3/files";
         //var URL_DOWNLOAD = "https://www.googleapis.com/drive/v3/files/fileId/export?mimeType=application%2Foctet-stream";
         var URL_DOWNLOAD = "https://www.googleapis.com/drive/v3/files/fileId?fields=webContentLink&alt=media";
+        var URL_DOWNLOAD_DROPBOX = "https://content.dropboxapi.com/2/files/download";
         //var URL_DOWNLOAD = "https://drive.google.com/uc?id=fileId&export=download"
         
 
-        async function uploadFile(blob, filename, code) {
-
-            var json = JSON.stringify({
-                mimeType: 'application/octet-stream',
-                name: filename
-            })
-
-            var fetchSettings = {
-                headers: {
-                    "Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
-                    "Authorization": "Bearer " + code
-                    
-                },
-                body: mimePart("application/json", json) + mimePart("application/octet-stream", await blob.text()) + "\r\n--END_OF_PART--\r\n",
-                method: "POST"
+        function parseMetaFile(metafile) {
+            let metaarray = metafile.split("\n");
+            metaarray.splice(metaarray.length - 1, 1); // stergem ultimul element e plin doar de bytes goi
+            console.log(metaarray);
+            let res = {};
+            res["size"] = parseInt(metaarray[0]);
+            for (let i = 1; i < metaarray.length; i++) {
+                let chunkData = metaarray[i].split(" ");
+                res[chunkData[1]] = chunkData[0];
             }
-            
-            // taken as an example from a google engineer on stackoverflow. There isnt much documentation on the api.
-            function mimePart(mimeType, content) {
-                return [
-                    "\r\n--", "END_OF_PART" , "\r\n",
-                    "Content-Type: ", mimeType, "\r\n",
-                    "Content-Length: ", content.length, "\r\n",
-                    "\r\n",
-                    content
-                ].join('');
-            }
-
-            fetch(URL_UPLOAD, fetchSettings)
-            .then(data => console.log(data.json()))
-            .then(res => console.log(res))
-            .catch(err => console.log(err));
-        
+            return res;
         }
-
+        
+        // GOOGLE UPLOAD
         async function uploadFile2(blob, filename, code) {
-
             var meta = JSON.stringify({
                 name: filename,
                 mimeType: 'application/octet-stream',
-                title: filename //disperarea
             })
 
             var content = blob;
@@ -76,22 +62,33 @@
 
         }
 
-        function generateIDs(code) {
+        async function uploadDropbox(blob, filename, code) {
+            //https://content.dropboxapi.com/2/files/upload
+            var meta = JSON.stringify(
+                {
+                    "path": "/cloudsheets/" + filename,
+                    "mode": "add",
+                    "autorename": true,
+                    "mute": false,
+                    "strict_conflict": false
+                }
+            )
+            var content = blob;
+            var payload = new FormData();
+            payload.append('file', content);
+            xhr = new XMLHttpRequest();
+            xhr.open('post', 'https://content.dropboxapi.com/2/files/upload');
+            xhr.setRequestHeader('Authorization', 'Bearer ' + code);
+            xhr.setRequestHeader('Dropbox-API-Arg', meta);
+            xhr.setRequestHeader('Content-Type', "application/octet-stream");
+            xhr.onload = function() {
+                console.log(xhr.response);
+            };
+            xhr.send(payload);
 
-            var fetchSettings = {
-                headers: {
-                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
-                    "Authorization": "Bearer " + code
-                    
-                },
-                method: "GET"
-            }
-
-            fetch(URL_GENERATE_IDS, fetchSettings)
-            .then(data => console.log(data.json()))
-            .then(res => console.log(res))
-            .catch(err => console.log(err));
         }
+
+
 
         function listFiles(code) {
 
@@ -110,52 +107,8 @@
             
         }
 
-        //uploadFile(CODE);
-        //listFiles(CODE);
+        
 
-        //download a file by its id
-        function downloadFile(code, id, callback = undefined) {
-            var fetchSettings = {
-                headers: {
-                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
-                    "Authorization": "Bearer " + code
-                    
-                },
-                method: "GET"
-            }
-            
-            if (callback === undefined) {
-                fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings)
-                .then(data => data.json().then(res => {console.log(res)}))
-                .catch(err => console.log(err));
-            }
-            else {
-                fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings)
-                .then(data => data.json().then(res => {
-                    console.log(res);
-                    callback(res);
-                }))
-                .catch(err => console.log(err));
-            }
-            
-        }
-        // var sampleBytes = new Int8Array(4096);
-
-        // var saveByteArray = (function () {
-        //     var a = document.createElement("a");
-        //     document.body.appendChild(a);
-        //     a.style = "display: none";
-        //     return function (data, name) {
-        //         var blob = new Blob(data, {type: "octet/stream"}),
-        //             url = window.URL.createObjectURL(blob);
-        //         a.href = url;
-        //         a.download = name;
-        //         a.click();
-        //         window.URL.revokeObjectURL(url);
-        //     };
-        // }());
-
-        //saveByteArray([sampleBytes], 'example.txt');
         // am incercat sa caut o modalitate sa nu incarc ramul aiurea dar aparent browserele nu au support nativ pentru descarcat streamuri asa cum imi doresc eu
         async function writeToDownloadStream(code, id) {
             var fetchSettings = {
@@ -169,18 +122,34 @@
             
             var fetchData = await fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings);
             console.log(fetchData);
-
-            // var a = document.createElement("a");
-            // document.body.appendChild(a);
-            // a.style = "display: none";
             
             response = new Response(fetchData.body);
             console.log(response);
             return response;
 
         }
-        
-        //downloadFile(CODE, "1x1SiNO3NGaDH45fxWRFbWKwNcEpav_9v");
+
+        async function writeToDownloadStreamDropbox(code, name) {
+            var fetchSettings = {
+                headers: {
+                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                    "Authorization": "Bearer " + code,
+                    "Dropbox-API-Arg": JSON.stringify({
+                        "path": "/cloudsheets/" + name
+                    })
+                },
+                method: "GET"
+            }
+            console.log(fetchSettings);
+            
+            var fetchData = await fetch(URL_DOWNLOAD_DROPBOX, fetchSettings);
+            console.log(fetchData);
+            
+            response = new Response(fetchData.body);
+            console.log(response);
+            return response;
+
+        }
 
     function deleteFileFromFS(filename) {
         FS.unlink('/' + filename); // will be deleted when not used by any process
@@ -201,35 +170,66 @@
         URL.revokeObjectURL(newBlob);
     }
 
-    // names = { "index": "filename" } (chiar daca e array)
-    function downloadFilesByMetadata(code, names) {
-        var fetchSettings = {
-                headers: {
-                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
-                    "Authorization": "Bearer " + code
-                    
-                },
-                method: "GET"
-            }
-
-            fetch(URL_LIST_FILES, fetchSettings)
-            .then(data => data.json().then(async res => {
-                var downloadStreams = {};
-                for(index in names) {
-                    downloadStreams[names[index]] = undefined;
-                }
-                var downloadName = names[0];
-                var files = res.files;
-                for(item of files) {
-                    if((item["name"] in downloadStreams) && downloadStreams[item["name"]] === undefined ) {
-                        downloadStreams[item["name"]] = await writeToDownloadStream(code, item['id']);
+    function checkmetadata(code) {
+          let metainput = document.getElementById("metadata-input");
+          // ne asiguram ca exista elementul si avem fisierul de metadata pus
+          if(metainput && metainput.files && metainput.files[0]) {
+            let file = metainput.files[0];
+            let fileReader = new FileReader();
+            fileReader.onload = async () => {
+                let parsedMeta = parseMetaFile(fileReader.result);
+                var names = [];
+                console.log(parsedMeta);
+                for(key in parsedMeta) {
+                    if(key != "size"){
+                        names.push(parsedMeta[key]);
                     }
                 }
-                console.log(downloadStreams);
-                downloadFromStreams(names, downloadStreams);
+                await downloadFilesByNames(code, names);
                 
-            }))
-            .catch(err => console.log(err));
+            };
+            fileReader.onerror = () => {console.log(fileReader.error)};
+            fileReader.readAsText(file);
+          }
+      }
+
+    // names = { "index": "filename" } (chiar daca e array)
+    async function downloadFilesByNames(code, names) {
+        // var fetchSettings = {
+        //     headers: {
+        //         "Authorization": "Bearer " + code 
+        //     },
+        //     method: "GET"
+        // }
+        // console.log(names);
+
+        // fetch(URL_LIST_FILES, fetchSettings)
+        // .then(data => data.json().then(async res => {
+        //     var downloadStreams = {};
+        //     for(index in names) {
+        //         downloadStreams[names[index]] = undefined;
+        //     }
+        //     var files = res.files;
+        //     console.log(files);
+        //     for(item of files) {
+        //         if((item["name"] in downloadStreams) && downloadStreams[item["name"]] === undefined ) {
+        //             downloadStreams[item["name"]] = await writeToDownloadStream(code, item['id']);
+        //         }
+        //     }
+        //     console.log(downloadStreams);
+        //     downloadFromStreams(names, downloadStreams);
+            
+        // }))
+        // .catch(err => console.log(err));
+        var downloadStreams = {};
+        for(index in names) {
+            downloadStreams[names[index]] = undefined;
+        }
+        for (name of names) {
+            downloadStreams[name] = await writeToDownloadStreamDropbox(code, name);
+        }    
+            
+        downloadFromStreams(names, downloadStreams);
     }
 
     function createLoadingBarsForSplitFiles(metadataFile) {
@@ -249,7 +249,7 @@
         var filestats = FS.stat('/' + element);
         var blob = new Blob([stream.node.contents], {type: "application/octet-stream"});
         console.log(blob);
-        uploadFile2(blob, element, CODE);
+        uploadDropbox(blob, element, CODE);
         FS.close(stream);
         deleteFileFromFS(element);
       });

@@ -54,7 +54,6 @@ let resolver = (req, res) => {
         requestBody = qs.parse(requestBody);
         let router = routerObjectConstructor(req);
         
-        // TODO cautat varianta mai buna ca router.is
         if(router.is('/')) {
             let testContext = {
                 "gheiString": "Paul ultra ghei", 
@@ -85,14 +84,10 @@ let resolver = (req, res) => {
             });
         }
         else if(router.is('/dropDB')) {
-            bazadate.dropTable();
+            bazadate.dropTable(); // sigur e o idee incredibila. sa ii facem si documentatie?
         }
         else if(router.is('/createDB')) {
             bazadate.createTable();
-        }
-        else if(router.is("/auth")) {
-            utils.sendTemplate(req, res, "templates/login_page.html", {}, 200);
-
         }
         else if(router.is("/text-input/homepage")){
             utils.sendTemplate(req,res,"static/text-input/text-input.html",{},200);
@@ -135,10 +130,7 @@ let resolver = (req, res) => {
                     
                 });
         }
-        else if(router.is("/auth/dropbox")) {
-            utils.sendTemplate(req, res, "callback.html", {}, 200);
-        }
-        
+
         else if(router.is('/upload', "POST")) {
             // nu tin minte ce i cu asta. got help. probabil trb sa dispara
             utils.upload(requestBody, res);
@@ -159,13 +151,16 @@ let resolver = (req, res) => {
         else if(router.is("/oauth-redirect")) {
             const code = decodeURIComponent(router.getParam('code'));
             console.log(code);
+            console.log(code.length);
             const codeType = stollib.getCodeType(code);
+            console.log(codeType);
 
             // this could be google/dropbox/onedrive module
             let workingObj = undefined;
 
             if(codeType == "G") {
                 workingObj = google;
+                console.log("google");
             }
             else {
                 workingObj = dropbox;
@@ -173,7 +168,7 @@ let resolver = (req, res) => {
 
             workingObj.accesscode(code).then((rez) =>  {
                 console.log("rezultat", rez);
-                utils.sendTemplate(req, res, "templates/upload-g-test.html", { "code": rez }, 200);
+                utils.sendTemplate(req, res, "templates/upload-g-test.html", { "codeType": codeType, "code": rez }, 200);
             }).catch((err) => {
                 console.log(err);
                 utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
@@ -188,15 +183,17 @@ let resolver = (req, res) => {
                 utils.sendTemplate(req,res,"static/404.html",{},404);
             }
         }
+
+        else if(router.endswith(".svg")) {
+            if(!utils.svgResourceDropper(router.requestInfo.urlPathname, res)) {
+                utils.sendTemplate(req,res,"static/404.html", {}, 404);
+            }
+        }
         
         else {
             if(!utils.staticResourceDropper(router.requestInfo.urlPathname, res)) {
                // utils.sendJson(404,res,router.requestInfo);
                utils.sendTemplate(req,res,"static/404.html",{},404);
-            }
-            else
-            {
-                console.log(router.requestInfo.urlPathname);
             }
         }
     })

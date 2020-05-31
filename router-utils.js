@@ -98,6 +98,7 @@ let resourceDropper = (folder, contentType = undefined) => {
 
 let staticResourceDropper = resourceDropper('./static');
 let wasmResourceDropper = resourceDropper('./webasm/bin', 'application/wasm');
+let svgResourceDropper = resourceDropper('./static', 'image/svg+xml');
 
 module.exports = {
     "sendTemplate" : sendTemplate,
@@ -105,5 +106,6 @@ module.exports = {
     "redirect": redirect,
     "staticResourceDropper": staticResourceDropper,
     "wasmResourceDropper": wasmResourceDropper,
+    "svgResourceDropper": svgResourceDropper,
     "randomString": macacpeviata
 };

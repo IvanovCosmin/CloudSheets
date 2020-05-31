@@ -1,11 +1,9 @@
-
-
 function changeColor(idName1, idName2) {
   document.getElementById(idName1).style.background = "#0BD54F";
   document.getElementById(idName2).style.background = "#000514";
 }
 
- const getStarted = `<form action="/welcomePage/onRegister" method="POST" >
+const getStarted = `<form action="/welcomePage/onRegister" method="POST" >
 
 <label for="name" class="labelTitle">Name:</label>
 <input type="text" name="name" id="fname" placeholder="Your first name.." minlength="3" maxlength="12"
@@ -45,10 +43,10 @@ function changeColor(idName1, idName2) {
 const logIn=`<form action="/welcomePage/onLogin" method="POST" >
 
 
-<label for="email">Email:</label>
+<label class = "labelTitle" for="email">Email:</label>
 <input type="text" name="email" id="email" placeHolder="Enter your email.." required > 
 
-<label for="password">Password:</label>
+<label class = "labelTitle" for="password">Password:</label>
 <input type="password" name="password" id="password" placeHolder="Enter your password.." required>
 
 <input type="submit"  id="submitBtn1" value="Submit">
