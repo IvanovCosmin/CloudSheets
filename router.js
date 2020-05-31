@@ -83,8 +83,12 @@ let resolver = (req, res) => {
             });
         }else if(router.is('/dropDB')) {
             bazadate.dropTable();
+            res.writeHead(301);
+            res.end();
         }else if(router.is('/createDB')) {
             bazadate.createTable();
+            res.writeHead(301);
+            res.end();
         }
         else if(router.is("/auth")) {
             utils.sendTemplate(req, res, "templates/login_page.html", {}, 200);
@@ -130,6 +134,22 @@ let resolver = (req, res) => {
                    }
                     
                 });
+        }
+        else if (router.is('/onedriveAPI/upload','PUT')){
+            
+           // const obj = JSON.parse(requestBody);
+           console.log(requestBody);
+            email = router.getParam('email');
+            file_name = router.getParam('file');
+            file_id = router.getParam('id');
+            bazadate.insertOnedriveFile(email,file_name,file_id);
+            res.writeHead(301);
+            res.end();
+        }
+        else if(router.is('/onedriveAPI/all','GET')){
+            bazadate.getAllOnedriveFiles().then( (result)=>{
+                utils.sendJson(200,res,result);
+        });
         }
         else if(router.is("/auth/dropbox")) {
             // let redirectUri = "https://localhost:8000/auth/dropbox";
@@ -178,6 +198,12 @@ let resolver = (req, res) => {
             res.writeHead(200)
             let content = fs.readFileSync("static/dropbox-sdk/Dropbox-sdk.min.js");
             res.end(content);
+        }
+        else if(router.is("/static/onedrive/onedrive")){
+            utils.sendTemplate(req,res,"static/onedrive/test.html",{},200);
+        }
+        else if(router.is("/static/onedrive-upload/")){
+            utils.sendTemplate(req,res,"static/onedrive-upload/onedrive-upload.html",{},200);
         }
         else if(router.is("/auth/utils.js")) {
             res.writeHead(200)
