@@ -12,12 +12,20 @@ function DataBase(){
         console.log("wtf");
     },
 
-     createTable :function(){
-        this.db.run('CREATE TABLE user(username text, email text)');
+    createTable:function() {
+        let db = new sq3.Database(config['dbpath']);
+        db.run('CREATE TABLE user(email text, password text, name text , surname text )');
+        db.close();
     },
     
-     insertUser :function(username, email)  {
-        this.db.run(`INSERT INTO user(username, email) VALUES(?,?)`, [username, email], function(err) {
+    dropTable:function() {
+        let db = new sq3.Database(config['dbpath']);
+        db.run('drop TABLE user');
+        db.close();
+    },
+    
+     insertUser :function(email, password, name, surname)  {
+        this.db.run(`INSERT INTO user(email, password, name, surname) VALUES(?,?,?,?)`, [email, password, name, surname], function(err) {
             if (err) {
               return console.log(err.message);
             }
@@ -27,11 +35,11 @@ function DataBase(){
     },
     
     
-    // example of function inside a promise
-     getUserByUsername  :function(username)  {
+    getUserByEmail  :function(email)  {
+
         return new Promise((resolve, reject) => {
             let result = [];
-            this.db.each(`select * from user where username='${username}' LIMIT 1;`, (err, row) => {
+            this.db.each(`select * from user where email='${email}' LIMIT 1;`, (err, row) => {
                 if(err) { reject(err); }
                 result.push(row);
                 console.log(row);
