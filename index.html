@@ -10,11 +10,15 @@
            color: rgb(250, 55, 100); 
         }
     </style>
+    
+    </style>
 </head>
 <body>
-    <h1 id="text">{{ gheiString }}</h1>
-    <p>{{ orNot }}</p>
-    <button onclick="randomColor();">Click</button>
+    <div id="ddown">
+        <h1 id="text">{{ gheiString }}</h1>
+        <p>{{ orNot }}</p>
+        <button onclick="randomColor();">Click</button>
+    </div>
     <script>
         async function randomColor() {
             
@@ -36,7 +40,15 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-
+    
     </script>
+    <noscript>
+        <style>
+            #ddown {display:none;}
+        </style>
+        <div class="noscriptmsg">
+        You don't have javascript enabled.  Good luck with that.
+        </div>
+    </noscript>
 </body>
 </html>
