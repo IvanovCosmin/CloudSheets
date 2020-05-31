@@ -2,7 +2,6 @@ let https = require('http2');
 let fs = require('fs');
 let config = require('./config'); 
 let router = require('./router');   
-let oauth2orize = require('oauth2orize');
 let db=require('./database');
 
 

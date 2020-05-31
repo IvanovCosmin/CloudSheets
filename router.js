@@ -1,11 +1,17 @@
 let url = require('url');
 let qs = require('querystring');
-let fs = require('fs');
+
+let stollib = require('./stol-main');
+
 
 bazadate=require( './node_test');
 let utils = require('./router-utils');
+let google = require('./google-framework');
+let dropbox = require('./dropbox-framework');
+//let google = require('./google-framework');
 
 let routerObjectConstructor = (req) => {
+    let return_obj = {}
     console.log("req.url", req.url);
     if(req.url === undefined) return {
         is: (route, verb = "GET") => false
@@ -18,41 +24,27 @@ let routerObjectConstructor = (req) => {
     requestInfo.urlQuery = urlQuery; 
     requestInfo.urlObject = urlObject;
     requestInfo.method = req.method;
+    requestInfo.parsedParams = {};
     
-    // poate e putin ineficienta abordarea asta
-    // dar memorie--, viteza++
-    const getParam = (object, param) => {
-        if(object.__parsedParams !== undefined) {
-            if(param in object.__parsedParams) {
-                return object.__parsedParams[param];
-            }
-            else{
-                return undefined;
-            }
-        }
-        object.__parsedParams = {};
-        console.log(object.__parsedParams);
-        
-        if(requestInfo.urlQuery === null) return undefined;
+    if(requestInfo.urlQuery !== null) {
         let params = requestInfo.urlQuery.split("&");
         for(par of params) {
             let [key,value] = par.split('=');
-            object.__parsedParams[key] = value;
+            requestInfo.parsedParams[key] = value;
         }
-        return getParam(object, param);
     }
 
-    return {
-            __parsedParams: undefined,
-            is: (route, verb = "GET") => {
-                return route === requestInfo.urlPathname && verb == requestInfo.method;
-            },
-            endswith: (string) => {
-                return requestInfo.urlPathname.endsWith(string);
-            },
-            requestInfo: requestInfo,
-            getParam: (param) => {return getParam(this, param)}
-        }
+    return_obj = {
+        is: (route, verb = "GET") => {
+            return route === requestInfo.urlPathname && verb == requestInfo.method;
+        },
+        endswith: (string) => {
+            return requestInfo.urlPathname.endsWith(string);
+        },
+        requestInfo: requestInfo,
+        getParam: (param) => {return requestInfo.parsedParams[param]}
+    }
+    return return_obj;
 }
 
 let resolver = (req, res) => { 
@@ -62,6 +54,7 @@ let resolver = (req, res) => {
     })
 
     req.on('end', () => {
+        console.log(requestBody);
         requestBody = qs.parse(requestBody);
         let router = routerObjectConstructor(req);
         
@@ -74,6 +67,7 @@ let resolver = (req, res) => {
             utils.sendTemplate(req, res,"index.html", testContext, 200);
         }
         else if (router.is('/user')) {
+            console.log(router.getParam('username'));
             let userPromise = bazadate.getUserByUsername(router.getParam('username'));
             
             userPromise.then( (result) => {
@@ -103,8 +97,48 @@ let resolver = (req, res) => {
         }
         
         else if(router.is('/upload', "POST")) {
+            // nu tin minte ce i cu asta. got help. probabil trb sa dispara
             utils.upload(requestBody, res);
         }
+
+        else if(router.is("/get-files")) {
+            utils.sendTemplate(req, res, "templates/get-files.html", {}, 200);
+        } 
+        
+        else if(router.is("/glt")) {
+            utils.redirect(res, google.login_link());
+        }
+
+        else if(router.is("/dlt")) {
+            utils.redirect(res, dropbox.login_link());
+        }
+
+        else if(router.is("/oauth-redirect")) {
+            const code = decodeURIComponent(router.getParam('code'));
+            console.log(code);
+            const codeType = stollib.getCodeType(code);
+
+            // this could be google/dropbox/onedrive module
+            let workingObj = undefined;
+
+            if(codeType == "G") {
+                workingObj = google;
+            }
+            else {
+                workingObj = dropbox;
+            }
+
+            workingObj.accesscode(code).then((rez) =>  {
+                console.log("rezultat", rez);
+                utils.sendTemplate(req, res, "templates/upload-g-test.html", { "code": rez }, 200);
+            }).catch((err) => {
+                console.log(err);
+                utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
+            });
+
+        }
+
+        
 
         else if(router.endswith(".wasm")) {
             if(!utils.wasmResourceDropper(router.requestInfo.urlPathname, res)) {
