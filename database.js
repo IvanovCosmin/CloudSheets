@@ -8,8 +8,7 @@ function DataBase(){
     
     closeDatabase:function() {
         this.db.close();
-        console.log(this.db);
-        console.log("wtf");
+        console.log("s-a inchis si s ar putea ca paul sa fie prost")
     },
 
     createTable:function() {
@@ -26,7 +25,12 @@ function DataBase(){
         db.close();
     },
     
+<<<<<<< HEAD
     insertUser :function(email, password, name, surname)  {
+=======
+     insertUser :function(email, password, name, surname)  {
+        // vezi ca s ar putea sa intri pe contul lui ma ta
+>>>>>>> f947af4aa5b994a9c13664b414bd85d3afaa9aab
         this.db.run(`INSERT INTO user(email, password, name, surname) VALUES(?,?,?,?)`, [email, password, name, surname], function(err) {
             if (err) {
               return console.log(err.message);

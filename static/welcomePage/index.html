@@ -1,33 +1,38 @@
 <!DOCTYPE html>
+<html lang="en">
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="welcomePage/styles.css">
-        <link href="https://fonts.googleapis.com/css?family=Averia+Sans+Libre|Courgette&display=swap" rel="stylesheet">   
+        <title>Welcome to CloudSheets</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,900&display=swap" rel="stylesheet">
      </head>
         <body>
         <div class="mainContainer">
             <header>
                 <div class="imgContainer">
-                <img src='assets/black_cloud.svg'/>
+                <img class="siglaImg" src='../assets/sigla.svg' alt="logo image" />
             </div>
-                <div class="navigationArea">
-                
-                <button onclick="changeColor('logIn', 'getStarted'); openForm('formArea',logIn)" class="welcomeButton" id="logIn">Log in</button>
-                 <button  onclick="changeColor('getStarted', 'logIn'); openForm('formArea',getStarted)" class="welcomeButton" id="getStarted">Get started</button>
-                
-             </div>
-             
-            </header>
+            <div class="navigationArea">
+
+                <button onclick="changeColor('logIn', 'getStarted'); openForm('formArea',logIn)" class="welcomeButton"
+                    id="logIn">Log in</button>
+                <button onclick="changeColor('getStarted', 'logIn'); openForm('formArea',getStarted)"
+                    class="welcomeButton" id="getStarted">Get started</button>
+
+            </div>
+
+        </header>
         <div class="container">
-          <div class="titleArea"><p>Welcome to CloudSheets</p>
-          </div>
-          <div class="formArea" id="formArea">
-         </div>
-          </div>
+            <div class="titleArea">
+                <img class="titleImg" src='../assets/title.svg' alt="title image" />
+            </div>
+            <div class="formArea" id="formArea">
+            </div>
         </div>
-         <footer>
-         </footer>
-        </div>
+    </div>
+    <footer>
+        <button class="doc">See documentation</button>
+    </footer>
         </body>
         <script src='welcomePage/button-action.js'></script>
 </html>
