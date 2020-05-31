@@ -1,0 +1,292 @@
+<html>
+    test
+    {{ code }}
+    
+    <input type="file" id="file-input" value="/metadata">
+    <button onclick="readFile()">Read file</button>
+    <a hidden download="metadata.txt" id="metadata-link" href="#">Download metadata</a>
+    <div id="upload-files"></div>
+    <script src="wasm/splitter.js"></script>
+    
+    <script>
+
+        var CODE = "{{ code }}"; // will be set by the server. {{ code }} is just a placeholder
+        var URL_UPLOAD = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
+        var URL_GENERATE_IDS = "https://www.googleapis.com/drive/v3/files/generateIds?fields=*";
+        var URL_LIST_FILES = "https://www.googleapis.com/drive/v3/files";
+        //var URL_DOWNLOAD = "https://www.googleapis.com/drive/v3/files/fileId/export?mimeType=application%2Foctet-stream";
+        var URL_DOWNLOAD = "https://www.googleapis.com/drive/v3/files/fileId?fields=webContentLink&alt=media";
+        //var URL_DOWNLOAD = "https://drive.google.com/uc?id=fileId&export=download"
+        
+
+        async function uploadFile(blob, filename, code) {
+
+            var json = JSON.stringify({
+                mimeType: 'application/octet-stream',
+                name: filename
+            })
+
+            var fetchSettings = {
+                headers: {
+                    "Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                    "Authorization": "Bearer " + code
+                    
+                },
+                body: mimePart("application/json", json) + mimePart("application/octet-stream", await blob.text()) + "\r\n--END_OF_PART--\r\n",
+                method: "POST"
+            }
+            
+            // taken as an example from a google engineer on stackoverflow. There isnt much documentation on the api.
+            function mimePart(mimeType, content) {
+                return [
+                    "\r\n--", "END_OF_PART" , "\r\n",
+                    "Content-Type: ", mimeType, "\r\n",
+                    "Content-Length: ", content.length, "\r\n",
+                    "\r\n",
+                    content
+                ].join('');
+            }
+
+            fetch(URL_UPLOAD, fetchSettings)
+            .then(data => console.log(data.json()))
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
+        
+        }
+
+        async function uploadFile2(blob, filename, code) {
+
+            var meta = JSON.stringify({
+                name: filename,
+                mimeType: 'application/octet-stream',
+                title: filename //disperarea
+            })
+
+            var content = blob;
+            var payload = new FormData();
+            payload.append('metadata', new Blob([meta], {type: 'application/json'}));
+            payload.append('file', content);
+            xhr = new XMLHttpRequest();
+            xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart');
+            xhr.setRequestHeader('Authorization', 'Bearer ' + code);
+            xhr.onload = function() {
+            console.log(xhr.response);
+            };
+            xhr.send(payload);
+
+        }
+
+        function generateIDs(code) {
+
+            var fetchSettings = {
+                headers: {
+                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                    "Authorization": "Bearer " + code
+                    
+                },
+                method: "GET"
+            }
+
+            fetch(URL_GENERATE_IDS, fetchSettings)
+            .then(data => console.log(data.json()))
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
+        }
+
+        function listFiles(code) {
+
+            var fetchSettings = {
+                headers: {
+                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                    "Authorization": "Bearer " + code
+                    
+                },
+                method: "GET"
+            }
+
+            fetch(URL_LIST_FILES, fetchSettings)
+            .then(data => data.json().then(res => {console.log(res)}))
+            .catch(err => console.log(err));
+            
+        }
+
+        //uploadFile(CODE);
+        //listFiles(CODE);
+
+        //download a file by its id
+        function downloadFile(code, id, callback = undefined) {
+            var fetchSettings = {
+                headers: {
+                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                    "Authorization": "Bearer " + code
+                    
+                },
+                method: "GET"
+            }
+            
+            if (callback === undefined) {
+                fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings)
+                .then(data => data.json().then(res => {console.log(res)}))
+                .catch(err => console.log(err));
+            }
+            else {
+                fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings)
+                .then(data => data.json().then(res => {
+                    console.log(res);
+                    callback(res);
+                }))
+                .catch(err => console.log(err));
+            }
+            
+        }
+        // var sampleBytes = new Int8Array(4096);
+
+        // var saveByteArray = (function () {
+        //     var a = document.createElement("a");
+        //     document.body.appendChild(a);
+        //     a.style = "display: none";
+        //     return function (data, name) {
+        //         var blob = new Blob(data, {type: "octet/stream"}),
+        //             url = window.URL.createObjectURL(blob);
+        //         a.href = url;
+        //         a.download = name;
+        //         a.click();
+        //         window.URL.revokeObjectURL(url);
+        //     };
+        // }());
+
+        //saveByteArray([sampleBytes], 'example.txt');
+        // am incercat sa caut o modalitate sa nu incarc ramul aiurea dar aparent browserele nu au support nativ pentru descarcat streamuri asa cum imi doresc eu
+        async function writeToDownloadStream(code, id) {
+            var fetchSettings = {
+                headers: {
+                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                    "Authorization": "Bearer " + code
+                    
+                },
+                method: "GET"
+            }
+            
+            var fetchData = await fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings);
+            console.log(fetchData);
+
+            // var a = document.createElement("a");
+            // document.body.appendChild(a);
+            // a.style = "display: none";
+            
+            response = new Response(fetchData.body);
+            console.log(response);
+            return response;
+
+        }
+        
+        //downloadFile(CODE, "1x1SiNO3NGaDH45fxWRFbWKwNcEpav_9v");
+
+    function deleteFileFromFS(filename) {
+        FS.unlink('/' + filename); // will be deleted when not used by any process
+    }
+
+    async function downloadFromStreams(names, downloadStreams) {
+        var blobArray = [];
+        for(name of names) {
+            blobArray.push((await downloadStreams[name].blob()).slice(40));
+        }
+        var a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style = "display: none";
+        var newBlob = new Blob(blobArray, {type : 'application/octet-stream'})
+        a.href = URL.createObjectURL(newBlob);
+        a.download = "test.jpg";
+        a.click();
+        URL.revokeObjectURL(newBlob);
+    }
+
+    // names = { "index": "filename" } (chiar daca e array)
+    function downloadFilesByMetadata(code, names) {
+        var fetchSettings = {
+                headers: {
+                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                    "Authorization": "Bearer " + code
+                    
+                },
+                method: "GET"
+            }
+
+            fetch(URL_LIST_FILES, fetchSettings)
+            .then(data => data.json().then(async res => {
+                var downloadStreams = {};
+                for(index in names) {
+                    downloadStreams[names[index]] = undefined;
+                }
+                var downloadName = names[0];
+                var files = res.files;
+                for(item of files) {
+                    if((item["name"] in downloadStreams) && downloadStreams[item["name"]] === undefined ) {
+                        downloadStreams[item["name"]] = await writeToDownloadStream(code, item['id']);
+                    }
+                }
+                console.log(downloadStreams);
+                downloadFromStreams(names, downloadStreams);
+                
+            }))
+            .catch(err => console.log(err));
+    }
+
+    function createLoadingBarsForSplitFiles(metadataFile) {
+      console.log("createLoadingBars")
+      var files = metadataFile.match(/[a-zA-Z0-9]+\.csht/g)
+      var uploadFiles = document.getElementById("upload-files");
+      console.log(files);
+      files.forEach(element => {
+        var h1 = document.createElement("p");
+        var text = document.createTextNode(element);
+        h1.appendChild(text);
+        uploadFiles.appendChild(h1);
+      });
+      files.forEach(element => {
+        var stream = FS.open("/" + element, "r");
+        console.log(stream);
+        var filestats = FS.stat('/' + element);
+        var blob = new Blob([stream.node.contents], {type: "application/octet-stream"});
+        console.log(blob);
+        uploadFile2(blob, element, CODE);
+        FS.close(stream);
+        deleteFileFromFS(element);
+      });
+    }
+
+    function readFile() {
+      var files = document.getElementById("file-input").files;
+      var file = files[0];
+      var fileReader = new FileReader();
+      fileReader.onload = function() {
+        var data = new Uint8Array(fileReader.result);
+        console.log(data);
+        Module['FS_createDataFile']('/', 'fileinput', data, true, true, true);
+        Module['FS_createDataFile']('/', 'metadata', new Uint8Array([]), true, true, true);
+        var nrOfFiles = Module.ccall('readFile', 'number', [], null);
+        console.log("nrOfFiles returned by readFile", nrOfFiles);
+        for(var i = 0; i < nrOfFiles; i++) {
+          Module.ccall('generateNthSplitFile', 'boolean', ['number'], [i + 1]);
+        }
+        deleteFileFromFS('fileinput');
+        Module.ccall('showMetadata', null, [], []);
+        var stream = FS.open("/metadata", "r");
+        var textStream = new TextDecoder("utf-8").decode(stream.node.contents);
+        var blob = new Blob([textStream.toString()], {type: "application/octet-stream;charset=utf-8"});
+        console.log(blob);
+        createLoadingBarsForSplitFiles(textStream.toString());
+        var link = document.getElementById("metadata-link");
+        link.href = URL.createObjectURL(blob);
+        link.hidden = false;
+      }
+      console.log(file);
+      fileReader.readAsArrayBuffer(file);
+      
+
+      return fileReader;
+    }
+        
+
+    </script>
+</html>

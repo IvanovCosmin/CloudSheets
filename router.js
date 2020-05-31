@@ -1,21 +1,13 @@
 let url = require('url');
-let qs = require('querystring');
-let fs = require('fs');
-
-bazadate=require( './node_test');
+let qs = require('querystring');;
+let stollib = require('./stol-main');
+let bazadate = require( './index');
 let utils = require('./router-utils');
-let staticResourceDropper = (route, res) => {
-    let path = "./static" + route;
-    if(fs.existsSync(path)) {
-        res.writeHead(200)
-        let content = fs.readFileSync(path);
-        res.end(content);
-        return true;
-    }
-    return false;
-} 
+let google = require('./google-framework');
+let dropbox = require('./dropbox-framework');
 
 let routerObjectConstructor = (req) => {
+    let return_obj = {}
     console.log("req.url", req.url);
     if(req.url === undefined) return {
         is: (route, verb = "GET") => false
@@ -28,39 +20,27 @@ let routerObjectConstructor = (req) => {
     requestInfo.urlQuery = urlQuery; 
     requestInfo.urlObject = urlObject;
     requestInfo.method = req.method;
+    requestInfo.parsedParams = {};
     
-    // poate e putin ineficienta abordarea asta
-    // dar memorie--, viteza++
-    const getParam = (object, param) => {
-        if(object.__parsedParams !== undefined) {
-            if(param in object.__parsedParams) {
-                return object.__parsedParams[param];
-            }
-            else{
-                return undefined;
-            }
-        }
-        object.__parsedParams = {};
+    if(requestInfo.urlQuery !== null) {
         let params = requestInfo.urlQuery.split("&");
         for(par of params) {
             let [key,value] = par.split('=');
-            console.log("obj",object.__parsedParams);
-            console.log(key);
-            console.log(value);
-            console.log(par);
-            object.__parsedParams[key] = value;
+            requestInfo.parsedParams[key] = value;
         }
-        return getParam(object, param);
     }
 
-    return {
-            __parsedParams: undefined,
-            is: (route, verb = "GET") => {
-                return route === requestInfo.urlPathname && verb == requestInfo.method;
-            },
-            requestInfo: requestInfo,
-            getParam: (param) => {return getParam(this, param)}
-        }
+    return_obj = {
+        is: (route, verb = "GET") => {
+            return route === requestInfo.urlPathname && verb == requestInfo.method;
+        },
+        endswith: (string) => {
+            return requestInfo.urlPathname.endsWith(string);
+        },
+        requestInfo: requestInfo,
+        getParam: (param) => {return requestInfo.parsedParams[param]}
+    }
+    return return_obj;
 }
 
 let resolver = (req, res) => { 
@@ -70,6 +50,7 @@ let resolver = (req, res) => {
     })
 
     req.on('end', () => {
+        console.log(requestBody);
         requestBody = qs.parse(requestBody);
         let router = routerObjectConstructor(req);
         
@@ -79,15 +60,22 @@ let resolver = (req, res) => {
                 "gheiString": "Paul ultra ghei", 
                 "orNot" : "E doar o gluma ca sa demonstrez templateurile :)"
             };
-            utils.sendTemplate(req, res,"index.html", testContext, 200);
+            utils.sendTemplate(req, res,"static/welcomePage/index.html", testContext, 200);
         }
         else if (router.is('/user')) {
+            console.log(router.getParam('username'));
             let userPromise = bazadate.getUserByUsername(router.getParam('username'));
-            
             userPromise.then( (result) => {
-                    utils.sendJson(200,res,result[0]);
+                    utils.sendJson(200,res,result);
                 }
             );
+        }
+        else if (router.is('/mainScreen/mainpage')) {
+            utils.sendTemplate(req, res, "static/mainScreen/index.html", {}, 200);
+        }
+            
+        else if (router.is('/userpage')) {
+            utils.sendTemplate(req, res, "templates/user_page.html", {}, 200);
         }
         else if(router.is('/allusers')) {
             let userPromise = bazadate.getAllUsers();
@@ -96,18 +84,124 @@ let resolver = (req, res) => {
                     utils.sendJson(200,res,result);
             });
         }
+        else if(router.is('/dropDB')) {
+            bazadate.dropTable();
+        }
+        else if(router.is('/createDB')) {
+            bazadate.createTable();
+        }
+        else if(router.is("/auth")) {
+            utils.sendTemplate(req, res, "templates/login_page.html", {}, 200);
 
+        }
+        else if(router.is("/text-input/homepage")){
+            utils.sendTemplate(req,res,"static/text-input/text-input.html",{},200);
+        }
+        else if(router.is("/text-input/login")){
+            utils.sendTemplate(req,res,"static/text-input/login.html",{},200);
+        }
+        else if (router.is('/welcomePage/onRegister',"POST")){
+            email=requestBody.email;
+            password=requestBody.password;
+            name=requestBody.name;
+            surname=requestBody.surname;
+            bazadate.getUserByEmail(email).then(
+                (user)=>{
+                    if(user[0]==undefined){
+                        bazadate.insertUser(email, password, name, surname);
+                        res.writeHead(301,{"Location":"https://localhost:8000/text-input/login"});
+                        res.end();
+                        }
+                        else{
+                            res.writeHead(301,{"Location":"https://localhost:8000/"});
+                            res.end();
+                        }
+                }
+            );
+        }
+        else if (router.is('/welcomePage/onLogin',"POST")){
+            email=requestBody.email;
+            password = requestBody.password;
+             bazadate.getUserByEmail(email).then(
+               (user)=>{
+                   if(user[0] !== undefined && password === user[0].password){
+                    res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
+                    res.end();
+                   }else{
+                    
+                    res.writeHead(301,{"Location":"https://localhost:8000/"});
+                    res.end(); 
+                   }
+                    
+                });
+        }
+        else if(router.is("/auth/dropbox")) {
+            utils.sendTemplate(req, res, "callback.html", {}, 200);
+        }
+        
+        else if(router.is('/upload', "POST")) {
+            // nu tin minte ce i cu asta. got help. probabil trb sa dispara
+            utils.upload(requestBody, res);
+        }
+
+        else if(router.is("/get-files")) {
+            utils.sendTemplate(req, res, "templates/get-files.html", {}, 200);
+        } 
+        
+        else if(router.is("/glt")) {
+            utils.redirect(res, google.login_link());
+        }
+
+        else if(router.is("/dlt")) {
+            utils.redirect(res, dropbox.login_link());
+        }
+
+        else if(router.is("/oauth-redirect")) {
+            const code = decodeURIComponent(router.getParam('code'));
+            console.log(code);
+            const codeType = stollib.getCodeType(code);
+
+            // this could be google/dropbox/onedrive module
+            let workingObj = undefined;
+
+            if(codeType == "G") {
+                workingObj = google;
+            }
+            else {
+                workingObj = dropbox;
+            }
+
+            workingObj.accesscode(code).then((rez) =>  {
+                console.log("rezultat", rez);
+                utils.sendTemplate(req, res, "templates/upload-g-test.html", { "code": rez }, 200);
+            }).catch((err) => {
+                console.log(err);
+                utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
+            });
+
+        }
+
+        
+
+        else if(router.endswith(".wasm")) {
+            if(!utils.wasmResourceDropper(router.requestInfo.urlPathname, res)) {
+                utils.sendTemplate(req,res,"static/404.html",{},404);
+            }
+        }
+        
         else {
-            if(!staticResourceDropper(router.requestInfo.urlPathname, res)) {
+            if(!utils.staticResourceDropper(router.requestInfo.urlPathname, res)) {
                // utils.sendJson(404,res,router.requestInfo);
                utils.sendTemplate(req,res,"static/404.html",{},404);
             }
+            else
+            {
+                console.log(router.requestInfo.urlPathname);
+            }
         }
-
-        //console.log(router.requestInfo);
     })
 }
 
 module.exports = {
     "resolve": resolver
-}
+} 

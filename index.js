@@ -29,7 +29,8 @@ console.log("listening on port " + config['port']);
 
 process.on('SIGINT', () => {
     bazadate.closeDatabase()
-  })
+});
+
 
 
 module.exports={
