@@ -94,7 +94,37 @@ img {
     margin-left: 50px;
     
 }
+.fileChooser {
+    padding: 5px;
+    background: #FFFFF0;
+    border:none !important;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
+    min-width:20%;
+    color: #000514 !important;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 150%;
+    border-radius: 6px;
+    margin-left: 50px;
+    margin-top: 20px;
+}
 
+.metadataDownloadButton{
+    padding: 5px;
+    background: #FFFFF0;
+    border:none !important;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
+    min-width:20%;
+    color: #000514 !important;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 150%;
+    border-radius: 6px;
+    margin-left: 50px;
+    margin-top: 20px;
+}
 .startButton {
     padding: 5px;
     background: #FFFFF0;
@@ -116,6 +146,30 @@ img {
      background: #0BD54F;
      transition: all 0.4s ease 0s;
  }
+.metadataDownloadButton{
+    visibility: hidden;
+}
+.metadataDownloadButton:link, .metadataDownloadButton:visited {
+    padding: 5px;
+    background: #FFFFF0;
+    border:none !important;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
+    min-width:20%;
+    color: #000514 !important;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+     font-size: 150%;
+    border-radius: 6px;
+    margin-left: 50px;
+    margin-top: 20px;
+  }
+  
+  .metadataDownloadButton:hover, .metadataDownloadButton:active {
+    color: #ffffff !important;
+    background: #0BD54F;
+    transition: all 0.4s ease 0s;
+  }
 
 .progressBarContainer {
     display: none;
