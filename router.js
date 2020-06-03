@@ -5,6 +5,7 @@ let bazadate = require( './index');
 let utils = require('./router-utils');
 let google = require('./google-framework');
 let dropbox = require('./dropbox-framework');
+let onedrive = require('./onedrive-framework');
 
 let routerObjectConstructor = (req) => {
     let return_obj = {}
@@ -140,7 +141,7 @@ let resolver = (req, res) => {
             utils.sendTemplate(req, res, "templates/get-files.html", {}, 200);
         } 
         else if(router.is("/olt")) {
-            utils.sendTemplate(req, res, "templates/onedrive-redirect.html",{},200);
+            utils.redirect(res,onedrive.login_link());
         }
         else if(router.is("/glt")) {
             utils.redirect(res, google.login_link());
@@ -156,13 +157,14 @@ let resolver = (req, res) => {
             console.log(code.length);
             const codeType = stollib.getCodeType(code);
             console.log(codeType);
-
             // this could be google/dropbox/onedrive module
             let workingObj = undefined;
-
+            if(codeType == "O"){
+                workingObj = onedrive;
+            }
+            else
             if(codeType == "G") {
                 workingObj = google;
-                console.log("google");
             }
             else {
                 workingObj = dropbox;
@@ -170,7 +172,7 @@ let resolver = (req, res) => {
 
             workingObj.accesscode(code).then((rez) =>  {
                 console.log("rezultat", rez);
-                utils.sendTemplate(req, res, "templates/upload-g-test.html", { "codeType": codeType, "code": rez }, 200);
+                utils.sendTemplate(req, res, "templates/mainScreen.html", { "codeType": codeType, "code": rez }, 200);
             }).catch((err) => {
                 console.log(err);
                 utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
