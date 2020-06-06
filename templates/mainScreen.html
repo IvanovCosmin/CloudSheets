@@ -120,7 +120,7 @@
                 xhr.send(payload);
             }
         }
-        var GOOGLE = {
+        var Google = {
             code: window.localStorage.getItem("G"),
             URL_UPLOAD: "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
             URL_DOWNLOAD: "https://www.googleapis.com/drive/v3/files/fileId?fields=webContentLink&alt=media",
@@ -175,7 +175,7 @@
                 xhr.send(payload);
             }
         }
-        var ONEDRIVE = {
+        var Onedrive = {
             code: window.localStorage.getItem("O"),
             URL_DOWNLOAD: "https://graph.microsoft.com/v1.0/me/drive/items/fileId/content",
             URL_UPLOAD: "https://graph.microsoft.com/v1.0/me/drive/root:/CloudSheets/",
@@ -227,12 +227,13 @@
             }
         }
         
+
         var localStorage = window.localStorage;
         localStorage.setItem("{{ codeType }}", "{{ code }}");
         var CODE = localStorage.getItem("{{ codeType }}");
         console.log(CODE);
         
-
+        // functia asta e vina si rusinea lui Cosmin.
         function parseMetaFile(metafile) {
             let metaarray = metafile.split("\n");
             metaarray.splice(metaarray.length - 1, 1); // stergem ultimul element e plin doar de bytes goi
@@ -247,144 +248,157 @@
         }
 
 
-    function deleteFileFromFS(filename) {
-        FS.unlink('/' + filename); // will be deleted when not used by any process
-    }
-
-    async function downloadFromStreams(names, downloadStreams) {
-        var blobArray = [];
-        for(name of names) {
-            blobArray.push((await downloadStreams[name].blob()).slice(40));
+        function deleteFileFromFS(filename) {
+            FS.unlink('/' + filename); // will be deleted when not used by any process
         }
-        var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        var newBlob = new Blob(blobArray, {type : 'application/octet-stream'})
-        a.href = URL.createObjectURL(newBlob);
-        a.download = "test.jpg";
-        a.click();
-        URL.revokeObjectURL(newBlob);
-    }
 
-    function checkmetadata(code) {
-        let metainput = document.getElementById("metadata-input");
-        // ne asiguram ca exista elementul si avem fisierul de metadata pus
-        if(metainput && metainput.files && metainput.files[0]) {
-            let file = metainput.files[0];
-            let fileReader = new FileReader();
-            fileReader.onload = async () => {
-                let parsedMeta = parseMetaFile(fileReader.result);
-                var names = [];
-                console.log(parsedMeta);
-                for(key in parsedMeta) {
-                    if(key != "size"){
-                        names.push(parsedMeta[key]);
+        async function downloadFromStreams(names, downloadStreams) {
+            var blobArray = [];
+            for(name of names) {
+                blobArray.push((await downloadStreams[name].blob()).slice(40));
+            }
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            var newBlob = new Blob(blobArray, {type : 'application/octet-stream'})
+            a.href = URL.createObjectURL(newBlob);
+            a.download = "test.jpg";
+            a.click();
+            URL.revokeObjectURL(newBlob);
+        }
+
+        function checkmetadata(code) {
+            let metainput = document.getElementById("metadata-input");
+            // ne asiguram ca exista elementul si avem fisierul de metadata pus
+            if(metainput && metainput.files && metainput.files[0]) {
+                let file = metainput.files[0];
+                let fileReader = new FileReader();
+                fileReader.onload = async () => {
+                    let parsedMeta = parseMetaFile(fileReader.result);
+                    var names = [];
+                    console.log(parsedMeta);
+                    for(key in parsedMeta) {
+                        if(key != "size"){
+                            names.push(parsedMeta[key]);
+                        }
                     }
-                }
-                await downloadFilesByNames(code, names);
-                
-            };
-            fileReader.onerror = () => {console.log(fileReader.error)};
-            fileReader.readAsText(file);
+                    await downloadFilesByNames(code, names);
+                    
+                };
+                fileReader.onerror = () => {console.log(fileReader.error)};
+                fileReader.readAsText(file);
+            }
         }
-    }
 
-    // names = { "index": "filename" } (chiar daca e array)
-    async function downloadFilesByNames(code, names) {
-        var fetchSettings = {
-            headers: {
-                "Authorization": "Bearer " + code 
-            },
-            method: "GET"
-        }
-        console.log(names);
-
-        fetch(URL_LIST_FILES, fetchSettings)
-        .then(data => data.json().then(async res => {
-            var downloadStreams = {};
+        function presetDownloadStreams(downloadStreams, names) {
             for(index in names) {
                 downloadStreams[names[index]] = undefined;
             }
-            var files = res.files;
-            console.log(files);
-            for(item of files) {
-                if((item["name"] in downloadStreams) && downloadStreams[item["name"]] === undefined ) {
-                    downloadStreams[item["name"]] = await writeToDownloadStream(code, item['id']);
-                }
-            }
-            console.log(downloadStreams);
+            return downloadFromStreams;
+        }
+
+        // names = { "index": "filename" } (chiar daca e array)
+        async function downloadFilesByNames(names) {
+            var downloadStreams = {};
+            downloadStreams = presetDownloadStreams(downloadStreams, names);
+            
             downloadFromStreams(names, downloadStreams);
-            
-        }))
-        .catch(err => console.log(err));
-       /* var downloadStreams = {};
-        for(index in names) {
-            downloadStreams[names[index]] = undefined;
+
+
+            // var fetchSettings = {
+            //     headers: {
+            //         "Authorization": "Bearer " + code 
+            //     },
+            //     method: "GET"
+            // }
+            // console.log(names);
+
+            // fetch(URL_LIST_FILES, fetchSettings)
+            // .then(data => data.json().then(async res => {
+            //     var downloadStreams = {};
+            //     for(index in names) {
+            //         downloadStreams[names[index]] = undefined;
+            //     }
+            //     var files = res.files;
+            //     console.log(files);
+            //     for(item of files) {
+            //         if((item["name"] in downloadStreams) && downloadStreams[item["name"]] === undefined ) {
+            //             downloadStreams[item["name"]] = await writeToDownloadStream(code, item['id']);
+            //         }
+            //     }
+            //     console.log(downloadStreams);
+            //     downloadFromStreams(names, downloadStreams);
+                
+            // }))
+            // .catch(err => console.log(err));
+        /* var downloadStreams = {};
+            for(index in names) {
+                downloadStreams[names[index]] = undefined;
+            }
+            for (name of names) {
+                downloadStreams[name] = await writeToDownloadStreamDropbox(code, name);
+            }    
+                
+            downloadFromStreams(names, downloadStreams);*/
         }
-        for (name of names) {
-            downloadStreams[name] = await writeToDownloadStreamDropbox(code, name);
-        }    
-            
-        downloadFromStreams(names, downloadStreams);*/
-    }
 
-    function createLoadingBarsForSplitFiles(metadataFile) {
-    console.log("createLoadingBars")
-    var files = metadataFile.match(/[a-zA-Z0-9]+\.csht/g)
-    var uploadFiles = document.getElementById("upload-files");
-    console.log(files);
-    files.forEach(element => {
-        var h1 = document.createElement("p");
-        var text = document.createTextNode(element);
-        h1.appendChild(text);
-        uploadFiles.appendChild(h1);
-    });
-    files.forEach(element => {
-        var stream = FS.open("/" + element, "r");
-        console.log(stream);
-        var filestats = FS.stat('/' + element);
-        var blob = new Blob([stream.node.contents], {type: "application/octet-stream"});
-        console.log(blob);
-        //uploadDropbox(blob, element, CODE);
-        //uploadFile2(blob,element,CODE);
-        uploadOneDrive(blob, element, CODE);
-        FS.close(stream);
-        deleteFileFromFS(element);
-    });
-    }
-
-    function readFile() {
-    var files = document.getElementById("file-input").files;
-    var file = files[0];
-    var fileReader = new FileReader();
-    fileReader.onload = function() {
-        var data = new Uint8Array(fileReader.result);
-        console.log(data);
-        Module['FS_createDataFile']('/', 'fileinput', data, true, true, true);
-        Module['FS_createDataFile']('/', 'metadata', new Uint8Array([]), true, true, true);
-        var nrOfFiles = Module.ccall('readFile', 'number', [], null);
-        console.log("nrOfFiles returned by readFile", nrOfFiles);
-        for(var i = 0; i < nrOfFiles; i++) {
-            Module.ccall('generateNthSplitFile', 'boolean', ['number'], [i + 1]);
+        function createLoadingBarsForSplitFiles(metadataFile) {
+        console.log("createLoadingBars")
+        var files = metadataFile.match(/[a-zA-Z0-9]+\.csht/g)
+        var uploadFiles = document.getElementById("upload-files");
+        console.log(files);
+        files.forEach(element => {
+            var h1 = document.createElement("p");
+            var text = document.createTextNode(element);
+            h1.appendChild(text);
+            uploadFiles.appendChild(h1);
+        });
+        files.forEach(element => {
+            var stream = FS.open("/" + element, "r");
+            console.log(stream);
+            var filestats = FS.stat('/' + element);
+            var blob = new Blob([stream.node.contents], {type: "application/octet-stream"});
+            console.log(blob);
+            //uploadDropbox(blob, element, CODE);
+            //uploadFile2(blob,element,CODE);
+            uploadOneDrive(blob, element, CODE);
+            FS.close(stream);
+            deleteFileFromFS(element);
+        });
         }
-        deleteFileFromFS('fileinput');
-        Module.ccall('showMetadata', null, [], []);
-        var stream = FS.open("/metadata", "r");
-        var textStream = new TextDecoder("utf-8").decode(stream.node.contents);
-        var blob = new Blob([textStream.toString()], {type: "application/octet-stream;charset=utf-8"});
-        console.log(blob);
-        createLoadingBarsForSplitFiles(textStream.toString());
-        document.getElementById("metadata-link").style.visibility = "visible";
-        var link = document.getElementById("metadata-link");
-        link.href = URL.createObjectURL(blob);
-        console.log(blob.toString());
-    }
-    console.log(file);
-    fileReader.readAsArrayBuffer(file);
-    
 
-    return fileReader;
-    }
+        function readFile() {
+            var files = document.getElementById("file-input").files;
+            var file = files[0];
+            var fileReader = new FileReader();
+            fileReader.onload = function() {
+                var data = new Uint8Array(fileReader.result);
+                console.log(data);
+                Module['FS_createDataFile']('/', 'fileinput', data, true, true, true);
+                Module['FS_createDataFile']('/', 'metadata', new Uint8Array([]), true, true, true);
+                var nrOfFiles = Module.ccall('readFile', 'number', [], null);
+                console.log("nrOfFiles returned by readFile", nrOfFiles);
+                for(var i = 0; i < nrOfFiles; i++) {
+                    Module.ccall('generateNthSplitFile', 'boolean', ['number'], [i + 1]);
+                }
+                deleteFileFromFS('fileinput');
+                Module.ccall('showMetadata', null, [], []);
+                var stream = FS.open("/metadata", "r");
+                var textStream = new TextDecoder("utf-8").decode(stream.node.contents);
+                var blob = new Blob([textStream.toString()], {type: "application/octet-stream;charset=utf-8"});
+                console.log(blob);
+                createLoadingBarsForSplitFiles(textStream.toString());
+                document.getElementById("metadata-link").style.visibility = "visible";
+                var link = document.getElementById("metadata-link");
+                link.href = URL.createObjectURL(blob);
+                console.log(blob.toString());
+            }
+            console.log(file);
+            fileReader.readAsArrayBuffer(file);
+            
+
+            return fileReader;
+        }
         
 
     </script>
