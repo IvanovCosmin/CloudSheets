@@ -82,7 +82,7 @@ function DataBase(){
     getOnedriveFileId :function(email,name) {
         return new Promise((resolve,reject)=>{
             let result=[];
-            this.db.each(`select * from user_onedrive_files where email = ${email} and fisier = ${name};`,(err,row) =>{
+            this.db.each(`select * from user_onedrive_files where email = '${email}' and fisier = '${name}';`,(err,row) =>{
                 if(err) {reject(err);}
                 result.push(row);
                 

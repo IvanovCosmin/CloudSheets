@@ -53,7 +53,7 @@ let resolver = (req, res) => {
         requestBody += data;
     })
 
-    req.on('end', () => {
+    req.on('end', async () => {
         console.log(requestBody);
         requestBody = qs.parse(requestBody);
         let router = routerObjectConstructor(req);
@@ -84,7 +84,7 @@ let resolver = (req, res) => {
             let userPromise = bazadate.getAllUsers();
 
             userPromise.then( (result)=>{
-                    utils.sendJson(200,res,result);
+                    utils.sendJson(200, res, result);
             });
         }
         else if(router.is('/dropDB')) {
@@ -182,7 +182,25 @@ let resolver = (req, res) => {
 
         }
 
-        
+        else if(router.is("/getfileid")) {
+            const email = router.getParam("email");
+            const filename = router.getParam("filename");
+            console.log(email, filename);
+            const rezult = await bazadate.getOnedriveFileId(email, filename);
+            utils.sendJson(200, res, {
+                "id": rezult[0]
+            }); 
+        }
+
+        else if(router.is("/insertfileid")) {
+            const email = router.getParam("email");
+            const filename = router.getParam("filename");
+            const id = router.getParam("id");
+            console.log(email,filename, id);
+            bazadate.insertOnedriveFile(email, filename, id);
+            res.writeHead(200);
+            res.end();
+        }
 
         else if(router.endswith(".wasm")) {
             if(!utils.wasmResourceDropper(router.requestInfo.urlPathname, res)) {

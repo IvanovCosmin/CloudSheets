@@ -72,17 +72,165 @@
         <script src="wasm/splitter.js"></script>
     </body>
     <script>
+        window.localStorage.setItem("email", "test@gmail.com"); // hardcoded for testing
+        var Dropbox = {
+            code: window.localStorage.getItem("D"),
+            URL_DOWNLOAD_DROPBOX: "https://content.dropboxapi.com/2/files/download",
+            writeToDownloadStream: async function(name) {
+                var fetchSettings = {
+                    headers: {
+                        //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                        "Authorization": "Bearer " + code,
+                        "Dropbox-API-Arg": JSON.stringify({
+                            "path": "/cloudsheets/" + name
+                        })
+                    },
+                    method: "GET"
+                }
+                console.log(fetchSettings);
+                
+                var fetchData = await fetch(URL_DOWNLOAD_DROPBOX, fetchSettings);
+                console.log(fetchData);
+                
+                response = new Response(fetchData.body);
+                console.log(response);
+                return response;
+            },
+            upload: async function(filename, blob) {
+                var meta = JSON.stringify(
+                {
+                    "path": "/cloudsheets/" + filename,
+                    "mode": "add",
+                    "autorename": true,
+                    "mute": false,
+                    "strict_conflict": false
+                }
+                )
+                var content = blob;
+                var payload = new FormData();
+                payload.append('file', content);
+                xhr = new XMLHttpRequest();
+                xhr.open('post', 'https://content.dropboxapi.com/2/files/upload');
+                xhr.setRequestHeader('Authorization', 'Bearer ' + this.code);
+                xhr.setRequestHeader('Dropbox-API-Arg', meta);
+                xhr.setRequestHeader('Content-Type', "application/octet-stream");
+                xhr.onload = function() {
+                    console.log(xhr.response);
+                };
+                xhr.send(payload);
+            }
+        }
+        var GOOGLE = {
+            code: window.localStorage.getItem("G"),
+            URL_UPLOAD: "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+            URL_DOWNLOAD: "https://www.googleapis.com/drive/v3/files/fileId?fields=webContentLink&alt=media",
+            URL_LIST_FILES: "https://www.googleapis.com/drive/v3/files",
+            writeToDownloadStream: async function(id) {
+                var fetchSettings = {
+                    headers: {
+                        //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                        "Authorization": "Bearer " + code
+                        
+                    },
+                    method: "GET"
+                }
+                
+                var fetchData = await fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings);
+                console.log(fetchData);
+                
+                response = new Response(fetchData.body);
+                console.log(response);
+                return response;
+            },
+            listFiles: function(code) {
+                var fetchSettings = {
+                    headers: {
+                        //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                        "Authorization": "Bearer " + code
+                        
+                    },
+                    method: "GET"
+                }
+
+                fetch(URL_LIST_FILES, fetchSettings)
+                .then(data => data.json().then(res => {console.log(res)}))
+                .catch(err => console.log(err));
+            },
+            upload: async function (filename, blob) {
+                var meta = JSON.stringify({
+                    name: filename,
+                    mimeType: 'application/octet-stream',
+                })
+
+                var content = blob;
+                var payload = new FormData();
+                payload.append('metadata', new Blob([meta], {type: 'application/json'}));
+                payload.append('file', content);
+                xhr = new XMLHttpRequest();
+                xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart');
+                xhr.setRequestHeader('Authorization', 'Bearer ' + this.code);
+                xhr.onload = function() {
+                    console.log(xhr.response);
+                };
+                xhr.send(payload);
+            }
+        }
+        var ONEDRIVE = {
+            code: window.localStorage.getItem("O"),
+            URL_DOWNLOAD: "https://graph.microsoft.com/v1.0/me/drive/items/fileId/content",
+            URL_UPLOAD: "https://graph.microsoft.com/v1.0/me/drive/root:/CloudSheets/",
+            writeToDownloadStream: async function(id) {
+                var fetchSettings = {
+                    headers: {
+                        //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                        "Authorization": code,
+                        'Content-Type':'application/json'
+                    },
+                    method: "GET"
+                }
+                var URL_DOWNLOAD = "";
+                var fetchData = await fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings);
+                console.log(fetchData);
+                
+                response = new Response(fetchData.body);
+                console.log(response);
+                return response;
+            },
+            upload: async function(filename, blob) {
+                var requestUrl = URL_UPLOAD;
+                requestUrl += filename;
+                requestUrl += ":/content";
+                var payload = new FormData();
+                payload.append('file', blob);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("PUT", requestUrl)
+                xhr.setRequestHeader('Authorization', code);
+                xhr.setRequestHeader('Content-Type', "application/octet-stream");
+                xhr.send(payload);
+            },
+            getIdFromFilename: function(filename) {
+                var requestUrl = "https://localhost:8000/getfileid?email={email}&filename={filename}"
+                                .replace("{email}", localStorage.getItem("email"))
+                                .replace("{filename}", filename);
+                xhr = new XMLHttpRequest();
+                var result = undefined;
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        result = JSON.parse(xhr.response)["id"]["id_fisier"];
+                    }
+                }
+                xhr.open("GET", requestUrl, false); // false makes it synchronous
+                xhr.send();
+                console.log(result);
+                return result;
+            }
+        }
+        
         var localStorage = window.localStorage;
         localStorage.setItem("{{ codeType }}", "{{ code }}");
         var CODE = localStorage.getItem("{{ codeType }}");
         console.log(CODE);
-
-        var URL_UPLOAD = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
-        var URL_LIST_FILES = "https://www.googleapis.com/drive/v3/files";
-        //var URL_DOWNLOAD = "https://www.googleapis.com/drive/v3/files/fileId/export?mimeType=application%2Foctet-stream";
-        var URL_DOWNLOAD = "https://www.googleapis.com/drive/v3/files/fileId?fields=webContentLink&alt=media";
-        var URL_DOWNLOAD_DROPBOX = "https://content.dropboxapi.com/2/files/download";
-        //var URL_DOWNLOAD = "https://drive.google.com/uc?id=fileId&export=download"
         
 
         function parseMetaFile(metafile) {
@@ -96,155 +244,6 @@
                 res[chunkData[1]] = chunkData[0];
             }
             return res;
-        }
-        
-        // GOOGLE UPLOAD
-        async function uploadFile2(blob, filename, code) {
-            var meta = JSON.stringify({
-                name: filename,
-                mimeType: 'application/octet-stream',
-            })
-
-            var content = blob;
-            var payload = new FormData();
-            payload.append('metadata', new Blob([meta], {type: 'application/json'}));
-            payload.append('file', content);
-            xhr = new XMLHttpRequest();
-            xhr.open('post', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart');
-            xhr.setRequestHeader('Authorization', 'Bearer ' + code);
-            xhr.onload = function() {
-            console.log(xhr.response);
-            };
-            xhr.send(payload);
-
-        }
-
-        async function uploadDropbox(blob, filename, code) {
-            //https://content.dropboxapi.com/2/files/upload
-            var meta = JSON.stringify(
-                {
-                    "path": "/cloudsheets/" + filename,
-                    "mode": "add",
-                    "autorename": true,
-                    "mute": false,
-                    "strict_conflict": false
-                }
-            )
-            var content = blob;
-            var payload = new FormData();
-            payload.append('file', content);
-            xhr = new XMLHttpRequest();
-            xhr.open('post', 'https://content.dropboxapi.com/2/files/upload');
-            xhr.setRequestHeader('Authorization', 'Bearer ' + code);
-            xhr.setRequestHeader('Dropbox-API-Arg', meta);
-            xhr.setRequestHeader('Content-Type', "application/octet-stream");
-            xhr.onload = function() {
-                console.log(xhr.response);
-            };
-            xhr.send(payload);
-
-        }
-
-
-
-        function uploadOneDrive(blob, filename, code) {
-
-            var requestUrl = "https://graph.microsoft.com/v1.0/me/drive/root:/CloudSheets/";
-            requestUrl += filename;
-            requestUrl += ":/content";
-            var payload = new FormData();
-            payload.append('file', blob);
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("PUT", requestUrl)
-            xhr.setRequestHeader('Authorization', code);
-            xhr.setRequestHeader('Content-Type', "application/octet-stream");
-            xhr.send(payload);
-            
-        }
-
-
-        async function writeToDownloadStreamOneDrive(code, id) {
-            var fetchSettings = {
-                headers: {
-                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
-                    "Authorization": code,
-                    'Content-Type':'application/json'
-                },
-                method: "GET"
-            }
-            var URL_DOWNLOAD = "https://graph.microsoft.com/v1.0/me/drive/items/fileId/content";
-            var fetchData = await fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings);
-            console.log(fetchData);
-            
-            response = new Response(fetchData.body);
-            console.log(response);
-            return response;
-
-        }
-
-
-
-
-        function listFiles(code) {
-
-            var fetchSettings = {
-                headers: {
-                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
-                    "Authorization": "Bearer " + code
-                    
-                },
-                method: "GET"
-            }
-
-            fetch(URL_LIST_FILES, fetchSettings)
-            .then(data => data.json().then(res => {console.log(res)}))
-            .catch(err => console.log(err));
-            
-        }
-
-        
-
-        // am incercat sa caut o modalitate sa nu incarc ramul aiurea dar aparent browserele nu au support nativ pentru descarcat streamuri asa cum imi doresc eu
-        async function writeToDownloadStream(code, id) {
-            var fetchSettings = {
-                headers: {
-                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
-                    "Authorization": "Bearer " + code
-                    
-                },
-                method: "GET"
-            }
-            
-            var fetchData = await fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings);
-            console.log(fetchData);
-            
-            response = new Response(fetchData.body);
-            console.log(response);
-            return response;
-
-        }
-
-        async function writeToDownloadStreamDropbox(code, name) {
-            var fetchSettings = {
-                headers: {
-                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
-                    "Authorization": "Bearer " + code,
-                    "Dropbox-API-Arg": JSON.stringify({
-                        "path": "/cloudsheets/" + name
-                    })
-                },
-                method: "GET"
-            }
-            console.log(fetchSettings);
-            
-            var fetchData = await fetch(URL_DOWNLOAD_DROPBOX, fetchSettings);
-            console.log(fetchData);
-            
-            response = new Response(fetchData.body);
-            console.log(response);
-            return response;
-
         }
 
 
