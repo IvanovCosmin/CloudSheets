@@ -17,7 +17,7 @@
   </defs>
   <g id="Group_2" data-name="Group 2" transform="translate(-93 -373)">
     <g transform="matrix(1, 0, 0, 1, 93, 373)" filter="url(#Welcome_to)">
-      <text id="Welcome_to-2" data-name="Welcome to" transform="translate(12 55)" fill="ivory" font-size="35" font-family="BrushScriptMT, Brush Script MT"><tspan x="0" y="0">Welcome to</tspan></text>
+      <text id="Welcome_to-2" data-name="Welcome to" transform="translate(12 55)" fill="ivory" font-size="35" font-family=""><tspan x="0" y="0">Welcome to</tspan></text>
     </g>
     <g transform="matrix(1, 0, 0, 1, 93, 373)" filter="url(#CloudSheets)">
       <text id="CloudSheets-2" data-name="CloudSheets" transform="translate(50 93)" fill="#0bd54f" font-size="42" font-family="SegoeUI-BoldItalic, Segoe UI" font-weight="700" font-style="italic"><tspan x="0" y="0">CloudSheets</tspan></text>
