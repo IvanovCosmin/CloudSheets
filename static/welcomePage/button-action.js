@@ -55,8 +55,7 @@ const logIn=`<form action="/welcomePage/onLogin" method="POST" >
 
 function submitBtn() {
   // document.getElementById("submitBtn1").onclick = function () {
-  console.log("heeelllpppp");
-  location.href = "../mainScreen/index.html";
+  location.href = "https://localhost:8000/oauth-redirect";
   // };
 }
 

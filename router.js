@@ -108,7 +108,7 @@ let resolver = (req, res) => {
                 (user)=>{
                     if(user[0]==undefined){
                         bazadate.insertUser(email, password, name, surname);
-                        res.writeHead(301,{"Location":"https://localhost:8000/text-input/login"});
+                        res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
                         res.end();
                         }
                         else{
@@ -124,7 +124,7 @@ let resolver = (req, res) => {
              bazadate.getUserByEmail(email).then(
                (user)=>{
                    if(user[0] !== undefined && password === user[0].password){
-                    res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
+                    res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
                     res.end();
                    }else{
                     
