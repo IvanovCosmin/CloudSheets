@@ -1,69 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <title>Your account</title>
-        <link rel="stylesheet" type="text/css" href="../static/mainScreen/styles.css">
-        <script src='../static/mainScreen/options.js'></script>
-        <script src="../static/mainScreen/progress-bar.js"></script>
-    </head>
+<head>
+    <title>Your account</title>
+    <link rel="stylesheet" type="text/css" href="../static/mainScreen/styles.css">
+    <script src='../static/mainScreen/options.js'></script>
+    <script src="../static/mainScreen/progress-bar.js"></script>
+</head>
 
-    <body>
-        <div class="mainContainer">
-            <header>
-                <div class="imgContainer">
-                    <img src='../assets/sigla.svg' alt="logo image" />
+<body>
+    <div class="mainContainer">
+        <header>
+            <div class="imgContainer">
+                <img src='../assets/sigla.svg' alt="logo image" />
+            </div>
+            <div class="profileDetails">
+                <span class="userName">Ioana Maniga</span>
+                <button onclick="showMenu(); " class="userCircle">
+                    <span class="userInitials">IM</span>
+                </button>
+                <div id="dropdown-content" class="dropdown-content">
+                    <a href="/oauth-redirect">Upload a file</a>
+                    <a href="../filesPage/index.html">Your files</a>
+                    <a href="">See documentation</a>
+                    <a href="../welcomePage/index.html">Log out</a>
                 </div>
-                <div class="profileDetails">
-                    <span class="userName">Ioana Maniga</span>
-                    <button onclick="showMenu(); " class="userCircle">
-                        <span class="userInitials">IM</span>
-                    </button>
-                    <div id="dropdown-content" class="dropdown-content">
-                        <a href="/oauth-redirect">Upload a file</a>
-                        <a href="../filesPage/index.html">Your files</a>
-                        <a href="">See documentation</a>
-                        <a href="../welcomePage/index.html">Log out</a>
-                    </div>
-                </div>
-            </header>
+            </div>
+        </header>
 
-            <div class="halfSize">
-                <div class="accounts">
+        <div class="halfSize">
+            <div class="accounts">
+                <button class="accountBtn" onclick="window.location.replace('https://localhost:8000/dlt')">Your Dropbox</button>
+                <button class="accountBtn" onclick="window.location.replace('https://localhost:8000/glt')">Your Google Drive</button>
+                <button class="accountBtn" onclick="window.location.replace('https://localhost:8000/olt')">Your One Drive</button>
 
-                    <button class="accountBtn" onclick="window.location.replace('https://localhost:8000/dlt')">Your Dropbox</button>
-                    <button class="accountBtn" onclick="window.location.replace('https://localhost:8000/glt')">Your Google Drive</button>
-                    <button class="accountBtn" onclick="window.location.replace('https://localhost:8000/olt')">Your One Drive</button>
-
-                    <span id="errorMessage" class="errorMessage"></span>
-                </div>
+                <span id="errorMessage" class="errorMessage"></span>
+            </div>
 
 
-            
 
 
-            <div id="upload-files">
-                <input id="file-input" class="fileChooser" type="file" value="/metadata" >
+
+            <div id="upload-files" class="upload-files">
+                <input id="file-input" class="selectedFile" onchange=" showName();" type="file" value="/metadata"
+                    style="display: none;">
                 <!--<button onclick="readFile()">Read file</button>-->
-                <button id="startButton" class="startButton"  onclick=" readFile(); showProgressBar(); progressBar.run(); ">Upload your file here</button>
-                <a class="metadataDownloadButton" download="metadata.txt" id="metadata-link" href="#">Download metadata</a>
-                <!--<button hidden class="startButton" type="submit" onclick="window.open('metadata.txt')" id="metadata-link" href="#">Download metadata</button>
+                <div class="choose-file-area"><button id="fileChooser" class="startButton"
+                        onclick="document.getElementById('file-input').click();" ">Choose your file</button>
+                     <div class='chosen-file'><span id='chosen-file'>No file chosen</span></div>
+
+            </div>
+               
+                <button hidden id='startButton' class='startButton'
+                        onclick=" readFile(); showProgressBar(); progressBar.run();" style="display:none ;">Upload your
+                        file
+                        here</button>
+                    <!-- <a class="metadataDownloadButton" download="metadata.txt" id="metadata-link" href="#">Download
+                        metadata</a> -->
+                    <!--<button hidden class="startButton" type="submit" onclick="window.open('metadata.txt')" id="metadata-link" href="#">Download metadata</button>
                 <br>
                 <input type="file" id="metadata-input" value="/metadata">
                 
                 <input type="file" id="file-input" class="fileChooser" onchange="showname()" name="myfile">-->
-            </div>
-
-
-            <!-- showProgressBar(); progressBar.run(); -->
-            <div id="progressBarContainer" class="progressBarContainer">
-                <div class="uploadDetails">
-                    <span class="progressText" id="fileTitle">Name</span>
-                    <span class="progressText" id="fileSize">Size: </span>
-                    <span class="progressText" id="progressBarText">Progress: 0%</span>
                 </div>
-                <div id="progresBarWrapper" class="progresBarWrapper">
-                    <div id="progressBar" class="progressBar"></div>
+
+
+                <!-- showProgressBar(); progressBar.run(); -->
+                <div id="progressBarContainer" class="progressBarContainer">
+                    <div class="uploadDetails">
+                        <span class="progressText" id="fileTitle">Name</span>
+                        <span class="progressText" id="fileSize">Size: </span>
+                        <span class="progressText" id="progressBarText">Progress: 0%</span>
+                    </div>
+                    <div id="progresBarWrapper" class="progresBarWrapper">
+                        <div id="progressBar" class="progressBar"></div>
+                    </div>
+                </div>
+                <div id="tableContainer">
                 </div>
             </div>
             <div id="tableContainer">
@@ -296,6 +309,15 @@
             }
             return downloadFromStreams;
         }
+        console.log(fetchSettings);
+
+        var fetchData = await fetch(URL_DOWNLOAD_DROPBOX, fetchSettings);
+        console.log(fetchData);
+
+        response = new Response(fetchData.body);
+        console.log(response);
+        return response;
+
 
         // names = { "index": "filename" } (chiar daca e array)
         async function downloadFilesByNames(names) {
@@ -343,28 +365,28 @@
         }
 
         function createLoadingBarsForSplitFiles(metadataFile) {
-        console.log("createLoadingBars")
-        var files = metadataFile.match(/[a-zA-Z0-9]+\.csht/g)
-        var uploadFiles = document.getElementById("upload-files");
-        console.log(files);
-        files.forEach(element => {
-            var h1 = document.createElement("p");
-            var text = document.createTextNode(element);
-            h1.appendChild(text);
-            uploadFiles.appendChild(h1);
-        });
-        files.forEach(element => {
-            var stream = FS.open("/" + element, "r");
-            console.log(stream);
-            var filestats = FS.stat('/' + element);
-            var blob = new Blob([stream.node.contents], {type: "application/octet-stream"});
-            console.log(blob);
-            //uploadDropbox(blob, element, CODE);
-            //uploadFile2(blob,element,CODE);
-            uploadOneDrive(blob, element, CODE);
-            FS.close(stream);
-            deleteFileFromFS(element);
-        });
+            console.log("createLoadingBars")
+            var files = metadataFile.match(/[a-zA-Z0-9]+\.csht/g)
+            var uploadFiles = document.getElementById("upload-files");
+            console.log(files);
+            files.forEach(element => {
+                var h1 = document.createElement("p");
+                var text = document.createTextNode(element);
+                h1.appendChild(text);
+                uploadFiles.appendChild(h1);
+            });
+            files.forEach(element => {
+                var stream = FS.open("/" + element, "r");
+                console.log(stream);
+                var filestats = FS.stat('/' + element);
+                var blob = new Blob([stream.node.contents], {type: "application/octet-stream"});
+                console.log(blob);
+                //uploadDropbox(blob, element, CODE);
+                //uploadFile2(blob,element,CODE);
+                uploadOneDrive(blob, element, CODE);
+                FS.close(stream);
+                deleteFileFromFS(element);
+            });
         }
 
         function readFile() {
@@ -401,5 +423,7 @@
         }
         
 
-    </script>
+
+</script>
+
 </html>
