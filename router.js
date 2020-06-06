@@ -54,9 +54,9 @@ let resolver = (req, res) => {
     })
 
     req.on('end', async () => {
-        console.log(requestBody);
         requestBody = qs.parse(requestBody);
         let router = routerObjectConstructor(req);
+        console.log(req.headers);
         
         if(router.is('/')) {
             let testContext = {
@@ -98,6 +98,24 @@ let resolver = (req, res) => {
         }
         else if(router.is("/text-input/login")){
             utils.sendTemplate(req,res,"static/text-input/login.html",{},200);
+        }
+        else if(router.is("/get-providers-for-files")) {
+            // TODO chiar sa le ia din baza de date
+            const fileNames = JSON.parse(req.headers["data"])["names"];
+            console.log(fileNames);
+
+            let providerNames = [];
+            let providers = ["G", "D"];
+            let counter = 0;
+            for(name of fileNames) {
+                providerNames.push(providers[counter%providers.length]);
+                counter++;
+            }
+
+            let raspuns = JSON.stringify({
+                "names": providerNames
+            })
+            utils.sendJson(200, res, raspuns);
         }
         else if (router.is('/welcomePage/onRegister',"POST")){
             email=requestBody.email;

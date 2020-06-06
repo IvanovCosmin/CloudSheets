@@ -110,15 +110,13 @@
                 return response;
             },
             upload: async function(filename, blob) {
-                var meta = JSON.stringify(
-                {
+                var meta = JSON.stringify({
                     "path": "/cloudsheets/" + filename,
                     "mode": "add",
                     "autorename": true,
                     "mute": false,
                     "strict_conflict": false
-                }
-                )
+                })
                 var content = blob;
                 var payload = new FormData();
                 payload.append('file', content);
@@ -223,7 +221,7 @@
                 xhr.send(payload);
             },
             getIdFromFilename: function(filename) {
-                var requestUrl = "https://localhost:8000/getfileid?email={email}&filename={filename}"
+                var requestUrl = "/getfileid?email={email}&filename={filename}"
                                 .replace("{email}", localStorage.getItem("email"))
                                 .replace("{filename}", filename);
                 xhr = new XMLHttpRequest();
@@ -309,15 +307,28 @@
             }
             return downloadFromStreams;
         }
-        console.log(fetchSettings);
 
-        var fetchData = await fetch(URL_DOWNLOAD_DROPBOX, fetchSettings);
-        console.log(fetchData);
+        async function getCloudProviderForFile(names) {
+            var URL = "/get-providers-for-files";
+            var fetchSettings = {
+                "headers": {
+                    "data": JSON.stringify({
+                        "names": names
+                    })
+                },
+                "method": "GET",
+            }
+            var fetchData = await fetch(URL, fetchSettings);
 
-        response = new Response(fetchData.body);
-        console.log(response);
-        return response;
-
+            var chunks = [];
+            console.log(fetchData.body.read());
+            for (var chunk of fetchData.body.getReader().read()) {
+                chunks.push(chunk);
+            }
+            var data = Buffer.concat(chunks);
+            console.log(data);
+            return JSON.parse(data)["names"];
+        }
 
         // names = { "index": "filename" } (chiar daca e array)
         async function downloadFilesByNames(names) {
@@ -424,6 +435,6 @@
         
 
 
-</script>
+    </script>
 
 </html>
