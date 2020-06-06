@@ -32,10 +32,9 @@
                 <div class="accounts">
 
                     <button class="accountBtn" onclick="window.location.replace('https://localhost:8000/dlt')">Your Dropbox</button>
-
                     <button class="accountBtn" onclick="window.location.replace('https://localhost:8000/glt')">Your Google Drive</button>
-
                     <button class="accountBtn" onclick="window.location.replace('https://localhost:8000/olt')">Your One Drive</button>
+
                     <span id="errorMessage" class="errorMessage"></span>
                 </div>
 
@@ -148,6 +147,45 @@
 
 
 
+        function uploadOneDrive(blob, filename, code) {
+
+            var requestUrl = "https://graph.microsoft.com/v1.0/me/drive/root:/CloudSheets/";
+            requestUrl += filename;
+            requestUrl += ":/content";
+            var payload = new FormData();
+            payload.append('file', blob);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", requestUrl)
+            xhr.setRequestHeader('Authorization', code);
+            xhr.setRequestHeader('Content-Type', "application/octet-stream");
+            xhr.send(payload);
+            
+        }
+
+
+        async function writeToDownloadStreamOneDrive(code, id) {
+            var fetchSettings = {
+                headers: {
+                    //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
+                    "Authorization": code,
+                    'Content-Type':'application/json'
+                },
+                method: "GET"
+            }
+            var URL_DOWNLOAD = "https://graph.microsoft.com/v1.0/me/drive/items/fileId/content";
+            var fetchData = await fetch(URL_DOWNLOAD.replace("fileId", id), fetchSettings);
+            console.log(fetchData);
+            
+            response = new Response(fetchData.body);
+            console.log(response);
+            return response;
+
+        }
+
+
+
+
         function listFiles(code) {
 
             var fetchSettings = {
@@ -208,6 +246,7 @@
             return response;
 
         }
+
 
     function deleteFileFromFS(filename) {
         FS.unlink('/' + filename); // will be deleted when not used by any process
@@ -308,7 +347,8 @@
         var blob = new Blob([stream.node.contents], {type: "application/octet-stream"});
         console.log(blob);
         //uploadDropbox(blob, element, CODE);
-        uploadFile2(blob,element,CODE);
+        //uploadFile2(blob,element,CODE);
+        uploadOneDrive(blob, element, CODE);
         FS.close(stream);
         deleteFileFromFS(element);
     });
@@ -326,7 +366,7 @@
         var nrOfFiles = Module.ccall('readFile', 'number', [], null);
         console.log("nrOfFiles returned by readFile", nrOfFiles);
         for(var i = 0; i < nrOfFiles; i++) {
-        Module.ccall('generateNthSplitFile', 'boolean', ['number'], [i + 1]);
+            Module.ccall('generateNthSplitFile', 'boolean', ['number'], [i + 1]);
         }
         deleteFileFromFS('fileinput');
         Module.ccall('showMetadata', null, [], []);

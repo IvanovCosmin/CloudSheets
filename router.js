@@ -1,11 +1,13 @@
 let url = require('url');
 let qs = require('querystring');;
 let stollib = require('./stol-main');
-let bazadate = require( './index');
+let db = require('./database');
 let utils = require('./router-utils');
 let google = require('./google-framework');
 let dropbox = require('./dropbox-framework');
 let onedrive = require('./onedrive-framework');
+
+let bazadate = db.DataBase();
 
 let routerObjectConstructor = (req) => {
     let return_obj = {}
@@ -43,6 +45,7 @@ let routerObjectConstructor = (req) => {
     }
     return return_obj;
 }
+
 
 let resolver = (req, res) => { 
     let requestBody = "";
@@ -162,8 +165,7 @@ let resolver = (req, res) => {
             if(codeType == "O"){
                 workingObj = onedrive;
             }
-            else
-            if(codeType == "G") {
+            else if(codeType == "G") {
                 workingObj = google;
             }
             else {
@@ -203,6 +205,11 @@ let resolver = (req, res) => {
     })
 }
 
+process.on('SIGINT', () => {
+    bazadate.closeDatabase();
+});
+
 module.exports = {
-    "resolve": resolver
+    "resolve": resolver,
+    "database": bazadate
 } 
