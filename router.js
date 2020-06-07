@@ -7,8 +7,15 @@ let google = require('./google-framework');
 let dropbox = require('./dropbox-framework');
 let onedrive = require('./onedrive-framework');
 let statedb = require("./statedb");
+let UserModel = require('./models/UserModel');
+let FileModel = require("./models/FileModel");
+let MetadataModel = require("./models/MetadataModel");
+
 
 let bazadate = db.DataBase();
+let UserDB =  UserModel.CreateUserModel(bazadate.db);
+let FileDB = FileModel.CreateFileModel(bazadate.db);
+let MetadataDB = MetadataModel.CreateMetadataModel(bazadate.db);
 
 let routerObjectConstructor = (req) => {
     let return_obj = {}
@@ -71,7 +78,7 @@ let resolver = (req, res) => {
         }
         else if (router.is('/user')) {
             console.log(router.getParam('username'));
-            let userPromise = bazadate.getUserByUsername(router.getParam('username'));
+            let userPromise = UserDB.getUserByUsername(router.getParam('username'));
             userPromise.then( (result) => {
                     utils.sendJson(200,res,result);
                 }
@@ -84,11 +91,15 @@ let resolver = (req, res) => {
         else if (router.is('/userpage')) {
             utils.sendTemplate(req, res, "templates/user_page.html", {}, 200);
         }
+
+        else if(router.is('/adminPage')){
+            utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);
+        }
         else if(router.is('/allusers')) {
-            let userPromise = bazadate.getAllUsers();
+            let userPromise = UserDB.getAllUsers();
 
             userPromise.then( (result)=>{
-                    utils.sendJson(200, res, result);
+                    utils.sendJson(200, res, {data:result});
             });
         }
         else if(router.is('/dropDB')) {
@@ -102,6 +113,13 @@ let resolver = (req, res) => {
         }
         else if(router.is("/text-input/login")){
             utils.sendTemplate(req,res,"static/text-input/login.html",{},200);
+        }
+        else if(router.is('/getUserFiles')){
+            const email = router.getParam("email");
+            let userPromise = bazadate.getUserFiles(email)
+            userPromise.then((result)=>{
+                utils.sendJson(200,res,{data: result})
+            }).catch(err=>console.log(err))
         }
         else if(router.is("/get-providers-for-files")) {
             // TODO chiar sa le ia din baza de date
@@ -127,12 +145,13 @@ let resolver = (req, res) => {
             const name=requestBody.name;
             const surname=requestBody.surname;
             console.log(requestBody);
-            bazadate.getUserByEmail(email).then(
+            UserDB.getUserByEmail(email).then(
                 (user)=>{
                     if(user[0]==undefined){
-                        bazadate.insertUser(email, password, name, surname);
-                        res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
-                        res.end();
+                        UserDB.insertUser(email, password, name, surname);
+                        //res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
+                        //res.end();
+                        utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email }, 200);
                         }
                         else{
                             res.writeHead(301,{"Location":"https://localhost:8000/"});
@@ -146,27 +165,52 @@ let resolver = (req, res) => {
             const size=requestBody.size;
             const files=requestBody.files;
             const email=requestBody.email;
-            bazadate.insertUserFile(fileName,size,files,email);
+            MetadataDB.insertUserFile(fileName,size,files,email);
 
         }
         else if (router.is('/welcomePage/onLogin',"POST")){
             email=requestBody.email;
             password = requestBody.password;
-             bazadate.getUserByEmail(email).then(
-               (user) => {
-                    if(user[0] !== undefined && password === user[0].password) {
-                        res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
-                        res.end();
-                    }
-                    else {
-                        res.writeHead(301,{"Location":"https://localhost:8000/"});
-                        res.end(); 
-                    }
+            UserDB.getUserByEmail(email).then(
+               (user)=>{
+                   if(user[0] !== undefined && password === user[0].password){
+                   // res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
+                    //res.end();
+                    utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email }, 200);
+                   }else{
+                    
+                    res.writeHead(301,{"Location":"https://localhost:8000/"});
+                    res.end(); 
+                   }
                     
                 })
                 .catch(err => console.log(err));
         }
-
+        else if (router.is('/settings/changeSettings',"POST")){
+            const email=requestBody.email;
+            const name = requestBody.name;
+            const surname = requestBody.surname;
+            const oldpass = requestBody.oldpass;
+            const pass = requestBody.pass;
+            const mode = requestBody.mode;
+            const First = requestBody.First;
+            const Second = requestBody.Second;
+            const Third = requestBody.Third;
+        
+            UserDB.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
+                (result)=>{
+                    if(result==true){
+                        utils.sendTemplate(req, res, "templates/settings-page.html", {"mesaj":"Succes!"}, 200);
+                    }
+                    else{
+                        utils.sendTemplate(req, res, "templates/settings-page.html", {"mesaj":"Wrong old password"}, 200);
+                    }
+                }
+            ).catch(
+                (err)=>console.log(err)
+            );
+            
+        }
         else if(router.is('/upload', "POST")) {
             // nu tin minte ce i cu asta. got help. probabil trb sa dispara
             utils.upload(requestBody, res);
@@ -241,12 +285,15 @@ let resolver = (req, res) => {
 
 
         }
+        else if(router.is("/settings")){
+            utils.sendTemplate(req,res,"templates/settings-page.html",{},200);
+        }
 
         else if(router.is("/getfileid")) {
             const email = router.getParam("email");
             const filename = router.getParam("filename");
             console.log(email, filename);
-            const rezult = await bazadate.getOnedriveFileId(email, filename);
+            const rezult = await FileDB.getFileId(email, filename);
             utils.sendJson(200, res, {
                 "id": rezult[0]
             }); 
@@ -258,9 +305,21 @@ let resolver = (req, res) => {
             const filename = requestBody.filename;
             const id = requestBody.id;
             console.log(email,filename, id);
-            bazadate.insertOnedriveFile(email, filename, id);
+            FileDB.insertFile(email, filename, id);
             res.writeHead(200);
             res.end();
+        }
+        else if(router.is("/getCSV","POST")){
+            let email=requestBody.emails.split(',');
+            console.log(email)
+            MetadataDB.toCSV(email[0]).then(
+                (csv) => {
+                    console.log(csv);
+                    utils.sendJson(200,res,{data:csv});
+                }
+            ).catch(
+                (err)=>console.log(err)
+            );
         }
 
         else if(router.endswith(".wasm")) {

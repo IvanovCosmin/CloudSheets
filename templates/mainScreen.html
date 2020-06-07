@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <title>Your account</title>
-    <link rel="stylesheet" type="text/css" href="../static/mainScreen/styles.css">
-    <script src='../static/mainScreen/options.js'></script>
-    <script src="../static/mainScreen/progress-bar.js"></script>
-</head>
+    <head>
+        <title>Your account</title>
+        <link rel="stylesheet" type="text/css" href="../static/mainScreen/styles.css">
+        <script src='../static/mainScreen/options.js'></script>
+        <script src="../static/mainScreen/progress-bar.js"></script>
+    </head>
 
-<body>
-    <div class="mainContainer">
-        <header>
-            <div class="imgContainer">
-                <img src='../assets/sigla.svg' alt="logo image" />
-            </div>
-            <div class="profileDetails">
-                <span class="userName">Ioana Maniga</span>
-                <button onclick="showMenu(); " class="userCircle">
-                    <span class="userInitials">IM</span>
-                </button>
-                <div id="dropdown-content" class="dropdown-content">
-                    <a href="/oauth-redirect">Upload a file</a>
-                    <a href="../filesPage/index.html">Your files</a>
-                    <a href="">See documentation</a>
-                    <a href="../welcomePage/index.html">Log out</a>
+    <body>
+        <div class="mainContainer">
+            <header>
+                <div class="imgContainer">
+                    <img src='../assets/sigla.svg' alt="logo image" />
+                </div>
+                <div class="profileDetails">
+                    <span class="userName">Ioana Maniga</span>
+                    <button onclick="showMenu(); " class="userCircle">
+                        <span class="userInitials">IM</span>
+                    </button>
+                    <div id="dropdown-content" class="dropdown-content">
+                        <a href="/oauth-redirect">Upload a file</a>
+                        <a href="../filesPage/index.html">Your files</a>
+                        <a href="../settings"> Settings </a>
+                        <a href="">See documentation</a>
+                        <a href="../welcomePage/index.html">Log out</a>
+                    </div>
                 </div>
             </div>
         </header>
@@ -302,6 +304,9 @@
         
 
         var localStorage = window.localStorage;
+        if("{{ email }}" != "undefined"){
+            localStorage.setItem("email", "{{ email }}");
+        }    
         localStorage.setItem("{{ codeType }}", "{{ code }}");
         Dropbox.code = localStorage.getItem("D");
         Google.code = localStorage.getItem("G");
@@ -491,13 +496,15 @@
             console.log("createLoadingBars")
             var files = metadataFile.match(/[a-zA-Z0-9]+\.csht/g)
             var uploadFiles = document.getElementById("upload-files");
+            var myDiv = document.getElementById('tableContainer');
+            var html = '<table ><tr id="firstRow" class="firstRow"><th>Nr.Crt.</th><th>File name</th><th>Size</th><th>Location</th></tr>'
             console.log(files);
-            files.forEach(element => {
-                var h1 = document.createElement("p");
-                var text = document.createTextNode(element);
-                h1.appendChild(text);
-                uploadFiles.appendChild(h1);
+            files.forEach((element,i) => {
+                html += '<tr><th>' + (i + 1) + '</th><th>' + element + '</th><th>' + '100' + '</th><th>' +
+                                    'acolo' + '</th></tr>';
             });
+            html = html + '</table>'
+            myDiv.innerHTML = html;
             files.forEach(element => {
                 var stream = FS.open("/" + element, "r");
                 console.log(stream);
