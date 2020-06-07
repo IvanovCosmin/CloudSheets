@@ -463,13 +463,15 @@
             console.log("createLoadingBars")
             var files = metadataFile.match(/[a-zA-Z0-9]+\.csht/g)
             var uploadFiles = document.getElementById("upload-files");
+            var myDiv = document.getElementById('tableContainer');
+            var html = '<table ><tr id="firstRow" class="firstRow"><th>Nr.Crt.</th><th>File name</th><th>Size</th><th>Location</th></tr>'
             console.log(files);
-            files.forEach(element => {
-                var h1 = document.createElement("p");
-                var text = document.createTextNode(element);
-                h1.appendChild(text);
-                uploadFiles.appendChild(h1);
+            files.forEach((element,i) => {
+                html += '<tr><th>' + (i + 1) + '</th><th>' + element + '</th><th>' + '100' + '</th><th>' +
+                                    'acolo' + '</th></tr>';
             });
+            html = html + '</table>'
+            myDiv.innerHTML = html;
             files.forEach(element => {
                 var stream = FS.open("/" + element, "r");
                 console.log(stream);

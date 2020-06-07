@@ -13,7 +13,7 @@ function DataBase(){
     createTable:function() {
         //this.db.run('CREATE TABLE user(email text, password text, name text , surname text )');
         // this.db.run('CREATE TABLE user_onedrive_files(email text, fisier text , id_fisier text )');
-        //this.db.run('CREATE TABLE uploaded_files(file_name,size,chunks,user_email)');
+        this.db.run('CREATE TABLE uploaded_files(file_name,size,chunks,user_email)');
     },
     
     dropTable:function() {
@@ -58,6 +58,18 @@ function DataBase(){
             
             console.log(`A row has been inserted with rowid ${this.lastID}`);
         });
+    },
+
+    getUserFiles :function(email) {
+        return new Promise((resolve,reject)=>{
+            let result=[];
+            this.db.each(`select * from uploaded_files where user_email='${email}';`,(err, row) => {
+                if(err) { reject(err); }
+                result.push(row);
+            }, () => {
+                resolve(result);
+            })
+        } );
     },
     
     getAllUsers :function()  {
