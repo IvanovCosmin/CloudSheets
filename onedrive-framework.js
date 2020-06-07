@@ -32,7 +32,70 @@ let login = (redirectUri = REDIRECT_URI, responseType = RESPONSE_TYPE, scope = S
 
 }
 
-let accessCode = (code, redirectUri = REDIRECT_URI) => {
+let accessCode = (code, redirectUri = "https://localhost:8000/oauth-redirect") => {
+    return new Promise((resolve, reject) => {
+        askForFirstToken(code, redirectUri).then(
+            (object) => {
+                refreshToken(object["refresh_token"]).then(
+                    (accToken) => {
+                        resolve(accToken);
+                    }
+                )
+            }
+        )
+        .catch((err) => reject(err));
+    });
+}
+
+let refreshToken = (rtoken) => {
+    let requestUri = TOKENURL;
+
+    let form = {
+        "refresh_token": rtoken,
+        "grant_type": "refresh_token",
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET
+    }
+
+    const formData = queryString.stringify(form);
+    const contentLen = formData.length;
+
+    let data = "";
+
+    return new Promise((resolve, reject) => {
+        let req = https.request(
+            {
+                headers: {
+                    "Content-Length": contentLen,
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                hostname: "login.microsoftonline.com",
+                path: "/consumers/oauth2/v2.0/token",
+                method: "POST",
+                port: 443
+            },
+            function (res) {
+                res.on('data', (d) => {data += d});
+                res.on('end', () => {
+                    console.log(data)
+                    resolve((JSON.parse(data))['access_token'])
+                });
+            }
+        );
+    
+        req.on("error", (error) => {
+            reject(error);
+        })
+    
+        req.write(formData);
+        req.end();
+    }
+    )
+
+    
+}
+
+let askForFirstToken = (code, redirectUri = REDIRECT_URI) => {
     let requestUri = TOKENURL;
 
     let form = {
@@ -65,7 +128,7 @@ let accessCode = (code, redirectUri = REDIRECT_URI) => {
                 
                 res.on('data', (d) => {data += d});
                 res.on('end', () => {
-                    //console.log(data);
+                    console.log(data);
                     resolve((JSON.parse(data))['access_token'])
                 });
             }
@@ -94,5 +157,6 @@ let listFiles = () => {
 
 module.exports={
     "login_link": login,
-    "accesscode": accessCode
+    "accesscode": accessCode,
+    "refreshToken": refreshToken
 };
