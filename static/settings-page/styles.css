@@ -1,0 +1,269 @@
+body {
+    margin:0;
+    background:#000514;
+    display: flex;
+    flex-direction: column;
+}
+
+.mainContainer {
+    background-size: 100% 100%;
+    display: flex;
+    flex:1;
+    height: 100vh;
+    flex-direction:column;
+}
+
+header {
+    display:flex;
+    width: 100%;
+    align-self: flex-start;
+
+}
+
+img {
+    align-self: flex-start;
+    margin-left: 80px;
+    flex:1;
+}
+
+.userCircle {
+   background: #60BFF2;
+   display: flex;
+   justify-content:center ;
+   width:50px;
+   height: 50px;
+   border-radius: 30px;
+   margin-top: auto;
+   margin-bottom: auto;
+   margin-left:10px;
+   margin-right:10px;
+   border:none !important;
+
+} 
+
+.userInitials {
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 2vh;
+    color:#000514;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.userName {
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 2vh;
+    color:#FFFFF0;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.profileDetails {
+    display: flex;
+    flex-direction: row;
+    flex:1;
+    justify-content: flex-end;
+    padding-right: 50px;
+}
+
+  
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    border-radius: 6px;;
+    min-width: 200px;
+    z-index: 1;
+    margin-top: 70px;
+    font-size: 20px;
+  }
+
+
+  .dropdown-content a {
+    padding: 12px 16px;
+    font-family: 'Averia Sans Libre', cursive;
+    color:#3F1842;
+    text-decoration: none;
+    display: block;
+  }
+  .dropdown-content a:hover {
+    color: #EF626C;
+}
+
+
+ .accountBtn{
+    color: #000514;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    background-color: #EF626C !important;
+    padding: 10px;
+    background: transparent;
+    border:none !important;
+    display: inline-block;
+    transition: all 0.4s ease 0s;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+     font-size: 110%;
+    border-radius: 6px;
+  }
+
+  .labelTitle {
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+  }
+
+  .accounts {
+      display:flex;
+      flex-wrap: wrap;
+      min-width:50%;
+    border-radius: 25px;
+    margin-left: 50px;
+    margin-top: 50px;
+  }
+  
+  .errorMessage {
+      color:#FF0000;
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-left: 5px;
+      font-family: 'Averia Sans Libre', cursive;
+      font-size: 2vh;
+  }
+
+  .labelTitle {
+    color: #0BD54F;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 3vh;
+  }
+  .uploadmessage {
+    color: #60BFF2;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 3vh;
+  }
+  .prioritiyLabel {
+    color: #FFFFF0;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 2vh;
+}
+.navigationArea{
+  width: 50%;
+  padding-left: 50px;
+
+}
+
+input {
+    min-height: 3vh;
+}
+
+input[type=text]  {
+    background-color: #FFFFF0;
+    display: flex;
+    width:90%;
+    padding: 12px 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    font-weight: 100;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 2vh;
+  }
+
+input[type=radio]{
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+
+.radioLabel{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #FFFFF0;
+  font-weight: 100;
+  font-family: 'Averia Sans Libre', cursive;
+  font-size: 2.5vh;
+  text-align: center;
+  margin-left: 10px;
+  
+}
+
+.radioSelect{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.Priorities{
+  display: none;
+}
+
+.Priority{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  
+}
+
+
+.LoadSettings{
+  background-color: #FFFFF0;
+  margin-left: 10px;
+  height: 4vh;
+  width: 40%;
+  text-align:center ;
+  font-weight: 100;
+  font-family: 'Averia Sans Libre', cursive;
+  font-size: 2vh;
+  border-radius: 6px;
+}
+
+.dropdownValue{
+  background-color: #f1f1f1;
+  border-radius: 6px;;
+  min-width: 200px;
+  z-index: 1;
+  margin-top: 70px;
+  font-size: 15px;
+}
+
+/* .submitButton {
+  padding: 5px;
+  margin-top: 30px;
+  background: #FFFFF0;
+  border:none !important;
+  transition: all 0.4s ease 0s;
+  width:30%;
+  color: black !important;
+  font-weight: 100;
+  font-family: 'Averia Sans Libre', cursive;
+  font-size: 150%;
+  border-radius: 6px;
+  margin-left: 100%;
+}
+
+.submitButton:hover {
+  color: black !important;
+  background: #0BD54F;
+
+  transition: all 0.4s ease 0s;
+} */
+
+input[type=submit] {
+  display: flex;
+  background-color:white;
+  color: #000514 !important;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 100;
+font-family: 'Averia Sans Libre', cursive;
+ font-size: 150%;
+margin-top: 10px;
+margin-left: 75%;
+}
+input[type=submit]:hover {
+  background-color: #0BD54F;
+}

@@ -22,6 +22,7 @@
                     <div id="dropdown-content" class="dropdown-content">
                         <a href="/oauth-redirect">Upload a file</a>
                         <a href="../filesPage/index.html">Your files</a>
+                        <a href="../settings"> Settings </a>
                         <a href="">See documentation</a>
                         <a href="../welcomePage/index.html">Log out</a>
                     </div>
@@ -73,6 +74,9 @@
     </body>
     <script>
         var localStorage = window.localStorage;
+        if("{{ email }}" != "undefined"){
+            localStorage.setItem("email", "{{ email }}");
+        }    
         localStorage.setItem("{{ codeType }}", "{{ code }}");
         var CODE = localStorage.getItem("{{ codeType }}");
         console.log(CODE);
