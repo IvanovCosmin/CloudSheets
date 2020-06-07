@@ -49,14 +49,14 @@ var files = [
 
 
 let buildTable = () => {
-    var myDiv = document.getElementById('tableContainer');
-    var html = '<table ><tr id="firstRow" class="firstRow"><th>Nr.Crt.</th><th>File name</th><th>Size</th><th>Location</th></tr>'
-    for (let i = 0; i < files.length; i++) {
-        html += '<tr><th>' + (i + 1) + '</th><th>' + files[i].name + '</th><th>' + files[i].size + '</th><th>' +
-            files[i].location + '</th></tr>';
-    }
-    html = html + '</table>'
-    myDiv.innerHTML = html;
+    // var myDiv = document.getElementById('tableContainer');
+    // var html = '<table ><tr id="firstRow" class="firstRow"><th>Nr.Crt.</th><th>File name</th><th>Size</th><th>Location</th></tr>'
+    // for (let i = 0; i < files.length; i++) {
+    //     html += '<tr><th>' + (i + 1) + '</th><th>' + files[i].name + '</th><th>' + files[i].size + '</th><th>' +
+    //         files[i].location + '</th></tr>';
+    // }
+    // html = html + '</table>'
+    // myDiv.innerHTML = html;
 }
 
 let showError = () => {
@@ -85,10 +85,16 @@ function upload() {
     else { showError(); }
 }
 
-function showname() {
+function showName() {
     var name = document.getElementById('file-input');
-    console.log('Selected file: ' + name.files.item(0).name);
-    console.log('Selected file: ' + name.files.item(0).size);
+    var file = document.getElementById('chosen-file');
+    if (name.files.item(0).name) {
+        file.innerHTML = name.files.item(0).name;
+        console.log('Selected file: ' + name.files.item(0).name);
+        document.getElementById('startButton').style.display = "block";
+    }
+
+    // console.log('Selected file: ' + name.files.item(0).size);
 
 };
 

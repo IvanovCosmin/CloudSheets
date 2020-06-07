@@ -36,7 +36,7 @@ const getStarted = `<form action="/welcomePage/onRegister" method="POST" >
        title="Please include at least 1 uppercase character, 1 lowercase character, and 1 number." 
        required>
 
-       <input type="submit"  id="submitBtn" value="Submit">
+       <input onclick="submitBtn('email')" type="submit"  id="submitBtn" value="Submit">
 </form>
 `;
 
@@ -49,14 +49,14 @@ const logIn=`<form action="/welcomePage/onLogin" method="POST" >
 <label class = "labelTitle" for="password">Password:</label>
 <input type="password" name="password" id="password" placeHolder="Enter your password.." required>
 
-<input type="submit"  id="submitBtn1" value="Submit">
+<input onclick="submitBtn('email')" type="submit"  id="submitBtn1" value="Submit">
 </form>
 `;
 
-function submitBtn() {
-  // document.getElementById("submitBtn1").onclick = function () {
-  location.href = "https://localhost:8000/oauth-redirect";
-  // };
+function submitBtn(id) {
+  console.log("heeelllpppp");
+  window.localStorage.setItem("email", document.getElementById(id).value);
+
 }
 
 

@@ -10,6 +10,30 @@ let macacpeviata = () =>
     return output;
 }
 
+let parseBodyFormData = (body) => {
+    const lines = body.split("\r\n");
+    const separtor = lines[0];
+    const properties = body.split(separtor);
+    properties.pop();
+    properties.shift();
+    console.log("lines", lines);
+    console.log("separator", separtor);
+    console.log("properties", properties);
+    let returnObj = {}
+
+    for (let prop of properties) {
+        const proplines = prop.split("\r\n");
+        proplines.shift();
+        let key = proplines[0].split("name=")[1];
+        key = key.replace(/\"/gi, "");
+        console.log("key", key)
+        const value = proplines[2];
+        returnObj[key] = value;
+    }
+
+    return returnObj;
+}
+
 // the function that parses the template
 let prepareServita = (templateBody, context) => {
     // TODO sa se faca tempalteuri care sa poata si evalua anumite expresii sau un for :P
@@ -107,5 +131,6 @@ module.exports = {
     "staticResourceDropper": staticResourceDropper,
     "wasmResourceDropper": wasmResourceDropper,
     "svgResourceDropper": svgResourceDropper,
-    "randomString": macacpeviata
+    "randomString": macacpeviata,
+    "parseBodyFormData": parseBodyFormData
 };

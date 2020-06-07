@@ -53,9 +53,16 @@ let resolver = (req, res) => {
         requestBody += data;
     })
 
-    req.on('end', () => {
+    req.on('end', async () => {
         console.log(requestBody);
-        requestBody = qs.parse(requestBody);
+        if (requestBody.includes("\n\r")) {
+            requestBody = utils.parseBodyFormData(requestBody);
+        }
+        else {
+            requestBody = qs.parse(requestBody);
+        }
+        console.log(requestBody);
+
         let router = routerObjectConstructor(req);
         
         if(router.is('/')) {
@@ -74,7 +81,7 @@ let resolver = (req, res) => {
             );
         }
         else if (router.is('/mainScreen/mainpage')) {
-            utils.sendTemplate(req, res, "static/mainScreen/index.html", {}, 200);
+            utils.sendTemplate(req, res, "templates/mainScreen.html", {}, 200);
         }
             
         else if (router.is('/userpage')) {
@@ -84,7 +91,7 @@ let resolver = (req, res) => {
             let userPromise = bazadate.getAllUsers();
 
             userPromise.then( (result)=>{
-                    utils.sendJson(200,res,result);
+                    utils.sendJson(200, res, result);
             });
         }
         else if(router.is('/dropDB')) {
@@ -99,11 +106,30 @@ let resolver = (req, res) => {
         else if(router.is("/text-input/login")){
             utils.sendTemplate(req,res,"static/text-input/login.html",{},200);
         }
+        else if(router.is("/get-providers-for-files")) {
+            // TODO chiar sa le ia din baza de date
+            const fileNames = JSON.parse(req.headers["data"])["names"];
+            console.log(fileNames);
+
+            let providerNames = [];
+            let providers = ["G", "D"];
+            let counter = 0;
+            for(name of fileNames) {
+                providerNames.push(providers[counter%providers.length]);
+                counter++;
+            }
+
+            let raspuns = {
+                "names": providerNames
+            }
+            utils.sendJson(200, res, raspuns);
+        }
         else if (router.is('/welcomePage/onRegister',"POST")){
-            email=requestBody.email;
-            password=requestBody.password;
-            name=requestBody.name;
-            surname=requestBody.surname;
+            const email=requestBody.email;
+            const password=requestBody.password;
+            const name=requestBody.name;
+            const surname=requestBody.surname;
+            console.log(requestBody);
             bazadate.getUserByEmail(email).then(
                 (user)=>{
                     if(user[0]==undefined){
@@ -118,6 +144,14 @@ let resolver = (req, res) => {
                         }
                 }
             );
+        }
+        else if(router.is('/sendMetadata',"POST")){
+            const fileName=requestBody.fileName;
+            const size=requestBody.size;
+            const files=requestBody.files;
+            const email=requestBody.email;
+            bazadate.insertUserFile(fileName,size,files,email);
+
         }
         else if (router.is('/welcomePage/onLogin',"POST")){
             email=requestBody.email;
@@ -211,7 +245,25 @@ let resolver = (req, res) => {
             utils.sendTemplate(req,res,"templates/settings-page.html",{},200);
         }
 
-        
+        else if(router.is("/getfileid")) {
+            const email = router.getParam("email");
+            const filename = router.getParam("filename");
+            console.log(email, filename);
+            const rezult = await bazadate.getOnedriveFileId(email, filename);
+            utils.sendJson(200, res, {
+                "id": rezult[0]
+            }); 
+        }
+
+        else if(router.is("/insertfileid")) {
+            const email = router.getParam("email");
+            const filename = router.getParam("filename");
+            const id = router.getParam("id");
+            console.log(email,filename, id);
+            bazadate.insertOnedriveFile(email, filename, id);
+            res.writeHead(200);
+            res.end();
+        }
 
         else if(router.endswith(".wasm")) {
             if(!utils.wasmResourceDropper(router.requestInfo.urlPathname, res)) {

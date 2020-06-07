@@ -83,6 +83,28 @@ img {
     border-radius: 25px;
 }
 
+.upload-files {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin-left: 20px;
+}
+
+.chosen-file {
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 150%;
+    color:#FFFFF0;
+    margin-left: 5px;
+    margin-top: 20px;
+}
+
+.choose-file-area{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+   align-items: center;
+width:100%;
+}
 
 .uploadDetails{
     margin-top: 20px;
@@ -94,21 +116,8 @@ img {
     margin-left: 50px;
     
 }
-.fileChooser {
-    padding: 5px;
-    background: #FFFFF0;
-    border:none !important;
-    display: inline-block;
-    transition: all 0.4s ease 0s;
-    min-width:20%;
-    color: #000514 !important;
-    font-weight: 100;
-    font-family: 'Averia Sans Libre', cursive;
-    font-size: 150%;
-    border-radius: 6px;
-    margin-left: 50px;
-    margin-top: 20px;
-}
+
+
 
 .metadataDownloadButton{
     padding: 5px;
@@ -131,7 +140,7 @@ img {
     border:none !important;
     display: inline-block;
     transition: all 0.4s ease 0s;
-    min-width:20%;
+    width:30%;
     color: #000514 !important;
     font-weight: 100;
     font-family: 'Averia Sans Libre', cursive;
@@ -139,6 +148,7 @@ img {
     border-radius: 6px;
     margin-left: 50px;
     margin-top: 20px;
+
 }
 
 .startButton:hover {
