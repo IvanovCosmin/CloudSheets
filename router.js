@@ -87,6 +87,10 @@ let resolver = (req, res) => {
         else if (router.is('/userpage')) {
             utils.sendTemplate(req, res, "templates/user_page.html", {}, 200);
         }
+
+        else if(router.is('/adminPage')){
+            utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);
+        }
         else if(router.is('/allusers')) {
             let userPromise = bazadate.getAllUsers();
 
