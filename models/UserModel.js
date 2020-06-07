@@ -34,7 +34,7 @@ function UserModel(db){
                 let result=[];
                 this.db.each('select * from user;',(err,row) =>{
                     if(err) {reject(err);}
-                    result.push(row);
+                    result.push(row.email);
                     
                 } , () => {
                     resolve(result);

@@ -102,7 +102,7 @@ let resolver = (req, res) => {
             let userPromise = UserDB.getAllUsers();
 
             userPromise.then( (result)=>{
-                    utils.sendJson(200, res, result);
+                    utils.sendJson(200, res, {data:result});
             });
         }
         else if(router.is('/dropDB')) {
@@ -281,9 +281,10 @@ let resolver = (req, res) => {
             res.writeHead(200);
             res.end();
         }
-        else if(router.is("/getCSV")){
-            let email=router.getParam("email");
-            MetadataDB.toCSV(email).then(
+        else if(router.is("/getCSV","POST")){
+            let email=requestBody.emails.split(',');
+            console.log(email)
+            MetadataDB.toCSV(email[0]).then(
                 (csv) => {
                     console.log(csv);
                     utils.sendJson(200,res,{data:csv});

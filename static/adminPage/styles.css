@@ -113,7 +113,7 @@ header {
 }
 
 .select-user {
-    width:20%;
+    width:fit-content;
     background: transparent;
     border-radius: 6px;
     border-color:#FFFFF0;
