@@ -375,6 +375,19 @@
             downloadFromStreams(names, downloadStreams);*/
         }
 
+         function sendMetadata(fileName, size, files) {
+                var requestUrl = '/sendMetadata';
+                var payload = new FormData();
+                payload.append('fileName', fileName);
+                payload.append('size', size);
+                payload.append('files', files);
+                payload.append('email', localStorage.getItem("email"));
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", requestUrl)
+                xhr.send(payload);
+            }
+
         function createLoadingBarsForSplitFiles(metadataFile) {
             console.log("createLoadingBars")
             var files = metadataFile.match(/[a-zA-Z0-9]+\.csht/g)

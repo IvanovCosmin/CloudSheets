@@ -54,9 +54,16 @@ let resolver = (req, res) => {
     })
 
     req.on('end', async () => {
-        requestBody = qs.parse(requestBody);
+        console.log(requestBody);
+        if (requestBody.includes("\n\r")) {
+            requestBody = utils.parseBodyFormData(requestBody);
+        }
+        else {
+            requestBody = qs.parse(requestBody);
+        }
+        console.log(requestBody);
+
         let router = routerObjectConstructor(req);
-        console.log(req.headers);
         
         if(router.is('/')) {
             let testContext = {
@@ -74,7 +81,7 @@ let resolver = (req, res) => {
             );
         }
         else if (router.is('/mainScreen/mainpage')) {
-            utils.sendTemplate(req, res, "static/mainScreen/index.html", {}, 200);
+            utils.sendTemplate(req, res, "templates/mainScreen.html", {}, 200);
         }
             
         else if (router.is('/userpage')) {
@@ -118,15 +125,16 @@ let resolver = (req, res) => {
             utils.sendJson(200, res, raspuns);
         }
         else if (router.is('/welcomePage/onRegister',"POST")){
-            email=requestBody.email;
-            password=requestBody.password;
-            name=requestBody.name;
-            surname=requestBody.surname;
+            const email=requestBody.email;
+            const password=requestBody.password;
+            const name=requestBody.name;
+            const surname=requestBody.surname;
+            console.log(requestBody);
             bazadate.getUserByEmail(email).then(
                 (user)=>{
                     if(user[0]==undefined){
                         bazadate.insertUser(email, password, name, surname);
-                        res.writeHead(301,{"Location":"https://localhost:8000/text-input/login"});
+                        res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
                         res.end();
                         }
                         else{
@@ -136,19 +144,27 @@ let resolver = (req, res) => {
                 }
             );
         }
+        else if(router.is('/sendMetadata',"POST")){
+            const fileName=requestBody.fileName;
+            const size=requestBody.size;
+            const files=requestBody.files;
+            const email=requestBody.email;
+            bazadate.insertUserFile(fileName,size,files,email);
+
+        }
         else if (router.is('/welcomePage/onLogin',"POST")){
             email=requestBody.email;
             password = requestBody.password;
              bazadate.getUserByEmail(email).then(
-               (user)=>{
-                   if(user[0] !== undefined && password === user[0].password){
-                    res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
-                    res.end();
-                   }else{
-                    
-                    res.writeHead(301,{"Location":"https://localhost:8000/"});
-                    res.end(); 
-                   }
+               (user) => {
+                    if(user[0] !== undefined && password === user[0].password) {
+                        res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
+                        res.end();
+                    }
+                    else {
+                        res.writeHead(301,{"Location":"https://localhost:8000/"});
+                        res.end(); 
+                    }
                     
                 });
         }
