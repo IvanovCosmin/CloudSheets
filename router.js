@@ -138,8 +138,9 @@ let resolver = (req, res) => {
                 (user)=>{
                     if(user[0]==undefined){
                         bazadate.insertUser(email, password, name, surname);
-                        res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
-                        res.end();
+                        //res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
+                        //res.end();
+                        utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email }, 200);
                         }
                         else{
                             res.writeHead(301,{"Location":"https://localhost:8000/"});
@@ -159,20 +160,45 @@ let resolver = (req, res) => {
         else if (router.is('/welcomePage/onLogin',"POST")){
             email=requestBody.email;
             password = requestBody.password;
-             bazadate.getUserByEmail(email).then(
-               (user) => {
-                    if(user[0] !== undefined && password === user[0].password) {
-                        res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
-                        res.end();
-                    }
-                    else {
-                        res.writeHead(301,{"Location":"https://localhost:8000/"});
-                        res.end(); 
-                    }
+            bazadate.getUserByEmail(email).then(
+               (user)=>{
+                   if(user[0] !== undefined && password === user[0].password){
+                   // res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
+                    //res.end();
+                    utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email }, 200);
+                   }else{
+                    
+                    res.writeHead(301,{"Location":"https://localhost:8000/"});
+                    res.end(); 
+                   }
                     
                 });
         }
-
+        else if (router.is('/settings/changeSettings',"POST")){
+            const email=requestBody.email;
+            const name = requestBody.name;
+            const surname = requestBody.surname;
+            const oldpass = requestBody.oldpass;
+            const pass = requestBody.pass;
+            const mode = requestBody.mode;
+            const First = requestBody.First;
+            const Second = requestBody.Second;
+            const Third = requestBody.Third;
+        
+            bazadate.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
+                (result)=>{
+                    if(result==true){
+                        utils.sendTemplate(req, res, "templates/settings-page.html", {"mesaj":"Succes!"}, 200);
+                    }
+                    else{
+                        utils.sendTemplate(req, res, "templates/settings-page.html", {"mesaj":"Wrong old password"}, 200);
+                    }
+                }
+            ).catch(
+                (err)=>console.log(err)
+            );
+            
+        }
         else if(router.is('/upload', "POST")) {
             // nu tin minte ce i cu asta. got help. probabil trb sa dispara
             utils.upload(requestBody, res);
@@ -218,6 +244,9 @@ let resolver = (req, res) => {
                 utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
             });
 
+        }
+        else if(router.is("/settings")){
+            utils.sendTemplate(req,res,"templates/settings-page.html",{},200);
         }
 
         else if(router.is("/getfileid")) {
