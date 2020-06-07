@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>Your account</title>
+        <link rel="stylesheet" type="text/css" href="../static/settings-page/styles.css">
+        <script src='../static/settings-page/options.js'></script>
+    </head>
+
+    <body>
+        <div class="mainContainer">
+            <header>
+                <div class="imgContainer">
+                    <img src='../assets/sigla.svg' alt="logo image" />
+                </div>
+                <div class="profileDetails">
+                    <span class="userName">Ioana Maniga</span>
+                    <button onclick="showMenu(); " class="userCircle">
+                        <span class="userInitials">IM</span>
+                    </button>
+                    <div id="dropdown-content" class="dropdown-content">
+                        <a href="/oauth-redirect">Upload a file</a>
+                        <a href="../filesPage/index.html">Your files</a>
+                        <a href="../settings"> Settings </a>
+                        <a href="">See documentation</a>
+                        <a href="../welcomePage/index.html">Log out</a>
+                        
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="navigationArea">
+            <label class="uploadmessage" id="uplmsg" >{{ mesaj }}</label>
+            <form  action="/settings/changeSettings" method="POST" >
+                <input name="email" type="text" id="email" display="none"></input>
+                <label class = "labelTitle" >Change name:</label>
+                <input name="name" type="text" placeHolder="First name" > 
+                <input name="surname" type="text"  placeHolder="Last name" >
+
+                <br>
+                
+                <label class = "labelTitle" >Change password:</label>
+                <input name="oldpass" type="text" placeHolder="Old password" > 
+                <input name="pass" type="text"  placeHolder="New password" >
+                <input type="text"  placeHolder="Confirm password" >
+                
+                <br>
+                <label class = "labelTitle" >Upload mode:</label>
+                <br>
+                <div class="radioSelect" >
+                    <input type="radio" name="mode" id="Priority" value="Priority" onclick="showPriorities()">
+                    <label class = "radioLabel" for="Priority">Priority</label><br>
+                </div>
+                <div id="priorities" class="Priorities">
+                    <div class="Priority">
+                        <label class = "prioritiyLabel" >First:</label>
+                        <select name="First" class="LoadSettings" placeholder="First">
+                            <option class="dropdownValue" value="Google Drive">Google Drive</option>
+                            <option class="dropdownValue" value="Onedrive">Onedrive</option>
+                            <option class="dropdownValue" value="Dropbox">Dropbox</option>
+                        </select>
+                    </div>
+                    
+                    <br>
+                    <div class="Priority">
+                        <label class = "prioritiyLabel" >Second:</label>
+                        <select name="Second" class="LoadSettings" placeholder="Second">
+                            <option class="dropdownValue" value="Onedrive">Onedrive</option>
+                            <option class="dropdownValue" value="Google Drive">Google Drive</option>
+                            <option class="dropdownValue" value="Dropbox">Dropbox</option>
+                        </select>
+                    </div>
+                    
+                    <br>
+                    <div class="Priority">
+                        <label class = "prioritiyLabel" >Third:</label>
+                        <select name="Third" class="LoadSettings" placeholder="Third">
+                            <option class="dropdownValue" value="Dropbox">Dropbox</option>
+                            <option class="dropdownValue" value="Onedrive">Onedrive</option>
+                            <option class="dropdownValue" value="Google Drive">Google Drive</option>
+
+                        </select>
+                    </div>
+                    
+                    <br>
+                </div>    
+                <div class="radioSelect">
+                    <input type="radio" name="mode" id="Equal Distribution" value="Equal Distribution" onclick="notShowPriorities()">
+                    <label class = "radioLabel" for="Equal Distribution">Equal Distribution</label><br>
+                </div>
+                
+                <div class="radioSelect">
+                    <input type="radio" name="mode" id="Smart Sheet" value="Smart Sheet" onclick="notShowPriorities()">
+                    <label class = "radioLabel" for="Smart Sheet">Smart Sheet</label><br>
+                </div>
+                <div class="radioSelect">
+                    <input type="radio" name="mode" id="Redundant" value="Redundant" onclick="notShowPriorities()">
+                    <label class = "radioLabel" for="Redundant">Redundant</label><br>
+                </div>     
+                
+                
+                <input type="submit" class="submitButton"  value="Submit">-->
+                </form>
+        </div>
+        <script>
+                if("{{ mesaj }}" == "undefined"){
+                    document.getElementById("uplmsg").style.visibility= "hidden";
+                }else
+                if("{{ mesaj }}" != "Succes!"){
+                    document.getElementById("uplmsg").style.color= "red";
+                }
+                
+                document.getElementById("email").value=localStorage.getItem("email");
+                document.getElementById("email").style.display = "none";
+        </script>
+    </body>
+</html>
