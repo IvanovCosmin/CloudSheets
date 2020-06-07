@@ -111,9 +111,10 @@ let resolver = (req, res) => {
             utils.sendTemplate(req,res,"static/text-input/login.html",{},200);
         }
         else if(router.is('/getUserFiles')){
-            let uPromise = bazadate.getUserFiles("test@gmail.com")
-            uPromise.then((result)=>{
-                console.log("res",result);
+            const email = router.getParam("email");
+            let userPromise = bazadate.getUserFiles(email)
+            userPromise.then((result)=>{
+                utils.sendJson(200,res,{data: result})
             }).catch(err=>console.log(err))
         }
         else if(router.is("/get-providers-for-files")) {
