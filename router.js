@@ -119,9 +119,9 @@ let resolver = (req, res) => {
                 counter++;
             }
 
-            let raspuns = JSON.stringify({
+            let raspuns = {
                 "names": providerNames
-            })
+            }
             utils.sendJson(200, res, raspuns);
         }
         else if (router.is('/welcomePage/onRegister',"POST")){
