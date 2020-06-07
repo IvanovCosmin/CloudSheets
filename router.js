@@ -112,9 +112,9 @@ let resolver = (req, res) => {
                 counter++;
             }
 
-            let raspuns = JSON.stringify({
+            let raspuns = {
                 "names": providerNames
-            })
+            }
             utils.sendJson(200, res, raspuns);
         }
         else if (router.is('/welcomePage/onRegister',"POST")){
@@ -141,10 +141,11 @@ let resolver = (req, res) => {
             password = requestBody.password;
              bazadate.getUserByEmail(email).then(
                (user)=>{
-                   if(user[0] !== undefined && password === user[0].password){
+                   if(user[0] !== undefined && password === user[0].password) {
                     res.writeHead(301,{"Location":"https://localhost:8000/mainScreen/mainpage"});
                     res.end();
-                   }else{
+                   }
+                   else {
                     
                     res.writeHead(301,{"Location":"https://localhost:8000/"});
                     res.end(); 
