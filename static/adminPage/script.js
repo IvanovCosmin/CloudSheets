@@ -1,25 +1,50 @@
+const sendHttpRequest = (method,url,headers,data) =>{
+    return fetch(url,{
+        method: method,
+        body: data,
+        headers: headers
+    }).then(
+        res => {
+            if(!res.ok){
+                return res.json().then(
+                    err => {
+                        const error = new Error('Error!');
+                        error.data = err;
+                        throw error;
+                    }
+                );
+            }
+            return res.json();
+        }
+    );
+};
+
+
 function showMenu() {
     var menu = document.getElementById('dropdown-content');
     if (menu.style.display === 'block') menu.style.display = 'none';
     else menu.style.display = 'block';
 }
 
-var mock = [
-    "ala",
-    "bala",
-    "portocala"
-]
+
+
+var emails = [];
 
 var selectedUsers = [];
 
 function showClients() {
     let list = document.getElementById("clients-list");
     let html='';
-    for(i=0;i<mock.length;i++){
+    sendHttpRequest("GET","https://localhost:8000/allusers").then(
+        (data) =>{
+            emails = data.data;
+            for(i=0;i<data.data.length;i++){  
+            html = html + '<button id="'+data.data[i]+ '" class="select-user" onclick="onClickUser(this.id)">'+data.data[i]+'</button>';
+            list.innerHTML=html;
+        }
         
-        html = html + '<button id="'+mock[i]+ '" class="select-user" onclick="onClickUser(this.id)">'+mock[i]+'</button>';
-    }
-    list.innerHTML=html;
+    });
+    
 }
 
 function onClickUser(id) {
@@ -36,6 +61,38 @@ function onClickUser(id) {
    else{
     document.getElementById('export-button').style.display='none';
    }
+}
+
+function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
+
+function DownloadCSV(){
+    var requestUrl = 'https://localhost:8000/getCSV';
+    var payload = new FormData();
+    payload.append('emails', selectedUsers);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", requestUrl);
+    xhr.send(payload);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            result = JSON.parse(xhr.response)["data"];
+            console.log(result);
+            download("data.csv",result);
+        }
+    }
+
 }
 
 document.addEventListener("DOMContentLoaded", showClients);

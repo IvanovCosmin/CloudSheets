@@ -6,8 +6,15 @@ let utils = require('./router-utils');
 let google = require('./google-framework');
 let dropbox = require('./dropbox-framework');
 let onedrive = require('./onedrive-framework');
+let UserModel = require('./models/UserModel');
+let FileModel = require("./models/FileModel");
+let MetadataModel = require("./models/MetadataModel");
+
 
 let bazadate = db.DataBase();
+let UserDB =  UserModel.CreateUserModel(bazadate.db);
+let FileDB = FileModel.CreateFileModel(bazadate.db);
+let MetadataDB = MetadataModel.CreateMetadataModel(bazadate.db);
 
 let routerObjectConstructor = (req) => {
     let return_obj = {}
@@ -74,7 +81,7 @@ let resolver = (req, res) => {
         }
         else if (router.is('/user')) {
             console.log(router.getParam('username'));
-            let userPromise = bazadate.getUserByUsername(router.getParam('username'));
+            let userPromise = UserDB.getUserByUsername(router.getParam('username'));
             userPromise.then( (result) => {
                     utils.sendJson(200,res,result);
                 }
@@ -92,10 +99,10 @@ let resolver = (req, res) => {
             utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);
         }
         else if(router.is('/allusers')) {
-            let userPromise = bazadate.getAllUsers();
+            let userPromise = UserDB.getAllUsers();
 
             userPromise.then( (result)=>{
-                    utils.sendJson(200, res, result);
+                    utils.sendJson(200, res, {data:result});
             });
         }
         else if(router.is('/dropDB')) {
@@ -141,10 +148,10 @@ let resolver = (req, res) => {
             const name=requestBody.name;
             const surname=requestBody.surname;
             console.log(requestBody);
-            bazadate.getUserByEmail(email).then(
+            UserDB.getUserByEmail(email).then(
                 (user)=>{
                     if(user[0]==undefined){
-                        bazadate.insertUser(email, password, name, surname);
+                        UserDB.insertUser(email, password, name, surname);
                         //res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
                         //res.end();
                         utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email }, 200);
@@ -161,13 +168,13 @@ let resolver = (req, res) => {
             const size=requestBody.size;
             const files=requestBody.files;
             const email=requestBody.email;
-            bazadate.insertUserFile(fileName,size,files,email);
+            MetadataDB.insertUserFile(fileName,size,files,email);
 
         }
         else if (router.is('/welcomePage/onLogin',"POST")){
             email=requestBody.email;
             password = requestBody.password;
-            bazadate.getUserByEmail(email).then(
+            UserDB.getUserByEmail(email).then(
                (user)=>{
                    if(user[0] !== undefined && password === user[0].password){
                    // res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
@@ -192,7 +199,7 @@ let resolver = (req, res) => {
             const Second = requestBody.Second;
             const Third = requestBody.Third;
         
-            bazadate.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
+            UserDB.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
                 (result)=>{
                     if(result==true){
                         utils.sendTemplate(req, res, "templates/settings-page.html", {"mesaj":"Succes!"}, 200);
@@ -260,7 +267,7 @@ let resolver = (req, res) => {
             const email = router.getParam("email");
             const filename = router.getParam("filename");
             console.log(email, filename);
-            const rezult = await bazadate.getOnedriveFileId(email, filename);
+            const rezult = await FileDB.getFileId(email, filename);
             utils.sendJson(200, res, {
                 "id": rezult[0]
             }); 
@@ -271,9 +278,21 @@ let resolver = (req, res) => {
             const filename = router.getParam("filename");
             const id = router.getParam("id");
             console.log(email,filename, id);
-            bazadate.insertOnedriveFile(email, filename, id);
+            FileDB.insertFile(email, filename, id);
             res.writeHead(200);
             res.end();
+        }
+        else if(router.is("/getCSV","POST")){
+            let email=requestBody.emails.split(',');
+            console.log(email)
+            MetadataDB.toCSV(email[0]).then(
+                (csv) => {
+                    console.log(csv);
+                    utils.sendJson(200,res,{data:csv});
+                }
+            ).catch(
+                (err)=>console.log(err)
+            );
         }
 
         else if(router.endswith(".wasm")) {
