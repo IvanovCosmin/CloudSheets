@@ -27,7 +27,18 @@ function MetadataModel(db){
                 });
             });
     
-        }
+        },
+        getUserFiles :function(email) {
+            return new Promise((resolve,reject)=>{
+                let result=[];
+                this.db.each(`select * from uploaded_files where user_email='${email}';`,(err, row) => {
+                    if(err) { reject(err); }
+                    result.push(row);
+                }, () => {
+                    resolve(result);
+                })
+            } );
+        },
     }
 
     return obj;

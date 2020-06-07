@@ -94,6 +94,10 @@ let resolver = (req, res) => {
         else if (router.is('/userpage')) {
             utils.sendTemplate(req, res, "templates/user_page.html", {}, 200);
         }
+
+        else if(router.is('/adminPage')){
+            utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);
+        }
         else if(router.is('/allusers')) {
             let userPromise = UserDB.getAllUsers();
 
@@ -112,6 +116,12 @@ let resolver = (req, res) => {
         }
         else if(router.is("/text-input/login")){
             utils.sendTemplate(req,res,"static/text-input/login.html",{},200);
+        }
+        else if(router.is('/getUserFiles')){
+            let uPromise = bazadate.getUserFiles("test@gmail.com")
+            uPromise.then((result)=>{
+                console.log("res",result);
+            }).catch(err=>console.log(err))
         }
         else if(router.is("/get-providers-for-files")) {
             // TODO chiar sa le ia din baza de date

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Administrator</title>
+    <link rel="stylesheet" type="text/css" href="../static/adminPage/styles.css">
+    <script src='../static/adminPage/script.js'></script>
+</head>
+
+<body>
+    <div class="mainContainer">
+        <header>
+            <div class="imgContainer">
+                <img class="logo" src='../assets/sigla.svg' alt="logo image" />
+            </div>
+            <div class="profileDetails">
+                <span class="userName">Administrator Page</span>
+                <button onclick="showMenu();" class="userBtn" >
+                <img class="admin" src='../assets/admin.svg' alt="logo image" />
+                </button>
+                <div id="dropdown-content" class="dropdown-content">
+                    <a href="../welcomePage/index.html">Log out</a>
+                </div>
+            </div>
+            
+        </header>
+        <div class="container">
+            
+            <p class="export">Export data(click on client name to select)</p>
+            <div class="exports-container"></div>
+            <p class="title">Clients list:</p>
+            
+            <div id="clients-list" class="clients-list"></div>
+            <div class="manage-exports"> 
+            <button id='export-button' class='export-button' style="display: none;">Export</button>
+           </div>
+            </div> 
+        </div>
+        </div>
+    </body>
+
+</html>
