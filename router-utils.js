@@ -11,6 +11,7 @@ let randomString = () =>
 }
 
 let parseBodyFormData = (body) => {
+    console.log("aici:"+body);
     const lines = body.split("\r\n");
     const separtor = lines[0];
     const properties = body.split(separtor);
@@ -75,10 +76,6 @@ let sendJson = (statusCode,res,data) =>  {
 let redirect = (res, url) => {    
     //weird bug in simple-oauth2 doesnt understand that i am using oauth2 not oauth
     //TODO dat replace doar la oauthul din https://www.dropbox.com/oauth in functie separata
-    
-    // libraria vietii simple-oauth2 nu este in stare sa te lase sa setezi pathul.
-    // pentru ca nu puteam folosi nimic
-    // pana la urma imi iau inima in dinti si o sa scriu eu ce trebuie.
     //url = url.replace("oauth", "oauth2");
     console.log(url);
     res.writeHead(302, {
@@ -125,6 +122,19 @@ let resourceDropper = (folder, contentType = undefined) => {
     }
 }
 
+let validateInput = (input)=>{
+    const deletable = ['<','>',';',"'",'"'];
+    let result = "";
+    for(let letter of input){
+        if(deletable.contains(letter)){
+           return false; 
+        }
+    }
+    return true;
+}
+
+
+
 let staticResourceDropper = resourceDropper('./static');
 let wasmResourceDropper = resourceDropper('./webasm/bin', 'application/wasm');
 let svgResourceDropper = resourceDropper('./static', 'image/svg+xml');
@@ -137,5 +147,7 @@ module.exports = {
     "wasmResourceDropper": wasmResourceDropper,
     "svgResourceDropper": svgResourceDropper,
     "randomString": randomString,
-    "parseBodyFormData": parseBodyFormData
+    "parseBodyFormData": parseBodyFormData,
+    "servita":prepareServita,
+    "validateInput":validateInput
 };
