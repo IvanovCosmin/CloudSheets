@@ -245,20 +245,6 @@ const ProgressBarController = {
     }
 }
 
-// functia asta e vina si rusinea lui Cosmin.
-function parseMetaFile(metafile) {
-    let metaarray = metafile.split("\n");
-    metaarray.splice(metaarray.length - 1, 1); // stergem ultimul element e plin doar de bytes goi
-    console.log(metaarray);
-    let res = {};
-    res["size"] = parseInt(metaarray[0]);
-    for (let i = 1; i < metaarray.length; i++) {
-        let chunkData = metaarray[i].split(" ");
-        res[chunkData[1]] = chunkData[0];
-    }
-    return res;
-}
-
 
 function deleteFileFromFS(filename) {
     FS.unlink('/' + filename); // will be deleted when not used by any process
@@ -306,6 +292,7 @@ async function downloadFromStreams(filename, names, downloadStreams, cloudProvid
         index += 1;
         blobArray.push(blob); 
     }
+    console.log("descarc");
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.style = "display: none";
