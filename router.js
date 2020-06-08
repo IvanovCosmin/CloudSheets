@@ -105,9 +105,6 @@ let resolver = (req, res) => {
                     utils.sendJson(200, res, {data:result});
             });
         }
-        else if(router.is("/userfiles")) {
-            utils.sendTemplate(req, res, "static/filesPage/index.html");
-        }
         else if(router.is('/dropDB')) {
             bazadate.dropTable(); // sigur e o idee incredibila. sa ii facem si documentatie?
         }

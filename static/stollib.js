@@ -248,7 +248,7 @@ function deleteFileFromFS(filename) {
     FS.unlink('/' + filename); // will be deleted when not used by any process
 }
 
-async function downloadFromStreams(names, downloadStreams, cloudProviders) {
+async function downloadFromStreams(filename, names, downloadStreams, cloudProviders) {
     var blobArray = [];
     console.log(downloadStreams);
     var index = 0;
@@ -295,32 +295,9 @@ async function downloadFromStreams(names, downloadStreams, cloudProviders) {
     a.style = "display: none";
     var newBlob = new Blob(blobArray, {type : 'application/octet-stream'})
     a.href = URL.createObjectURL(newBlob);
-    a.download = "test.jpg";
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(newBlob);
-}
-
-function checkmetadata(code) {
-    let metainput = document.getElementById("metadata-input");
-    // ne asiguram ca exista elementul si avem fisierul de metadata pus
-    if(metainput && metainput.files && metainput.files[0]) {
-        let file = metainput.files[0];
-        let fileReader = new FileReader();
-        fileReader.onload = async () => {
-            let parsedMeta = parseMetaFile(fileReader.result);
-            var names = [];
-            console.log(parsedMeta);
-            for(key in parsedMeta) {
-                if(key != "size"){
-                    names.push(parsedMeta[key]);
-                }
-            }
-            await downloadFilesByNames(code, names);
-            
-        };
-        fileReader.onerror = () => {console.log(fileReader.error)};
-        fileReader.readAsText(file);
-    }
 }
 
 function presetDownloadStreams(downloadStreams, names) {
@@ -366,7 +343,7 @@ function getDownloadStreamCallback(i, names, downloadStreams) {
 }
 
 // names = { "index": "filename" } (chiar daca e array)
-async function downloadFilesByNames(names) {
+async function downloadFilesByNames(filename, names) {
     var downloadStreams = {};
     downloadStreams = presetDownloadStreams(downloadStreams, names);
     console.log("Dld streams init", downloadStreams);
@@ -398,7 +375,7 @@ async function downloadFilesByNames(names) {
         ));
     }
     Promise.all(promises).then((result) => {
-        downloadFromStreams(names, downloadStreams, cloudProviders);
+        downloadFromStreams(filename, names, downloadStreams, cloudProviders);
     })
 }
 

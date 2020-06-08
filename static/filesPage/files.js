@@ -18,6 +18,17 @@
 
 // ];
 
+var globalFiles = undefined;
+
+function downloadFullFileFromCloud(file_name) {
+    for(var file of globalFiles) {
+        if(file["file_name"] == file_name) {
+            var chunks = file["chunks"].split(",");
+            downloadFilesByNames(file_name, chunks);
+        }
+    }
+}
+
 function getUserFiles(){
     var requestUrl='/getUserFiles?email={email}'.replace("{email}",window.localStorage.getItem("email"));
     xhr = new XMLHttpRequest();
@@ -29,9 +40,8 @@ function getUserFiles(){
     }
     xhr.open("GET", requestUrl,false); 
     xhr.send();
-    result=JSON.parse(xhr.response);
-    console.log("lalalala",result, result.data.length);
-    showFiles(result.data);
+    console.log("lalalala",result, result.length);
+    showFiles(result);
 }
 
 function showFiles(files) {
@@ -41,10 +51,12 @@ function showFiles(files) {
         var size = parseFloat(files[i].size);
         size=size/1024;
         html += '<div class="file"><img class="fileIcon" src="../assets/file.svg" alt="file icon"/><div class="fileInfo"><span class="fileTitle">' +
-            files[i].file_name + ' ('+size+' KB)'+'</span><button class="fileLink"/>Download</button></div></div>'
+            files[i].file_name + ' ('+size+' KB)'+'</span><button onclick="downloadFullFileFromCloud(\''+ files[i].file_name + '\')" class="fileLink"/>Download</button></div></div>'
             console.log(html);
     }
     list.innerHTML = html;
+    globalFiles = files;
+
 }
 
 document.addEventListener("DOMContentLoaded",getUserFiles);
