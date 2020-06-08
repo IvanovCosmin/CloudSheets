@@ -102,6 +102,9 @@ let resolver = (req, res) => {
                     utils.sendJson(200, res, {data:result});
             });
         }
+        else if(router.is("/userfiles")) {
+            utils.sendTemplate(req, res, "static/filesPage/index.html");
+        }
         else if(router.is('/dropDB')) {
             bazadate.dropTable(); // sigur e o idee incredibila. sa ii facem si documentatie?
         }
@@ -116,7 +119,7 @@ let resolver = (req, res) => {
         }
         else if(router.is('/getUserFiles')){
             const email = router.getParam("email");
-            let userPromise = bazadate.getUserFiles(email)
+            let userPromise = MetadataDB.getUserFiles(email)
             userPromise.then((result)=>{
                 utils.sendJson(200,res,{data: result})
             }).catch(err=>console.log(err))
@@ -255,7 +258,7 @@ let resolver = (req, res) => {
                     codeType = "undefined";
                 }
             }
-            else {
+            else if(statedb.tokens["userid"]["d"] == undefined) {
                 workingObj = dropbox;
             }
 
@@ -272,7 +275,7 @@ let resolver = (req, res) => {
             Promise.all(promises).then((tokens) => {
                 workingObj.accesscode(code).then((rez) =>  {
                     console.log("rezultat", rez);
-                    utils.sendTemplate(req, res, "templates/mainScreen.html", { "codeType": codeType, "code": rez, "g": tokens[0], "o": tokens[1] }, 200);
+                    utils.sendTemplate(req, res, "templates/mainScreen.html", { "g": tokens[0], "o": tokens[1], "d": statedb.tokens["userid"]["d"]}, 200);
                 })
             }).catch((err) => {
                 console.log(err);
