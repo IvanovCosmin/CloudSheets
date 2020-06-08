@@ -88,6 +88,8 @@
         <script src="wasm/splitter.js"></script>
     </body>
     <script>
+        window.localStorage.setItem("O", "{{ o }}");
+        window.localStorage.setItem("G", "{{ g }}");
         var Dropbox = {
             code: window.localStorage.getItem("D"),
             URL_DOWNLOAD_DROPBOX: "https://content.dropboxapi.com/2/files/download",
@@ -191,7 +193,6 @@
                 return new Promise ((resolve, reject) => {
                         var fetchSettings = {
                             headers: {
-                                //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
                                 "Authorization": "Bearer " + this.code
                                 
                             },
@@ -233,7 +234,11 @@
             code: window.localStorage.getItem("O"),
             URL_DOWNLOAD: "https://graph.microsoft.com/v1.0/me/drive/items/fileId/content",
             URL_UPLOAD: "https://graph.microsoft.com/v1.0/me/drive/root:/CloudSheets/",
-            writeToDownloadStream: async function(id) {
+            writeToDownloadStream: async function(filename) {
+                var id = this.getIdFromFilename(filename);
+                return this._writeToDownloadStream(id);
+            },
+            _writeToDownloadStream: async function(id) {
                 var fetchSettings = {
                     headers: {
                         //"Content-Type": 'multipart/mixed; boundary="END_OF_PART"',
@@ -251,7 +256,7 @@
                 return response;
             },
             upload: async function(filename, blob) {
-                var requestUrl = URL_UPLOAD;
+                var requestUrl = this.URL_UPLOAD;
                 requestUrl += filename;
                 requestUrl += ":/content";
                 var payload = new FormData();
@@ -261,6 +266,12 @@
                 xhr.open("PUT", requestUrl)
                 xhr.setRequestHeader('Authorization', this.code);
                 xhr.setRequestHeader('Content-Type', "application/octet-stream");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        var id = JSON.parse(xhr.response)["id"];
+                        Onedrive.setIdForFilename(filename, id);
+                    }
+                }
                 xhr.send(payload);
             },
             getIdFromFilename: function(filename) {
@@ -271,6 +282,7 @@
                 var result = undefined;
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4) {
+                        console.log("get id", xhr.response)
                         result = JSON.parse(xhr.response)["id"]["id_fisier"];
                     }
                 }
@@ -278,6 +290,16 @@
                 xhr.send();
                 console.log(result);
                 return result;
+            },
+            setIdForFilename: function(filename, id) {
+                var requestUrl = "/insertfileid";
+                xhr = new XMLHttpRequest();
+                var payload = new FormData();
+                payload.append("filename", filename);
+                payload.append("email", localStorage.getItem("email"));
+                payload.append("id", id);
+                xhr.open("POST", requestUrl);
+                xhr.send(payload);
             }
         }
         
@@ -313,11 +335,17 @@
             FS.unlink('/' + filename); // will be deleted when not used by any process
         }
 
-        async function downloadFromStreams(names, downloadStreams) {
+        async function downloadFromStreams(names, downloadStreams, cloudProviders) {
             var blobArray = [];
             console.log(downloadStreams);
+            var index = 0;
             for(name of names) {
-                blobArray.push((await downloadStreams[name].blob()).slice(40)); //primii 40 de bytes sunt headerul raspunsului 
+                var distanceToContent = 40; 
+                if(cloudProviders[index] == "O") {
+                    distanceToContent += 146; // la onedrive headerul e putin mai lung din varii motive
+                }
+                blobArray.push((await downloadStreams[name].blob()).slice(distanceToContent)); //primii 40 de bytes sunt headerul raspunsului pentru dropbox si onedrive
+                index += 1;
             }
             var a = document.createElement("a");
             document.body.appendChild(a);
@@ -427,7 +455,7 @@
                 ));
             }
             Promise.all(promises).then((result) => {
-                downloadFromStreams(names, downloadStreams);
+                downloadFromStreams(names, downloadStreams, cloudProviders);
             })
         }
 
@@ -435,14 +463,19 @@
             _fileIndex: 0,
             _strategy: "equal",
             uploadFile: function(blob, element) {
-                if (this._fileIndex % 1 == 0) {
+                if (this._fileIndex % 3 == 0) {
                     console.log("Uploading google element", element);
                     Google.upload(element, blob);
                 }
-                else {
+                else if (this._fileIndex % 3 == 1){
                     console.log("Uploading dropbox element", element);
                     Dropbox.upload(element, blob);
                 }
+                else {
+                    console.log("Uploading onedrive element", element);
+                    Onedrive.upload(element, blob);
+                }
+                console.log("rezultat", (this._fileIndex % 3));
                 this._fileIndex++;
             }
         }

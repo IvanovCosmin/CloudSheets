@@ -15,6 +15,17 @@ let getCodeType = (code) => {
     }
 }
 
+// asta e aici pentru a nu strica arhitectura curenta a codului
+// este folosita pentru oauth-redirect
+let emptyWorkingObject = {
+    accesscode: (code) => {
+        return new Promise((resolve, reject) => {
+            resolve(undefined);
+        })
+    }
+}
+
 module.exports = {
-    getCodeType: getCodeType
+    getCodeType: getCodeType,
+    emptyWorkingObject: emptyWorkingObject
 } 

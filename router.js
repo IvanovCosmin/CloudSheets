@@ -6,6 +6,7 @@ let utils = require('./router-utils');
 let google = require('./google-framework');
 let dropbox = require('./dropbox-framework');
 let onedrive = require('./onedrive-framework');
+let statedb = require("./statedb");
 let UserModel = require('./models/UserModel');
 let FileModel = require("./models/FileModel");
 let MetadataModel = require("./models/MetadataModel");
@@ -73,11 +74,7 @@ let resolver = (req, res) => {
         let router = routerObjectConstructor(req);
         
         if(router.is('/')) {
-            let testContext = {
-                "gheiString": "Paul ultra ghei", 
-                "orNot" : "E doar o gluma ca sa demonstrez templateurile :)"
-            };
-            utils.sendTemplate(req, res,"templates/welcome-page.html", testContext, 200);
+            utils.sendTemplate(req, res,"static/welcomePage/index.html", {} , 200);
         }
         else if (router.is('/user')) {
             console.log(router.getParam('username'));
@@ -133,7 +130,7 @@ let resolver = (req, res) => {
             console.log(fileNames);
 
             let providerNames = [];
-            let providers = ["G", "D"];
+            let providers = ["G", "D", "O"];
             let counter = 0;
             for(name of fileNames) {
                 providerNames.push(providers[counter%providers.length]);
@@ -189,7 +186,8 @@ let resolver = (req, res) => {
                     res.end(); 
                    }
                     
-                });
+                })
+                .catch(err => console.log(err));
         }
         else if (router.is('/settings/changeSettings',"POST")){
             const email=requestBody.email;
@@ -241,25 +239,53 @@ let resolver = (req, res) => {
             console.log(code.length);
             const codeType = stollib.getCodeType(code);
             console.log(codeType);
-            // this could be google/dropbox/onedrive module
-            let workingObj = undefined;
+
+            // this can be google/dropbox/onedrive module
+            let workingObj = stollib.emptyWorkingObject;
             if(codeType == "O"){
-                workingObj = onedrive;
+                if(statedb.tokens["userid"]["grefreshtoken"] == undefined) {
+                    workingObj = onedrive;
+                }
+                else {
+                    codeType = "undefined";
+                }
             }
             else if(codeType == "G") {
-                workingObj = google;
+                if(statedb.tokens["userid"]["grefreshtoken"] == undefined) {
+                    workingObj = google;
+                }
+                else {
+                    codeType = "undefined";
+                }
             }
             else {
                 workingObj = dropbox;
             }
 
-            workingObj.accesscode(code).then((rez) =>  {
-                console.log("rezultat", rez);
-                utils.sendTemplate(req, res, "templates/mainScreen.html", { "codeType": codeType, "code": rez }, 200);
+            let promises = [];
+            
+            if(statedb.tokens["userid"]["grefreshtoken"]) {
+                promises.push(google.refreshToken(statedb.tokens["userid"]["grefreshtoken"]));
+            }
+            if(statedb.tokens["userid"]["orefreshtoken"]) {
+                promises.push(onedrive.refreshToken(statedb.tokens["userid"]["orefreshtoken"]));
+            }
+            // nu este nevoie de un lucru asemanator pentru dropbox deoarece se tokenul de acolo se poate folosi de mai multe ori
+
+            Promise.all(promises).then((tokens) => {
+                workingObj.accesscode(code).then((rez) =>  {
+                    console.log("rezultat", rez);
+                    utils.sendTemplate(req, res, "templates/mainScreen.html", { "codeType": codeType, "code": rez, "g": tokens[0], "o": tokens[1] }, 200);
+                })
             }).catch((err) => {
                 console.log(err);
                 utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
-            });
+            })
+
+            
+
+
+
 
         }
         else if(router.is("/settings")){
@@ -276,10 +302,11 @@ let resolver = (req, res) => {
             }); 
         }
 
-        else if(router.is("/insertfileid")) {
-            const email = router.getParam("email");
-            const filename = router.getParam("filename");
-            const id = router.getParam("id");
+        // VALIDARE AICI. in momentul asta se pot adauga la infinit fara problema
+        else if(router.is("/insertfileid", "POST")) {
+            const email = requestBody.email;
+            const filename = requestBody.filename;
+            const id = requestBody.id;
             console.log(email,filename, id);
             FileDB.insertFile(email, filename, id);
             res.writeHead(200);

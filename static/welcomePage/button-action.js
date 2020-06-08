@@ -3,7 +3,7 @@ function changeColor(idName1, idName2) {
   document.getElementById(idName2).style.background = "#000514";
 }
 
-const getStarted = `<form action="/welcomePage/onRegister" method="POST" >
+const getStarted = `<form onsubmit="submitBtn('email')" action="/welcomePage/onRegister" method="POST" >
 
 <label for="name" class="labelTitle">Name:</label>
 <input type="text" name="name" id="fname" placeholder="Your first name.." minlength="3" maxlength="12"
@@ -36,11 +36,11 @@ const getStarted = `<form action="/welcomePage/onRegister" method="POST" >
        title="Please include at least 1 uppercase character, 1 lowercase character, and 1 number." 
        required>
 
-       <input onclick="submitBtn('email')" type="submit"  id="submitBtn" value="Submit">
+       <input type="submit"  id="submitBtn" value="Submit">
 </form>
 `;
 
-const logIn=`<form action="/welcomePage/onLogin" method="POST" >
+const logIn=`<form onsubmit="submitBtn('email')" action="/welcomePage/onLogin" method="POST" >
 
 
 <label class = "labelTitle" for="email">Email:</label>
@@ -49,7 +49,7 @@ const logIn=`<form action="/welcomePage/onLogin" method="POST" >
 <label class = "labelTitle" for="password">Password:</label>
 <input type="password" name="password" id="password" placeHolder="Enter your password.." required>
 
-<input onclick="submitBtn('email')" type="submit"  id="submitBtn1" value="Submit">
+<input type="submit"  id="submitBtn1" value="Submit">
 </form>
 `;
 
@@ -64,7 +64,6 @@ function openForm(idName, formContent) {
   var myDiv = document.getElementById(idName);
   var html = formContent;
   myDiv.innerHTML = html;
-  console.log(html)
 }
 
 {/* <label for="account" class="labelTitle">Acount type</label>
