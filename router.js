@@ -95,6 +95,9 @@ let resolver = (req, res) => {
         else if(router.is('/adminPage')){
             utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);
         }
+        else if(router.is('/userFiles')){
+            utils.sendTemplate(req, res, "templates/user-files.html", {}, 200);
+        }
         else if(router.is('/allusers')) {
             let userPromise = UserDB.getAllUsers();
 
