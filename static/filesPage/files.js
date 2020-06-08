@@ -30,7 +30,6 @@ function getUserFiles(){
     xhr.open("GET", requestUrl,false); 
     xhr.send();
     result=JSON.parse(xhr.response);
-    console.log("lalalala",result, result.data.length);
     showFiles(result.data);
 }
 
@@ -40,9 +39,9 @@ function showFiles(files) {
     for (i = 0; i < files.length; i++) {
         var size = parseFloat(files[i].size);
         size=size/1024;
-        html += '<div class="file"><img class="fileIcon" src="../assets/file.svg" alt="file icon"/><div class="fileInfo"><span class="fileTitle">' +
+        html += 
+           '<div class="file"><img class="fileIcon" src="../assets/file.svg" alt="file icon"/><div class="fileInfo"><span class="fileTitle">' +
             files[i].file_name + ' ('+size+' KB)'+'</span><button class="fileLink"/>Download</button></div></div>'
-            console.log(html);
     }
     list.innerHTML = html;
 }

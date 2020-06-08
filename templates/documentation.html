@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nivelul somajului in romania">
+    <meta name="keywords" content="HTML, CSS, JavaScript, PHP">
+    <meta name="author" content="Ungureanu Octavian, Mireuta Andrei, Hazi Catalin">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/documentation/styles.css" type="text/css">
+    <title>Scholarly HTML</title>
+</head>
+
+<body>
+    <header>
+        <h1 class="title">DOCUMENTATIE "CLOUDSHEETS"</h1><br>
+    </header>
+    <div role="contentinfo" style="font-size:1vw">
+        <section typeof="sa:AuthorsList">
+            <h2>AUTORI</h2>
+            <ul>
+                <li typeof="sa:ContributorRole" property="schema:author">
+                    <span typeof="schema:Person">
+                        <meta property="schema:givenName" content="Mihai-Cosmin">
+                        <meta property="schema:additionalName" content="C.">
+                        <meta property="schema:familyName" content="Ivanov">
+                        <span property="schema:name">Mihai-Cosmin C. Ivanov</span>
+                    </span>
+                    <ul>
+                        <li property="schema:roleContactPoint" typeof="schema:ContactPoint">
+                            <a href="mailto:mcivanov99@gmail.com" property="schema:email">mcivanov99@gmail.com</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul>
+                <li typeof="sa:ContributorRole" property="schema:author">
+                    <span typeof="schema:Person">
+                        <meta property="schema:givenName" content="Ioana">
+                        <meta property="schema:additionalName" content="V.">
+                        <meta property="schema:familyName" content="Maniga">
+                        <span property="schema:name">Ioana V. Maniga</span>
+                    </span>
+                    <ul>
+                        <li property="schema:roleContactPoint" typeof="schema:ContactPoint">
+                            <a href="mailto:ioana.mna@gmail.com" property="schema:email">ioana.mna@gmail.com</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul>
+                <li typeof="sa:ContributorRole" property="schema:author">
+                    <span typeof="schema:Person">
+                        <meta property="schema:givenName" content="Paul-Andrei">
+                        <meta property="schema:additionalName" content="M.">
+                        <meta property="schema:familyName" content="Arhire">
+                        <span property="schema:name">Paul-Andrei M. Arhire</span>
+                    </span>
+                    <ul>
+                        <li property="schema:roleContactPoint" typeof="schema:ContactPoint">
+                            <a href="mailto:paul_man70@yahoo.com"
+                                property="schema:email">paul_man70@yahoo.com</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section style="font-size:1vw">
+            <h2>Introducere in site</h2>
+            <pre>
+                STOL (Universal Storage Tool) este o aplicatie web care pune la dispozitia utilizatorului un instrument ce permite operatiile uzuale cu (sisteme de) fisiere de mari dimensiuni.
+                Aplicatia noastra permite stocarea acestor fisiere prin intermediul platformelor Dropbox, One Drive si Google Drive. Astfel, prin logarea pe conturile proprii,
+                userii pot stoca orice fisier de mari dimensiui, pe care il pot ulterior si descarca din sectiunea "Your files". De asemenea, userul poate selecta si metoda de 
+                distributie a fisierelor intre platforme, din sectiunea "Settings".
+           </pre>
+           <h2>Sigla siteului (utilizata in format svg):</h2>
+           <img src="../static/assets/sigla.svg" alt="sigla" class="center">
+            <h2>Paginile site-ului:</h2>
+                <h3>1.Welcome Page</h3>
+                <p>Este reprezentata de pagina de log in/get started,continand:</p>
+                <ul>
+                    <li ><h4>-Mesaj de intampinare "Welcome to CloudSheets"</h4>
+                        <img src="../static/assets/title.svg" alt="totlu" class="center">
+                    </li>
+                    <li>
+                        <h4>-Doua butoane:</h4>
+                        <ul>
+                           <li>-“Log in”, care permite logarea utilizatorului</li> 
+                           <li>-“Get started”, care permite inregistrarea unui nou cont</li>
+                        </ul>
+                    </li>
+               </ul>   
+
+                <img src="../static/assets/documentation/welcome-buttons.png" alt="cod1" class="center">
+                <pre>
+                 Butoanele isi schimba aspectul la hover, iar pentru click, butoanele de log in si get started primesc isi schimba culoarea,desemnand sectiunea selectata.
+                </pre>
+                <img src="../static/assets/documentation/welcome-buttons-hover.png" alt="cod2" class="center">
+                
+    
+                <h3>2.Main page</h3>
+                <p >
+                    Aceasta reprezinta pagina pe care userul, odata logat, poate sa uploadeze fisiere.
+                    Aceasta pagina contine:</p>
+                <h4>-Trei butoane:</h4>    
+                <ul>
+                    <li>-Your Dropbox: permite logarea cu Dropbox</li>
+                    <li>-Your Google Drive: permite logarea cu Google Drive</li>
+                    <li>-Your One Drive: permite logarea cu One Drive</li>
+                </ul>
+                <h4>-Butonul de "Choose file"</h4>
+                <pre>Acest buton permite rasfoirea prin fisierele locale, aparand alaturi de el numele fisierului ales</pre>
+                <h4>-Butonul de "Upload file"</h4>
+                <pre>Acest buton apare atunci cand exista deja un file selectat,odata cu numele fisierului</pre>
+                <img src="../static/assets/documentation/show-name.png" alt="cod3" class="center">
+                <h4>-Tabelul cu numele de fisiere</h4>
+                <pre>Acest tabel va contine numele tuturor fisierelor-fragment in care este fragmentat fisierul de dimensiuni mari si locatia acestora(e.g. Google Drive)</pre>
+                 
+                <h3>3.Your files</h3>
+                <p>Pe aceasta pagina, un user poate gasi toate fisierele pe care le-a uploadat pe site, dimensiunea lor, si, pentru fiecare, un buton de download</p>
+                <p>Pentru a face display la toate fisierele disponibile, am folosit functiile: </p>
+                <ul>
+                    <li>
+                        Pentru a obtine fisierele: 
+                        <img src="../static/assets/documentation/get-user-files.png" alt="cod4" class="center">
+                    </li>
+                    <li>
+                        Pentru a afisa fisierele:
+                        <img src="../static/assets/documentation/show-files.png" alt="cod5" class="center">
+                    </li>
+                </ul>
+
+                <h3>4.Settings</h3>
+                <p>Pe pagina de setari, un user isi poate schimba numele, parola, sau modul de upload</p>
+
+                <h3>5.Pagina de Admin</h3>
+                <p>Pe pagina de admin se poate intra numai de pe un cont special de admin, unde sunt afisati toti userii aplicatiei.</p>
+                <p>Adminul poate selecta cati useri doreste din lista, pentru a descarca date despre aceastia in format csv</p>
+                <h4>-Lista userilor:</h4>
+                
+               
+</section>
+</body>

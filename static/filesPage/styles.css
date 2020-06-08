@@ -43,15 +43,15 @@ header {
 .userInitials {
     font-family: 'Averia Sans Libre', cursive;
     font-size: 18px;
-    color:#FFFFF0;
+    color:#000514;
     margin-top: auto;
     margin-bottom: auto;
 }
 
 .userName {
     font-family: 'Averia Sans Libre', cursive;
-    font-size: 18px;
-    color:#60BFF2;
+    font-size: 20px;
+    color:#FFFFF0;
     margin-top: auto;
     margin-bottom: auto;
 }

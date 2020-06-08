@@ -74,7 +74,7 @@ let resolver = (req, res) => {
         let router = routerObjectConstructor(req);
         
         if(router.is('/')) {
-            utils.sendTemplate(req, res,"templates/welcome-pahe.html", {} , 200);
+            utils.sendTemplate(req, res,"templates/welcome-page.html", {} , 200);
         }
         else if (router.is('/user')) {
             console.log(router.getParam('username'));
@@ -97,6 +97,10 @@ let resolver = (req, res) => {
         }
         else if(router.is('/userFiles')){
             utils.sendTemplate(req, res, "templates/user-files.html", {}, 200);
+        }
+
+        else if(router.is('/documentation')){
+            utils.sendTemplate(req, res, "templates/documentation.html", {}, 200);
         }
         else if(router.is('/allusers')) {
             let userPromise = UserDB.getAllUsers();

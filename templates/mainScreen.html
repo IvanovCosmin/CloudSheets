@@ -2,6 +2,7 @@
 <html lang="en">
 
     <head>
+        <meta charset="UTF-8">
         <title>Your account</title>
         <link rel="stylesheet" type="text/css" href="../static/mainScreen/styles.css">
         <script src='../static/mainScreen/options.js'></script>
@@ -39,12 +40,9 @@
                 <span id="errorMessage" class="errorMessage"></span>
             </div>
 
-
-
-
-
             <div id="upload-files" class="upload-files">
                 <!--<button onclick="readFile()">Read file</button>-->
+                <input type="file" id="file-input" style="display: none;">
                 <div class="choose-file-area"><button id="fileChooser" class="startButton"
                         onclick="document.getElementById('file-input').click();">Choose your file</button>
                      <div class='chosen-file'><span id='chosen-file'>No file chosen</span></div>
