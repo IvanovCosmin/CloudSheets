@@ -5,8 +5,6 @@ function UserModel(db){
     var obj={
         db:db,
         insertUser :function(email, password, name, surname)  {
-            console.log("se insereaza.....")
-            // vezi ca s ar putea sa intri pe contul lui ma ta
             this.db.run(`INSERT INTO user(email, password, name, surname , uploadmode , first ,second ,third) VALUES(?,?,?,?,?,?,?,?)`, [email, password, name, surname , 'Smart Sheet' , 'Google Drive' , 'Onedrive' , 'Dropbox'], (err)=> {
                 console.log("coita???");
                 if (err) {

@@ -229,20 +229,6 @@ Dropbox.code = localStorage.getItem("D");
 Google.code = localStorage.getItem("G");
 Onedrive.code = localStorage.getItem("O");
 
-// functia asta e vina si rusinea lui Cosmin.
-function parseMetaFile(metafile) {
-    let metaarray = metafile.split("\n");
-    metaarray.splice(metaarray.length - 1, 1); // stergem ultimul element e plin doar de bytes goi
-    console.log(metaarray);
-    let res = {};
-    res["size"] = parseInt(metaarray[0]);
-    for (let i = 1; i < metaarray.length; i++) {
-        let chunkData = metaarray[i].split(" ");
-        res[chunkData[1]] = chunkData[0];
-    }
-    return res;
-}
-
 
 function deleteFileFromFS(filename) {
     FS.unlink('/' + filename); // will be deleted when not used by any process
