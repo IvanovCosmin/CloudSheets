@@ -326,16 +326,15 @@ let resolver = (req, res) => {
             const oldpass = requestBody.oldpass;
             const pass = requestBody.pass;
             const mode = requestBody.mode;
-            const First = requestBody.First;
-            const Second = requestBody.Second;
-            const Third = requestBody.Third;
             const token = req.headers.cookie.split("=")[1];
             const user = loggedInUsers.findUser(token);
             if(utils.validateInput(email+name+surname+oldpass+pass) == true){
                 if(user != undefined) {
-                    UserDB.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
+                    UserDB.updateProfile(email,name,surname,oldpass,pass,mode).then(
                         (result)=>{
                             if(result==true){
+                                user["name"]=name;
+                                user["surname"]=surname;
                                 utils.sendTemplate(req,res,"templates/settings-page.html",{
                                     "mesaj": "Succes!",
                                     "name": (user["name"] + " " + user["surname"]),
