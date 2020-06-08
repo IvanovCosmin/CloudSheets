@@ -48,56 +48,14 @@
                 
                 <br>
                 <label class = "labelTitle" >Upload mode:</label>
-                <br>
-                <div class="radioSelect" >
-                    <input type="radio" name="mode" id="Priority" value="Priority" onclick="showPriorities()">
-                    <label class = "radioLabel" for="Priority">Priority</label><br>
-                </div>
-                <div id="priorities" class="Priorities">
-                    <div class="Priority">
-                        <label class = "prioritiyLabel" >First:</label>
-                        <select name="First" class="LoadSettings">
-                            <option class="dropdownValue" value="Google Drive">Google Drive</option>
-                            <option class="dropdownValue" value="Onedrive">Onedrive</option>
-                            <option class="dropdownValue" value="Dropbox">Dropbox</option>
-                        </select>
-                    </div>
-                    
-                    <br>
-                    <div class="Priority">
-                        <label class = "prioritiyLabel" >Second:</label>
-                        <select name="Second" class="LoadSettings" >
-                            <option class="dropdownValue" value="Onedrive">Onedrive</option>
-                            <option class="dropdownValue" value="Google Drive">Google Drive</option>
-                            <option class="dropdownValue" value="Dropbox">Dropbox</option>
-                        </select>
-                    </div>
-                    
-                    <br>
-                    <div class="Priority">
-                        <label class = "prioritiyLabel" >Third:</label>
-                        <select name="Third" class="LoadSettings">
-                            <option class="dropdownValue" value="Dropbox">Dropbox</option>
-                            <option class="dropdownValue" value="Onedrive">Onedrive</option>
-                            <option class="dropdownValue" value="Google Drive">Google Drive</option>
-
-                        </select>
-                    </div>
-                    
-                    <br>
-                </div>    
+                <br>  
                 <div class="radioSelect">
                     <input type="radio" name="mode" id="equal-distribution" value="Equal Distribution" onclick="notShowPriorities()">
-                    <label class = "radioLabel" for="equal-distribution">Equal Distribution</label><br>
-                </div>
-                
-                <div class="radioSelect">
-                    <input type="radio" name="mode" id="smart-sheet" value="Smart Sheet" onclick="notShowPriorities()">
-                    <label class = "radioLabel" for="smart-sheet">Smart Sheet</label><br>
+                    <label class = "radioLabel" for="equal-distribution">Equal Distribution (Chunks will be equally distributed between the cloud providers)</label><br>
                 </div>
                 <div class="radioSelect">
                     <input type="radio" name="mode" id="redundant" value="Redundant" onclick="notShowPriorities()">
-                    <label class = "radioLabel" for="redundant">Redundant</label><br>
+                    <label class = "radioLabel" for="redundant">Redundant (Chunks will be uploaded on all cloud providers)</label><br>
                 </div>     
                 
                 
