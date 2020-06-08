@@ -74,7 +74,7 @@ let resolver = (req, res) => {
         let router = routerObjectConstructor(req);
         
         if(router.is('/')) {
-            utils.sendTemplate(req, res,"static/welcomePage/index.html", {} , 200);
+            utils.sendTemplate(req, res,"templates/welcome-pahe.html", {} , 200);
         }
         else if (router.is('/user')) {
             console.log(router.getParam('username'));
@@ -237,7 +237,7 @@ let resolver = (req, res) => {
             const code = decodeURIComponent(router.getParam('code'));
             console.log(code);
             console.log(code.length);
-            const codeType = stollib.getCodeType(code);
+            let codeType = stollib.getCodeType(code);
             console.log(codeType);
 
             // this can be google/dropbox/onedrive module

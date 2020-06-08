@@ -28,7 +28,6 @@
                         <a href="/">Log out</a>
                     </div>
                 </div>
-            </div>
         </header>
 
         <div class="halfSize">
@@ -45,15 +44,13 @@
 
 
             <div id="upload-files" class="upload-files">
-                <input id="file-input" class="selectedFile" onchange=" showName();" type="file" value="/metadata"
-                    style="display: none;">
                 <!--<button onclick="readFile()">Read file</button>-->
                 <div class="choose-file-area"><button id="fileChooser" class="startButton"
-                        onclick="document.getElementById('file-input').click();" ">Choose your file</button>
+                        onclick="document.getElementById('file-input').click();">Choose your file</button>
                      <div class='chosen-file'><span id='chosen-file'>No file chosen</span></div>
 
             </div>
-               
+            
                 <button hidden id='startButton' class='startButton'
                         onclick=" readFile(); showProgressBar(); progressBar.run();" style="display:none ;">Upload your
                         file
@@ -81,8 +78,6 @@
                 </div>
                 <div id="tableContainer">
                 </div>
-            </div>
-            <div id="tableContainer">
             </div>
         </div>
         <p hidden id="onedrive-token">{{ o }}</p>
