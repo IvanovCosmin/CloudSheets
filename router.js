@@ -187,18 +187,6 @@ let resolver = (req, res) => {
                     utils.sendJson(200, res, {data:result});
             });
         }
-        else if(router.is('/dropDB')) {
-            bazadate.dropTable(); // sigur e o idee incredibila. sa ii facem si documentatie?
-        }
-        else if(router.is('/createDB')) {
-            bazadate.createTable();
-        }
-        else if(router.is("/text-input/homepage")){
-            utils.sendTemplate(req,res,"static/text-input/text-input.html",{},200);
-        }
-        else if(router.is("/text-input/login")){
-            utils.sendTemplate(req,res,"static/text-input/login.html",{},200);
-        }
         else if(router.is('/getUserFiles')){
             const email = router.getParam("email");
             let userPromise = MetadataDB.getUserFiles(email)
@@ -207,7 +195,6 @@ let resolver = (req, res) => {
             }).catch(err=>console.log(err))
         }
         else if(router.is("/get-providers-for-files")) {
-            // TODO chiar sa le ia din baza de date
             const fileNames = JSON.parse(req.headers["data"])["names"];
             console.log(fileNames);
 

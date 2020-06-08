@@ -54,7 +54,6 @@ const logIn=`<form onsubmit="submitBtn('email')" action="/welcomePage/onLogin" m
 `;
 
 function submitBtn(id) {
-  console.log("heeelllpppp");
   window.localStorage.setItem("email", document.getElementById(id).value);
 
 }
