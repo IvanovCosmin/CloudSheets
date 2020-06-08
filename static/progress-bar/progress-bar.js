@@ -28,7 +28,7 @@ let createProgressBar = (idOfBar, idOfBarText) => {
                 let elem = document.getElementById(idOfBar);
                 let percentageP = document.getElementById(idOfBarText);
                 elem.style.width = progress + "%";
-                percentageP.innerHTML = progress + "%";
+                percentageP.innerHTML = "Progress: " + progress + "%";
         }
     }
 }   

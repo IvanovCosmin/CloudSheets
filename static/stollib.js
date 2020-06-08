@@ -52,6 +52,8 @@ var Dropbox = {
         xhr.setRequestHeader('Content-Type', "application/octet-stream");
         xhr.onload = function() {
             console.log(xhr.response);
+            ProgressBarController.increaseProgress();
+
         };
         xhr.send(payload);
     }
@@ -147,6 +149,7 @@ var Google = {
         xhr.setRequestHeader('Authorization', 'Bearer ' + this.code);
         xhr.onload = function() {
             console.log(xhr.response);
+            ProgressBarController.increaseProgress();
         };
         xhr.send(payload);
     }
@@ -191,6 +194,7 @@ var Onedrive = {
             if (xhr.readyState === 4) {
                 var id = JSON.parse(xhr.response)["id"];
                 Onedrive.setIdForFilename(filename, id);
+                ProgressBarController.increaseProgress();
             }
         }
         xhr.send(payload);
@@ -228,6 +232,18 @@ var Onedrive = {
 Dropbox.code = localStorage.getItem("D");
 Google.code = localStorage.getItem("G");
 Onedrive.code = localStorage.getItem("O");
+
+const ProgressBarController = {
+    _filesNumber: 0,
+    _uploadedFiledCounter: 0,
+    increaseProgress: function() {
+        this._uploadedFiledCounter++;
+        progressBar.setProgress((this._uploadedFiledCounter/this._filesNumber) * 100);
+    },
+    initController: function(numberOfFiles) {
+        this._filesNumber = numberOfFiles;
+    }
+}
 
 // functia asta e vina si rusinea lui Cosmin.
 function parseMetaFile(metafile) {
@@ -444,6 +460,7 @@ function createLoadingBarsForSplitFiles(metadataFile) {
     });
     html = html + '</table>'
     myDiv.innerHTML = html;
+    ProgressBarController.initController(files.length);
     files.forEach(element => {
         var stream = FS.open("/" + element, "r");
         console.log(stream);

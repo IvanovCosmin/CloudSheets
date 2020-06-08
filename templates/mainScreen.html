@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    
     <head>
         <meta charset="UTF-8">
         <title>Your account</title>
         <link rel="stylesheet" type="text/css" href="../static/mainScreen/styles.css">
-        <script src='../static/mainScreen/options.js'></script>
-        <script src="../static/mainScreen/progress-bar.js"></script>
+        <script src='mainScreen/options.js'></script>
+        <script src="mainScreen/progress-bar.js"></script>
+        <script src="wasm/splitter.js"></script>
     </head>
 
     <body>
@@ -52,28 +53,27 @@
             </div>
             
                 <button hidden id='startButton' class='startButton'
-                        onclick=" readFile(); showProgressBar(); progressBar.run();" style="display:none ;">Upload your
+                        onclick=" readFile(); showProgressBar();" style="display:none ;">Upload your
                         file
                         here</button>
                 <div id="progressBarContainer" class="progressBarContainer">
                     <div class="uploadDetails">
-                        <span class="progressText" id="fileTitle">Name</span>
-                        <span class="progressText" id="fileSize">Size: </span>
                         <span class="progressText" id="progressBarText">Progress: 0%</span>
                     </div>
                     <div id="progresBarWrapper" class="progresBarWrapper">
                         <div id="progressBar" class="progressBar"></div>
                     </div>
                 </div>
-                <div id="tableContainer">
-                </div>
+                
             </div>
+            <div id="tableContainer">
+            </div>
+        </div>
         </div>
         <p hidden id="onedrive-token">{{ o }}</p>
         <p hidden id="google-token">{{ g }}</p>
         <p hidden id="dropbox-token">{{ d }}</p>
         <p hidden id="user-email">{{ email }}</p>
-        <script src="wasm/splitter.js"></script>
         <script src="stollib.js"></script>
     </body>
 
