@@ -66,7 +66,7 @@
                 </li>
             </ul>
         </section>
-        <section style="font-size:1vw">
+        <section >
             <h2>Introducere in site</h2>
             <pre>
                 STOL (Universal Storage Tool) este o aplicatie web care pune la dispozitia utilizatorului un instrument ce permite operatiile uzuale cu (sisteme de) fisiere de mari dimensiuni.
@@ -109,6 +109,7 @@
                     <li>-Your Google Drive: permite logarea cu Google Drive</li>
                     <li>-Your One Drive: permite logarea cu One Drive</li>
                 </ul>
+                <img src="../static/assets/documentation/account-buttons.png" alt="cod11" class="center">
                 <h4>-Butonul de "Choose file"</h4>
                 <pre>Acest buton permite rasfoirea prin fisierele locale, aparand alaturi de el numele fisierului ales</pre>
                 <h4>-Butonul de "Upload file"</h4>
@@ -133,12 +134,42 @@
 
                 <h3>4.Settings</h3>
                 <p>Pe pagina de setari, un user isi poate schimba numele, parola, sau modul de upload</p>
+                <p>Pagina contine un formular, care va prelua modificarile cerute si le va trimite prin butoul Save</p>
+                <img src="../static/assets/documentation/form.png" alt="cod6" class="center">
+                <p>In momentul salvarii, apare un mesaj de confirmare,in caz de reusita,sau mesaj de eroare in cazul in care setarile nu sunt salvate</p>
+                <pre>Aici sunt verificate si cazurile in care parola noua si confirmarea ei nu corespund,sau parola actuala nu e corecta.</pre>
+                
 
                 <h3>5.Pagina de Admin</h3>
                 <p>Pe pagina de admin se poate intra numai de pe un cont special de admin, unde sunt afisati toti userii aplicatiei.</p>
-                <p>Adminul poate selecta cati useri doreste din lista, pentru a descarca date despre aceastia in format csv</p>
+                <p>Adminul poate selecta cati useri doreste din lista, pentru a exporta date despre aceastia in format csv</p>
                 <h4>-Lista userilor:</h4>
-                
-               
+                <ul>
+                    <li>
+                        Pentru a obtine si afisa userii:
+                        <img src="../static/assets/documentation/show-clients.png" alt="cod7" class="center">
+                    </li>
+                    <li>
+                        Prin selectarea unui user, butonul isi schimba culoarea, iar emailul userului este pus in vectorul clientilor selctati:
+                        (daca exista macar un user selectat, apare si butonul de export)
+                        <img src="../static/assets/documentation/click-user.png" alt="cod8" class="center">
+                    </li>
+                </ul>
+                <h4>-Butonul Export</h4>
+                <p>Acest buton permite downloadarea datelor in format csv</p>
+                <ul>
+                    <li>
+                        Pentru a descarca datele am folosit functia:
+                        <img src="../static/assets/documentation/download.png" alt="cod9" class="center">
+                    </li>
+                    <li>
+                        Pentru a obtine si descarca datele in format CSV am folosit functia:
+                        <img src="../static/assets/documentation/download-csv.png" alt="cod10" class="center">
+                    </li>
+                </ul>
+        <h2>Headerul:</h2>
+            <p>Odata ce userul este logat, headerul va contine in partea dreapta numele sau si un buton rotund cu initialele.</p>
+            <p>Prin apasarea butonului, se va deschide un meniu, care va permite navigarea intre paginile site-ului, sau delogarea</p>
+            <p>Pentu admin, in acelasi va fi titlul de "Administrator page" impreuna cu un icon ce indica rolul de administrator</p>   
 </section>
 </body>
