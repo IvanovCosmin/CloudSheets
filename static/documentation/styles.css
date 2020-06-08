@@ -30,6 +30,7 @@ body{
 img{
     max-width: 50%;
     max-height: 250px;
+    margin:10px;
 }  
 
   p {
