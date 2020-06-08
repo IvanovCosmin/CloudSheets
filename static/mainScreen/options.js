@@ -93,9 +93,6 @@ function showName() {
         console.log('Selected file: ' + name.files.item(0).name);
         document.getElementById('startButton').style.display = "block";
     }
-
-    // console.log('Selected file: ' + name.files.item(0).size);
-
 };
 
 

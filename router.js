@@ -176,6 +176,10 @@ let resolver = (req, res) => {
                 utils.sendTemplate(req, res,"static/welcomePage/index.html", {}, 200);
             }
         }
+
+        else if(router.is('/documentation')){
+            utils.sendTemplate(req, res, "templates/documentation.html", {}, 200);
+        }
         else if(router.is('/allusers')) {
             let userPromise = UserDB.getAllUsers();
 

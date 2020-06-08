@@ -51,7 +51,7 @@ function showFiles(files) {
         size=size/1024;
         html += '<div class="file"><img class="fileIcon" src="../assets/file.svg" alt="file icon"/><div class="fileInfo"><span class="fileTitle">' +
             files[i].file_name + ' ('+size+' KB)'+'</span><button onclick="downloadFullFileFromCloud(\''+ files[i].file_name + '\')" class="fileLink"/>Download</button></div></div>'
-            console.log(html);
+            
     }
     list.innerHTML = html;
     globalFiles = files;

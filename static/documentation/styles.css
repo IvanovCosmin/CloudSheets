@@ -1,0 +1,40 @@
+*{
+    margin-left: 20px;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    font-family: sans-serif;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #c9e9ff;
+}
+.title{
+    color:#000514;
+    font-family: 'Averia Sans Libre', cursive;
+    font-size: 80px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+}
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+img{
+    max-width: 50%;
+    max-height: 250px;
+}  
+
+  p {
+      font-size: 1.2vw;
+  }
+  li {
+      font-size: 1vw;
+  }

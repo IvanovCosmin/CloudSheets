@@ -43,18 +43,18 @@ img {
 
 .userInitials {
     font-family: 'Averia Sans Libre', cursive;
-    font-size: 2vh;
+    font-size: 18px;
     color:#000514;
     margin-top: auto;
     margin-bottom: auto;
 }
 
 .userName {
-    font-family: 'Averia Sans Libre', cursive;
-    font-size: 2vh;
-    color:#FFFFF0;
-    margin-top: auto;
-    margin-bottom: auto;
+  font-family: 'Averia Sans Libre', cursive;
+  font-size: 20px;
+  color:#FFFFF0;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .profileDetails {
@@ -160,8 +160,8 @@ input {
 input[type=text]  {
     background-color: #FFFFF0;
     display: flex;
-    width:90%;
-    padding: 12px 20px;
+    width:80%;
+    padding: 5px 10px;
     margin-top: 5px;
     margin-bottom: 10px;
     border-radius: 6px;

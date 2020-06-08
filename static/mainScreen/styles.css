@@ -51,7 +51,7 @@ img {
 
 .userName {
     font-family: 'Averia Sans Libre', cursive;
-    font-size: 18px;
+    font-size: 20px;
     color:#FFFFF0;
     margin-top: auto;
     margin-bottom: auto;
@@ -225,10 +225,6 @@ table {
     text-decoration: none;
     display: block;
   }
-  .dropdown-content a:hover {
-    color: #EF626C;
-}
-
 
  .accountBtn{
     color: #000514;
