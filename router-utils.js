@@ -126,7 +126,7 @@ let validateInput = (input)=>{
     const deletable = ['<','>',';',"'",'"'];
     let result = "";
     for(let letter of input){
-        if(deletable.contains(letter)){
+        if(deletable.includes(letter)){
            return false; 
         }
     }
