@@ -19,11 +19,12 @@
                         <span class="userInitials" id="initialeUtilizator">IM</span>
                     </button> 
                     <div id="dropdown-content" class="dropdown-content">
+                        <a href="/adminPage">Admin page</a>
                         <a href="/oauth-redirect">Upload a file</a>
-                        <a href="../filesPage/index.html">Your files</a>
-                        <a href="../settings"> Settings </a>
+                        <a href="/userFiles">Your files</a>
+                        <a href="/settings"> Settings </a>
                         <a href="">See documentation</a>
-                        <a href="../welcomePage/index.html">Log out</a>
+                        <a href="/">Log out</a>
                         
                     </div>
                 </div>
@@ -32,7 +33,7 @@
         <div class="navigationArea">
             <label class="uploadmessage" id="uplmsg" >{{ mesaj }}</label>
             <form  action="/settings/changeSettings" method="POST" >
-                <input name="email" type="text" id="email" display="none"></input>
+                <input name="email" type="text" id="email" >
                 <label class = "labelTitle" >Change name:</label>
                 <input name="name" type="text" placeHolder="First name" > 
                 <input name="surname" type="text"  placeHolder="Last name" >
@@ -54,7 +55,7 @@
                 <div id="priorities" class="Priorities">
                     <div class="Priority">
                         <label class = "prioritiyLabel" >First:</label>
-                        <select name="First" class="LoadSettings" placeholder="First">
+                        <select name="First" class="LoadSettings">
                             <option class="dropdownValue" value="Google Drive">Google Drive</option>
                             <option class="dropdownValue" value="Onedrive">Onedrive</option>
                             <option class="dropdownValue" value="Dropbox">Dropbox</option>
@@ -64,7 +65,7 @@
                     <br>
                     <div class="Priority">
                         <label class = "prioritiyLabel" >Second:</label>
-                        <select name="Second" class="LoadSettings" placeholder="Second">
+                        <select name="Second" class="LoadSettings" >
                             <option class="dropdownValue" value="Onedrive">Onedrive</option>
                             <option class="dropdownValue" value="Google Drive">Google Drive</option>
                             <option class="dropdownValue" value="Dropbox">Dropbox</option>
@@ -74,7 +75,7 @@
                     <br>
                     <div class="Priority">
                         <label class = "prioritiyLabel" >Third:</label>
-                        <select name="Third" class="LoadSettings" placeholder="Third">
+                        <select name="Third" class="LoadSettings">
                             <option class="dropdownValue" value="Dropbox">Dropbox</option>
                             <option class="dropdownValue" value="Onedrive">Onedrive</option>
                             <option class="dropdownValue" value="Google Drive">Google Drive</option>
@@ -85,36 +86,23 @@
                     <br>
                 </div>    
                 <div class="radioSelect">
-                    <input type="radio" name="mode" id="Equal Distribution" value="Equal Distribution" onclick="notShowPriorities()">
-                    <label class = "radioLabel" for="Equal Distribution">Equal Distribution</label><br>
+                    <input type="radio" name="mode" id="equal-distribution" value="Equal Distribution" onclick="notShowPriorities()">
+                    <label class = "radioLabel" for="equal-distribution">Equal Distribution</label><br>
                 </div>
                 
                 <div class="radioSelect">
-                    <input type="radio" name="mode" id="Smart Sheet" value="Smart Sheet" onclick="notShowPriorities()">
-                    <label class = "radioLabel" for="Smart Sheet">Smart Sheet</label><br>
+                    <input type="radio" name="mode" id="smart-sheet" value="Smart Sheet" onclick="notShowPriorities()">
+                    <label class = "radioLabel" for="smart-sheet">Smart Sheet</label><br>
                 </div>
                 <div class="radioSelect">
-                    <input type="radio" name="mode" id="Redundant" value="Redundant" onclick="notShowPriorities()">
-                    <label class = "radioLabel" for="Redundant">Redundant</label><br>
+                    <input type="radio" name="mode" id="redundant" value="Redundant" onclick="notShowPriorities()">
+                    <label class = "radioLabel" for="redundant">Redundant</label><br>
                 </div>     
                 
                 
                 <input type="submit" class="submitButton"  value="Submit">-->
                 </form>
         </div>
-        <script>
-                document.getElementById("numeUtilizator").innerHTML = localStorage.getItem("name") + " " + localStorage.getItem("surname");
-                document.getElementById("initialeUtilizator").innerHTML = localStorage.getItem("name")[0] + localStorage.getItem("surname")[0];
-
-                if("{{ mesaj }}" == "undefined"){
-                    document.getElementById("uplmsg").style.visibility= "hidden";
-                }else
-                if("{{ mesaj }}" != "Succes!"){
-                    document.getElementById("uplmsg").style.color= "red";
-                }
-                
-                document.getElementById("email").value=localStorage.getItem("email");
-                document.getElementById("email").style.display = "none";
-        </script>
+    
     </body>
 </html>

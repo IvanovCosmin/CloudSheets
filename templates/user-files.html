@@ -3,9 +3,9 @@
 
 <head>
     <title>Your files</title>
-    <link rel="stylesheet" type="text/css" href="./styles.css">
-    <script src='../mainScreen/options.js'></script>
-    <script src='./files.js'></script>
+    <link rel="stylesheet" type="text/css" href="../static/filesPage/styles.css">
+    <script src='../static/mainScreen/options.js'></script>
+    <script src='../static/filesPage/files.js'></script>
 </head>
 
 <body>
@@ -20,11 +20,12 @@
                     <span class="userInitials" id="initialeUtilizator">IM</span>
                 </button>
                 <div id="dropdown-content" class="dropdown-content">
+                    <a href="/adminPage">Admin page</a>
                     <a href="/oauth-redirect">Upload a file</a>
-                    <a href="./index.html">Your files</a>
-                    <a href="../settings"> Settings </a>
+                    <a href="/userFiles">Your files</a>
+                    <a href="/settings"> Settings </a>
                     <a href="">See documentation</a>
-                    <a href="../welcomePage/index.html">Log out</a>
+                    <a href="/">Log out</a>
                 </div>
             </div>
         </header>
@@ -38,6 +39,12 @@
 
         </script>
     </div>
+    <p hidden id="onedrive-token">{{ o }}</p>
+    <p hidden id="google-token">{{ g }}</p>
+    <p hidden id="dropbox-token">{{ d }}</p>
+    <p hidden id="user-email">{{ email }}</p>
+    <!-- <script src="wasm/splitter.js"></script> -->
+    <script src="stollib.js"></script>
 
 </body>
 

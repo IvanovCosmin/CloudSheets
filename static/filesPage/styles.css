@@ -99,10 +99,10 @@ table {
     display: none;
     position: absolute;
     background-color: #f1f1f1;
-    border-radius: 6px;;
+    border-radius: 6px;
     min-width: 200px;
     z-index: 1;
-    margin-top: 50px;
+    margin-top: 70px;
   }
 
   .dropdown-content a {
@@ -140,14 +140,21 @@ table {
 .fileLink {
     color:#FFFFF0;
     font-family: 'Averia Sans Libre', cursive;
-    font-size: 90%;
+    font-size: 120%;
+    margin-left: 20px;
+    background-color:  #0BD54F;
+    border:none !important;
+    border-radius: 6px;
+    padding:5px;
 }
 
 .fileInfo {
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
-    margin-left: 30px;
+    margin-left: 20px;
+    align-items:center;
 }
 
 .fileIcon {
