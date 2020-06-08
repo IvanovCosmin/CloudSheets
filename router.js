@@ -96,17 +96,23 @@ let resolver = (req, res) => {
         let router = routerObjectConstructor(req);
         
         if(router.is('/')) {
-            const token = req.headers.cookie.split("=")[1];
-            if(loggedInUsers.findUser(token) != undefined){
-                if(loggedInUsers.findUser(token).email=="admin.admin@admins.com"){
-                    utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);    
+            if(req.headers.cookie !== undefined){
+                const token = req.headers.cookie.split("=")[1];
+                if(loggedInUsers.findUser(token) != undefined){
+                    if(loggedInUsers.findUser(token).email=="admin.admin@admins.com"){
+                        utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);    
+                    }
+                    else
+                    utils.sendTemplate(req, res, "templates/mainScreen.html", {}, 200);
                 }
-                else
-                utils.sendTemplate(req, res, "templates/mainScreen.html", {}, 200);
+                else{
+                    utils.sendTemplate(req, res,"templates/welcome-page.html", {}, 200);
+                }
             }
-            else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html", {}, 200);
+            else {
+                utils.sendTemplate(req, res,"templates/welcome-page.html", {}, 200);
             }
+            
         }
         else if (router.is('/user')) {
             console.log(router.getParam('username'));
@@ -155,7 +161,24 @@ let resolver = (req, res) => {
             
         }
         else if(router.is('/userFiles')){
-            utils.sendTemplate(req, res, "templates/user-files.html", {}, 200);
+
+            const token = req.headers.cookie.split("=")[1];
+            const user = loggedInUsers.findUser(token);
+            if(user != undefined){
+                utils.sendTemplate(req, res, "templates/user-files.html", { 
+                    "email": email ,
+                    "name": user.name + " " + user.surname,
+                    "smallname":  user.name[0] + user.surname[0]
+                }, 200 , token);
+                
+            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html", {}, 200);
+            }
+        }
+
+        else if(router.is('/documentation')){
+            utils.sendTemplate(req, res, "templates/documentation.html", {}, 200);
         }
         else if(router.is('/allusers')) {
             let userPromise = UserDB.getAllUsers();
@@ -198,14 +221,16 @@ let resolver = (req, res) => {
                 (user)=>{
                     if(user[0]==undefined){
                         UserDB.insertUser(email, password, name, surname);
-                        //res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
-                        //res.end();
                         const token = utils.randomString();
                         loggedInUsers.addUser(token,email,name,surname);
                         if(email=="admin.admin@admins.com"){
                             utils.sendTemplate(req, res, "templates/adminScreen.html", { "email": email  }, 200 , token);
                         }else{
-                            utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email ,"name":name ,"surname":surname }, 200 , token);
+                            utils.sendTemplate(req, res, "templates/user-files.html", { 
+                                "email": email ,
+                                "name": user[0].name + " " + user[0].surname,
+                                "smallname":  user[0].name[0] + user[0].surname[0]
+                            }, 200 , token);
                         }
                         }
                         else{
@@ -213,7 +238,9 @@ let resolver = (req, res) => {
                             res.end();
                         }
                 }
-            );
+            ).catch((err) => {
+                console.log(err);
+            });
         }
         else if(router.is('/sendMetadata',"POST")){
             const fileName=requestBody.fileName;
@@ -236,7 +263,11 @@ let resolver = (req, res) => {
                     if(user[0].email=="admin.admin@admins.com"){
                         utils.sendTemplate(req, res, "templates/adminScreen.html", { "email": email }, 200 , token);
                     }else{
-                        utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email ,"name":user[0].name ,"surname":user[0].surname }, 200 , token);
+                        utils.sendTemplate(req, res, "templates/user-files.html", { 
+                            "email": email ,
+                            "name": user[0].name + " " + user[0].surname,
+                            "smallname":  user[0].name[0] + user[0].surname[0]
+                        }, 200 , token);
                     }
                     
                    }else{
@@ -258,19 +289,36 @@ let resolver = (req, res) => {
             const First = requestBody.First;
             const Second = requestBody.Second;
             const Third = requestBody.Third;
-        
-            UserDB.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
-                (result)=>{
-                    if(result==true){
-                        utils.sendTemplate(req, res, "templates/settings-page.html", {"mesaj":"Succes!"}, 200);
+            const token = req.headers.cookie.split("=")[1];
+            const user = loggedInUsers.findUser(token);
+            if(user != undefined) {
+                UserDB.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
+                    (result)=>{
+                        if(result==true){
+                            utils.sendTemplate(req,res,"templates/settings-page.html",{
+                                "mesaj": "Succes!",
+                                "name": (user["name"] + " " + user["surname"]),
+                                "smallname": (user["name"][0] + user["surname"][0]),
+                                
+                            }, 200);
+                        }
+                        else{
+                            utils.sendTemplate(req,res,"templates/settings-page.html",{
+                                "mesaj": "Wrong passowrd",
+                                "name": (user["name"] + " " + user["surname"]),
+                                "smallname": (user["name"][0] + user["surname"][0]),
+                                
+                            }, 200);
+                        }
                     }
-                    else{
-                        utils.sendTemplate(req, res, "templates/settings-page.html", {"mesaj":"Wrong old password"}, 200);
-                    }
-                }
-            ).catch(
-                (err)=>console.log(err)
-            );
+                ).catch(
+                    (err)=>console.log(err)
+                );
+            }
+            else{
+                utils.redirect(res, "/");
+            }
+            
             
         }
         else if(router.is('/upload', "POST")) {
@@ -288,7 +336,7 @@ let resolver = (req, res) => {
                 utils.redirect(res,onedrive.login_link());
             }
             else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+                utils.redirect("/");
             }
             
         }
@@ -299,7 +347,7 @@ let resolver = (req, res) => {
                 utils.redirect(res, google.login_link());
             }
             else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+                utils.redirect("/");
             }
             
         }
@@ -310,78 +358,89 @@ let resolver = (req, res) => {
                 utils.redirect(res, dropbox.login_link());
             }
             else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+                utils.redirect("/");
             }
             
         }
 
         else if(router.is("/oauth-redirect")) {
-    const token = req.headers.cookie.split("=")[1];
-    if(loggedInUsers.findUser(token)!=undefined){
-        const code = decodeURIComponent(router.getParam('code'));
-            console.log(code);
-            console.log(code.length);
-            let codeType = stollib.getCodeType(code);
-            console.log(codeType);
+            const token = req.headers.cookie.split("=")[1];
+            const user = loggedInUsers.findUser(token);
+            console.log(user);
+            if(user !== undefined){
+                const code = decodeURIComponent(router.getParam('code'));
+                console.log(user);
+                console.log(code);
+                console.log(code.length);
+                let codeType = stollib.getCodeType(code);
+                console.log(codeType);
 
-            // this can be google/dropbox/onedrive module
-            let workingObj = stollib.emptyWorkingObject;
-            if(codeType == "O"){
-                if(statedb.tokens["userid"]["grefreshtoken"] == undefined) {
-                    workingObj = onedrive;
+                // this can be google/dropbox/onedrive module
+                let workingObj = stollib.emptyWorkingObject;
+                if(codeType == "O"){
+                    if(statedb.tokens["userid"]["grefreshtoken"] == undefined) {
+                        workingObj = onedrive;
+                    }
+                    else {
+                        codeType = "undefined";
+                    }
                 }
-                else {
-                    codeType = "undefined";
+                else if(codeType == "G") {
+                    if(statedb.tokens["userid"]["grefreshtoken"] == undefined) {
+                        workingObj = google;
+                    }
+                    else {
+                        codeType = "undefined";
+                    }
                 }
-            }
-            else if(codeType == "G") {
-                if(statedb.tokens["userid"]["grefreshtoken"] == undefined) {
-                    workingObj = google;
+                else if(statedb.tokens["userid"]["d"] == undefined) {
+                    workingObj = dropbox;
                 }
-                else {
-                    codeType = "undefined";
-                }
-            }
-            else if(statedb.tokens["userid"]["d"] == undefined) {
-                workingObj = dropbox;
-            }
 
-            let promises = [];
-            
-            if(statedb.tokens["userid"]["grefreshtoken"]) {
-                promises.push(google.refreshToken(statedb.tokens["userid"]["grefreshtoken"]));
-            }
-            if(statedb.tokens["userid"]["orefreshtoken"]) {
-                promises.push(onedrive.refreshToken(statedb.tokens["userid"]["orefreshtoken"]));
-            }
-            // nu este nevoie de un lucru asemanator pentru dropbox deoarece se tokenul de acolo se poate folosi de mai multe ori
+                let promises = [];
+                
+                if(statedb.tokens["userid"]["grefreshtoken"]) {
+                    promises.push(google.refreshToken(statedb.tokens["userid"]["grefreshtoken"]));
+                }
+                if(statedb.tokens["userid"]["orefreshtoken"]) {
+                    promises.push(onedrive.refreshToken(statedb.tokens["userid"]["orefreshtoken"]));
+                }
+                // nu este nevoie de un lucru asemanator pentru dropbox deoarece se tokenul de acolo se poate folosi de mai multe ori
 
-            Promise.all(promises).then((tokens) => {
-                workingObj.accesscode(code).then((rez) =>  {
-                    console.log("rezultat", rez);
-                    utils.sendTemplate(req, res, "templates/mainScreen.html", { "g": tokens[0], "o": tokens[1], "d": statedb.tokens["userid"]["d"]}, 200);
+                Promise.all(promises).then((tokens) => {
+                    workingObj.accesscode(code).then((rez) =>  {
+                        console.log("rezultat", rez);
+                        utils.sendTemplate(req, res, "templates/mainScreen.html", {
+                            "name": (user["name"] + " " + user["surname"]),
+                            "smallname": (user["name"][0] + user["surname"][0]),
+                            "g": tokens[0],
+                            "o": tokens[1],
+                            "d": statedb.tokens["userid"]["d"]},
+                        200);
+                    })
+                }).catch((err) => {
+                    console.log(err);
+                    utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
                 })
-            }).catch((err) => {
-                console.log(err);
-                utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
-            })
- 
-
-
-
-
             }
             else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+                utils.redirect(res, "/");
             }
             
         }
         else if(router.is("/settings")){
             const token = req.headers.cookie.split("=")[1];
-            if(loggedInUsers.findUser(token)!=undefined){
-                utils.sendTemplate(req,res,"templates/settings-page.html",{},200);            }
+            const user = loggedInUsers.findUser(token)
+            if(user != undefined) {
+                utils.sendTemplate(req,res,"templates/settings-page.html",{
+                    "mesaj": "",
+                    "name": (user["name"] + " " + user["surname"]),
+                    "smallname": (user["name"][0] + user["surname"][0]),
+                    
+                },200);
+            }
             else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+                utils.redirect(res, "/");
             }
         }
 

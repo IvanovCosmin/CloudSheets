@@ -98,6 +98,8 @@ function UserModel(db){
                 if(newpassword!=""){
                     this.getUserByEmail(email).then(
                         (user) =>{
+                            console.log(user);
+                            console.log(email);
                             if(oldpassword==user[0].password){
                                 this.db.run(`UPDATE user SET password = ? where email = ?`, [newpassword,email],function(err){
                                     if(err){
