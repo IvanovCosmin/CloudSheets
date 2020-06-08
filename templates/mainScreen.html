@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    
     <head>
         <meta charset="UTF-8">
         <title>Your account</title>
         <link rel="stylesheet" type="text/css" href="../static/mainScreen/styles.css">
-        <script src='../static/mainScreen/options.js'></script>
-        <script src="../static/mainScreen/progress-bar.js"></script>
+        <script src='mainScreen/options.js'></script>
+        <script src="mainScreen/progress-bar.js"></script>
+        <script src="wasm/splitter.js"></script>
     </head>
 
     <body>
@@ -16,12 +17,11 @@
                     <img src='../assets/sigla.svg' alt="logo image" />
                 </div>
                 <div class="profileDetails">
-                    <span class="userName" id="numeUtilizator">Ioana Maniga</span>
+                    <span class="userName" id="numeUtilizator">{{ name }}</span>
                     <button onclick="showMenu(); " class="userCircle">
-                        <span class="userInitials" id="initialeUtilizator">IM</span>
+                        <span class="userInitials" id="initialeUtilizator">{{ smallname }}</span>
                     </button>
                     <div id="dropdown-content" class="dropdown-content">
-                        <a href="/adminPage">Admin page</a>
                         <a href="/oauth-redirect">Upload a file</a>
                         <a href="/userFiles">Your files</a>
                         <a href="/settings"> Settings </a>
@@ -41,9 +41,12 @@
                 <span id="errorMessage" class="errorMessage"></span>
             </div>
 
+
+
+            <input onchange="showName();" style="display: none;" type="file" id = "file-input">
+
             <div id="upload-files" class="upload-files">
                 <!--<button onclick="readFile()">Read file</button>-->
-                <input type="file" id="file-input" style="display: none;">
                 <div class="choose-file-area"><button id="fileChooser" class="startButton"
                         onclick="document.getElementById('file-input').click();">Choose your file</button>
                      <div class='chosen-file'><span id='chosen-file'>No file chosen</span></div>
@@ -51,39 +54,27 @@
             </div>
             
                 <button hidden id='startButton' class='startButton'
-                        onclick=" readFile(); showProgressBar(); progressBar.run();" style="display:none ;">Upload your
+                        onclick=" readFile(); showProgressBar();" style="display:none ;">Upload your
                         file
                         here</button>
-                    <!-- <a class="metadataDownloadButton" download="metadata.txt" id="metadata-link" href="#">Download
-                        metadata</a> -->
-                    <!--<button hidden class="startButton" type="submit" onclick="window.open('metadata.txt')" id="metadata-link" href="#">Download metadata</button>
-                <br>
-                <input type="file" id="metadata-input" value="/metadata">
-                
-                <input type="file" id="file-input" class="fileChooser" onchange="showname()" name="myfile">-->
-                </div>
-
-
-                <!-- showProgressBar(); progressBar.run(); -->
                 <div id="progressBarContainer" class="progressBarContainer">
                     <div class="uploadDetails">
-                        <span class="progressText" id="fileTitle">Name</span>
-                        <span class="progressText" id="fileSize">Size: </span>
                         <span class="progressText" id="progressBarText">Progress: 0%</span>
                     </div>
                     <div id="progresBarWrapper" class="progresBarWrapper">
                         <div id="progressBar" class="progressBar"></div>
                     </div>
                 </div>
-                <div id="tableContainer">
-                </div>
+                
             </div>
+            <div id="tableContainer">
+            </div>
+        </div>
         </div>
         <p hidden id="onedrive-token">{{ o }}</p>
         <p hidden id="google-token">{{ g }}</p>
         <p hidden id="dropbox-token">{{ d }}</p>
         <p hidden id="user-email">{{ email }}</p>
-        <script src="wasm/splitter.js"></script>
         <script src="stollib.js"></script>
     </body>
 
