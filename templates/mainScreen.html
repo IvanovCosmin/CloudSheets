@@ -15,16 +15,16 @@
                     <img src='../assets/sigla.svg' alt="logo image" />
                 </div>
                 <div class="profileDetails">
-                    <span class="userName">Ioana Maniga</span>
+                    <span class="userName" id="numeUtilizator">Ioana Maniga</span>
                     <button onclick="showMenu(); " class="userCircle">
-                        <span class="userInitials">IM</span>
+                        <span class="userInitials" id="initialeUtilizator">IM</span>
                     </button>
                     <div id="dropdown-content" class="dropdown-content">
                         <a href="/oauth-redirect">Upload a file</a>
                         <a href="../filesPage/index.html">Your files</a>
                         <a href="../settings"> Settings </a>
                         <a href="">See documentation</a>
-                        <a href="../welcomePage/index.html">Log out</a>
+                        <a href="/logout">Log out</a>
                     </div>
                 </div>
             </div>
@@ -284,7 +284,15 @@
         var localStorage = window.localStorage;
         if("{{ email }}" != "undefined"){
             localStorage.setItem("email", "{{ email }}");
+            localStorage.setItem("name", "{{ name }}");
+            localStorage.setItem("surname","{{ surname }}");
         }    
+
+        console.log(localStorage);
+
+        document.getElementById("numeUtilizator").innerHTML = localStorage.getItem("name") + " " + localStorage.getItem("surname");
+        document.getElementById("initialeUtilizator").innerHTML = localStorage.getItem("name")[0] + localStorage.getItem("surname")[0];
+
         localStorage.setItem("{{ codeType }}", "{{ code }}");
         Dropbox.code = localStorage.getItem("D");
         Google.code = localStorage.getItem("G");
@@ -463,15 +471,13 @@
             console.log("createLoadingBars")
             var files = metadataFile.match(/[a-zA-Z0-9]+\.csht/g)
             var uploadFiles = document.getElementById("upload-files");
-            var myDiv = document.getElementById('tableContainer');
-            var html = '<table ><tr id="firstRow" class="firstRow"><th>Nr.Crt.</th><th>File name</th><th>Size</th><th>Location</th></tr>'
             console.log(files);
-            files.forEach((element,i) => {
-                html += '<tr><th>' + (i + 1) + '</th><th>' + element + '</th><th>' + '100' + '</th><th>' +
-                                    'acolo' + '</th></tr>';
+            files.forEach(element => {
+                var h1 = document.createElement("p");
+                var text = document.createTextNode(element);
+                h1.appendChild(text);
+                uploadFiles.appendChild(h1);
             });
-            html = html + '</table>'
-            myDiv.innerHTML = html;
             files.forEach(element => {
                 var stream = FS.open("/" + element, "r");
                 console.log(stream);

@@ -88,7 +88,6 @@ function DownloadCSV(){
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             result = JSON.parse(xhr.response)["data"];
-            console.log(result);
             download("data.csv",result);
         }
     }

@@ -16,8 +16,30 @@ let UserDB =  UserModel.CreateUserModel(bazadate.db);
 let FileDB = FileModel.CreateFileModel(bazadate.db);
 let MetadataDB = MetadataModel.CreateMetadataModel(bazadate.db);
 
+
+
+function LoggedInState(){
+    var obj={
+        users:{},
+        addUser :function(token,email,name,surname){
+            this.users[token]={email:email,name:name,surname:surname};
+            console.log(token+" "+JSON.stringify(this.users[token]));
+        },
+        removeUser :function(token){
+            delete this.users[token];
+        },
+        findUser :function(token){
+            console.log(token+" "+JSON.stringify(this.users[token]));
+            return this.users[token];
+        }
+    }
+
+    return obj;
+}
+let loggedInUsers = new LoggedInState();
+
 let routerObjectConstructor = (req) => {
-    let return_obj = {}
+    let return_obj = {};
     console.log("req.url", req.url);
     if(req.url === undefined) return {
         is: (route, verb = "GET") => false
@@ -48,7 +70,7 @@ let routerObjectConstructor = (req) => {
             return requestInfo.urlPathname.endsWith(string);
         },
         requestInfo: requestInfo,
-        getParam: (param) => {return requestInfo.parsedParams[param]}
+        getParam: (param) => {return requestInfo.parsedParams[param]},
     }
     return return_obj;
 }
@@ -61,7 +83,7 @@ let resolver = (req, res) => {
     })
 
     req.on('end', async () => {
-        console.log(requestBody);
+        console.log("reqbdy"+requestBody);
         if (requestBody.includes("\n\r")) {
             requestBody = utils.parseBodyFormData(requestBody);
         }
@@ -77,7 +99,17 @@ let resolver = (req, res) => {
                 "gheiString": "Paul ultra ghei", 
                 "orNot" : "E doar o gluma ca sa demonstrez templateurile :)"
             };
-            utils.sendTemplate(req, res,"static/welcomePage/index.html", testContext, 200);
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token) != undefined){
+                if(loggedInUsers.findUser(token).email=="admin.admin@admins.com"){
+                    utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);    
+                }
+                else
+                utils.sendTemplate(req, res, "templates/mainScreen.html", {}, 200);
+            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html", {}, 200);
+            }
         }
         else if (router.is('/user')) {
             console.log(router.getParam('username'));
@@ -87,16 +119,43 @@ let resolver = (req, res) => {
                 }
             );
         }
-        else if (router.is('/mainScreen/mainpage')) {
-            utils.sendTemplate(req, res, "templates/mainScreen.html", {}, 200);
+        else if (router.is('/mainScreen/mainpage')) 
+        {
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token) != undefined){
+                utils.sendTemplate(req, res, "templates/mainScreen.html", {}, 200);
+            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html", {}, 200);
+            }
         }
             
         else if (router.is('/userpage')) {
-            utils.sendTemplate(req, res, "templates/user_page.html", {}, 200);
+            
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token)!=undefined){
+                utils.sendTemplate(req, res, "templates/user_page.html", {}, 200);
+            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+            }
+            
         }
 
         else if(router.is('/adminPage')){
-            utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token) != undefined){
+                if(loggedInUsers.findUser(token).email=="admin.admin@admins.com"){
+                    utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);
+                }
+                else{
+                    utils.sendTemplate(req, res,"templates/mainScreen.html", {}, 200);    
+                }
+            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html", {}, 200);
+            }
+            
         }
         else if(router.is('/allusers')) {
             let userPromise = UserDB.getAllUsers();
@@ -153,7 +212,13 @@ let resolver = (req, res) => {
                         UserDB.insertUser(email, password, name, surname);
                         //res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
                         //res.end();
-                        utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email }, 200);
+                        const token = utils.randomString();
+                        loggedInUsers.addUser(token,email,name,surname);
+                        if(email=="admin.admin@admins.com"){
+                            utils.sendTemplate(req, res, "templates/adminScreen.html", { "email": email  }, 200 , token);
+                        }else{
+                            utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email ,"name":name ,"surname":surname }, 200 , token);
+                        }
                         }
                         else{
                             res.writeHead(301,{"Location":"https://localhost:8000/"});
@@ -168,7 +233,7 @@ let resolver = (req, res) => {
             const files=requestBody.files;
             const email=requestBody.email;
             MetadataDB.insertUserFile(fileName,size,files,email);
-
+ 
         }
         else if (router.is('/welcomePage/onLogin',"POST")){
             email=requestBody.email;
@@ -178,7 +243,14 @@ let resolver = (req, res) => {
                    if(user[0] !== undefined && password === user[0].password){
                    // res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
                     //res.end();
-                    utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email }, 200);
+                    const token = utils.randomString();
+                    loggedInUsers.addUser(token,user[0].email,user[0].name,user[0].surname);
+                    if(user[0].email=="admin.admin@admins.com"){
+                        utils.sendTemplate(req, res, "templates/adminScreen.html", { "email": email }, 200 , token);
+                    }else{
+                        utils.sendTemplate(req, res, "templates/mainScreen.html", { "email": email ,"name":user[0].name ,"surname":user[0].surname }, 200 , token);
+                    }
+                    
                    }else{
                     
                     res.writeHead(301,{"Location":"https://localhost:8000/"});
@@ -221,45 +293,80 @@ let resolver = (req, res) => {
             utils.sendTemplate(req, res, "templates/get-files.html", {}, 200);
         } 
         else if(router.is("/olt")) {
-            utils.redirect(res,onedrive.login_link());
+            
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token)!=undefined){
+                utils.redirect(res,onedrive.login_link());
+            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+            }
+            
         }
         else if(router.is("/glt")) {
-            utils.redirect(res, google.login_link());
+            
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token)!=undefined){
+                utils.redirect(res, google.login_link());
+            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+            }
+            
         }
 
         else if(router.is("/dlt")) {
-            utils.redirect(res, dropbox.login_link());
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token)!=undefined){
+                utils.redirect(res, dropbox.login_link());
+            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+            }
+            
         }
 
         else if(router.is("/oauth-redirect")) {
-            const code = decodeURIComponent(router.getParam('code'));
-            console.log(code);
-            console.log(code.length);
-            const codeType = stollib.getCodeType(code);
-            console.log(codeType);
-            // this could be google/dropbox/onedrive module
-            let workingObj = undefined;
-            if(codeType == "O"){
-                workingObj = onedrive;
-            }
-            else if(codeType == "G") {
-                workingObj = google;
-            }
-            else {
-                workingObj = dropbox;
-            }
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token)!=undefined){
+                const code = decodeURIComponent(router.getParam('code'));
+                console.log(code);
+                console.log(code.length);
+                const codeType = stollib.getCodeType(code);
+                console.log(codeType);
+                // this could be google/dropbox/onedrive module
+                let workingObj = undefined;
+                if(codeType == "O"){
+                    workingObj = onedrive;
+                }
+                else if(codeType == "G") {
+                    workingObj = google;
+                }
+                else {
+                    workingObj = dropbox;
+                }
 
-            workingObj.accesscode(code).then((rez) =>  {
-                console.log("rezultat", rez);
-                utils.sendTemplate(req, res, "templates/mainScreen.html", { "codeType": codeType, "code": rez }, 200);
-            }).catch((err) => {
-                console.log(err);
-                utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
-            });
+                workingObj.accesscode(code).then((rez) =>  {
+                    console.log("rezultat", rez);
+                    utils.sendTemplate(req, res, "templates/mainScreen.html", { "codeType": codeType, "code": rez }, 200);
+                }).catch((err) => {
+                    console.log(err);
+                    utils.sendTemplate(req, res, "templates/errors/error.html", {}, 500);
+                });
 
+            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+            }
+            
         }
         else if(router.is("/settings")){
-            utils.sendTemplate(req,res,"templates/settings-page.html",{},200);
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token)!=undefined){
+                utils.sendTemplate(req,res,"templates/settings-page.html",{},200);            }
+            else{
+                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+            }
         }
 
         else if(router.is("/getfileid")) {
@@ -284,14 +391,38 @@ let resolver = (req, res) => {
         else if(router.is("/getCSV","POST")){
             let email=requestBody.emails.split(',');
             console.log(email)
-            MetadataDB.toCSV(email[0]).then(
+            MetadataDB.toCSV(email).then(
                 (csv) => {
                     console.log(csv);
                     utils.sendJson(200,res,{data:csv});
                 }
             ).catch(
                 (err)=>console.log(err)
+            );    
+            
+        }
+        else if(router.is("/metadataExisits")){
+            size = router.getParam("size");
+            name = router.getParam("file_name");
+            MetadataDB.getFile(name,size).then(
+                (file)=>{
+                    if(file[0]!=undefined){
+
+                    }
+                }
+            ).catch(
+                (err)=>{
+
+                }
             );
+        }
+
+        else if(router.is("/logout")){
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token) != undefined){
+                loggedInUsers.removeUser(token);
+            }
+            utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
         }
 
         else if(router.endswith(".wasm")) {
@@ -312,6 +443,7 @@ let resolver = (req, res) => {
                utils.sendTemplate(req,res,"static/404.html",{},404);
             }
         }
+
     })
 }
 
