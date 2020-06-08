@@ -180,6 +180,9 @@ let resolver = (req, res) => {
         else if(router.is('/documentation')){
             utils.sendTemplate(req, res, "templates/documentation.html", {}, 200);
         }
+        else if(router.is('/userGuide')){
+            utils.sendTemplate(req, res, "templates/user-guide.html", {}, 200);
+        }
         else if(router.is('/allusers')) {
             let userPromise = UserDB.getAllUsers();
 
@@ -443,6 +446,7 @@ let resolver = (req, res) => {
                 utils.redirect(res, "/");
             }
         }
+
 
         else if(router.is("/getfileid")) {
             const email = router.getParam("email");
