@@ -25,6 +25,7 @@ function downloadFullFileFromCloud(file_name) {
         if(file["file_name"] == file_name) {
             var chunks = file["chunks"].split(",");
             downloadFilesByNames(file_name, chunks);
+            return;
         }
     }
 }
