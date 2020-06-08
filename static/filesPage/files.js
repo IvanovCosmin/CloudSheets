@@ -40,7 +40,6 @@ function getUserFiles(){
     }
     xhr.open("GET", requestUrl,false); 
     xhr.send();
-    console.log("lalalala",result, result.length);
     showFiles(result);
 }
 

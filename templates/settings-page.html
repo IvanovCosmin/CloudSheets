@@ -3,23 +3,22 @@
 
     <head>
         <title>Your account</title>
-        <link rel="stylesheet" type="text/css" href="../static/settings-page/styles.css">
-        <script src='../static/settings-page/options.js'></script>
+        <link rel="stylesheet" type="text/css" href="/settings-page/styles.css">
+        <script src='/settings-page/options.js'></script>
     </head>
 
-    <body>
+    <body onload="setPageUp()">
         <div class="mainContainer">
             <header>
                 <div class="imgContainer">
                     <img src='../assets/sigla.svg' alt="logo image" />
                 </div>
                 <div class="profileDetails">
-                    <span class="userName" id="numeUtilizator">Ioana Maniga</span>
+                    <span class="userName" id="numeUtilizator">{{ name }}</span>
                     <button onclick="showMenu(); " class="userCircle">
-                        <span class="userInitials" id="initialeUtilizator">IM</span>
+                        <span class="userInitials" id="initialeUtilizator">{{ smallname }}</span>
                     </button> 
                     <div id="dropdown-content" class="dropdown-content">
-                        <a href="/adminPage">Admin page</a>
                         <a href="/oauth-redirect">Upload a file</a>
                         <a href="/userFiles">Your files</a>
                         <a href="/settings"> Settings </a>
@@ -33,8 +32,8 @@
         <div class="navigationArea">
             <label class="uploadmessage" id="uplmsg" >{{ mesaj }}</label>
             <form  action="/settings/changeSettings" method="POST" >
-                <input name="email" type="text" id="email" >
                 <label class = "labelTitle" >Change name:</label>
+                <input name="email" id="email" type="text"> 
                 <input name="name" type="text" placeHolder="First name" > 
                 <input name="surname" type="text"  placeHolder="Last name" >
 
@@ -100,9 +99,8 @@
                 </div>     
                 
                 
-                <input type="submit" class="submitButton"  value="Submit">-->
+                <input type="submit" class="submitButton"  value="Submit">
                 </form>
         </div>
-    
     </body>
 </html>

@@ -15,12 +15,11 @@
                 <img class="logo" src='../assets/sigla.svg' alt="logo image" />
             </div>
             <div class="profileDetails">
-                <span class="userName" id="numeUtilizator">Ioana Maniga</span>
+                <span class="userName" id="numeUtilizator">{{ name }}</span>
                 <button onclick="showMenu(); " class="userCircle">
-                    <span class="userInitials" id="initialeUtilizator">IM</span>
+                    <span class="userInitials" id="initialeUtilizator">{{ smallname }}</span>
                 </button>
                 <div id="dropdown-content" class="dropdown-content">
-                    <a href="/adminPage">Admin page</a>
                     <a href="/oauth-redirect">Upload a file</a>
                     <a href="/userFiles">Your files</a>
                     <a href="/settings"> Settings </a>
@@ -33,11 +32,6 @@
             <div id="filesList" class="filesList">
             </div>
         </div>
-        <script>
-            document.getElementById("numeUtilizator").innerHTML = localStorage.getItem("name") + " " + localStorage.getItem("surname");
-            document.getElementById("initialeUtilizator").innerHTML = localStorage.getItem("name")[0] + localStorage.getItem("surname")[0];
-
-        </script>
     </div>
     <p hidden id="onedrive-token">{{ o }}</p>
     <p hidden id="google-token">{{ g }}</p>

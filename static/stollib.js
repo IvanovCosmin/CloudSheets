@@ -390,7 +390,9 @@ var UploadManger = {
         }
         else if (this._fileIndex % 3 == 1){
             console.log("Uploading dropbox element", element);
-            Dropbox.upload(element, blob);
+            setTimeout(() => {
+                Dropbox.upload(element, blob);
+            }, this._fileIndex * 100); // uneori dropbox se sperie de prea multe operatii de write
         }
         else {
             console.log("Uploading onedrive element", element);
