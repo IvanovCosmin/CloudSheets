@@ -84,7 +84,6 @@ let resolver = (req, res) => {
     })
 
     req.on('end', async () => {
-        console.log("reqbdy"+requestBody);
         if (requestBody.includes("\n\r")) {
             requestBody = utils.parseBodyFormData(requestBody);
         }
@@ -115,12 +114,18 @@ let resolver = (req, res) => {
             
         }
         else if (router.is('/user')) {
-            console.log(router.getParam('username'));
-            let userPromise = UserDB.getUserByUsername(router.getParam('username'));
-            userPromise.then( (result) => {
-                    utils.sendJson(200,res,result);
-                }
-            );
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token) != undefined){
+                let userPromise = UserDB.getUserByUsername(router.getParam('username'));
+                userPromise.then( (result) => {
+                        utils.sendJson(200,res,result);
+                    }
+                );
+            }
+            else
+            {
+                utils.sendJson(401,res,{"error":"You are not logged in"});
+            }
         }
         else if (router.is('/mainScreen/mainpage')) 
         {
@@ -181,103 +186,138 @@ let resolver = (req, res) => {
             utils.sendTemplate(req, res, "templates/documentation.html", {}, 200);
         }
         else if(router.is('/allusers')) {
-            let userPromise = UserDB.getAllUsers();
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token) != undefined){
+                let userPromise = UserDB.getAllUsers();
 
-            userPromise.then( (result)=>{
-                    utils.sendJson(200, res, {data:result});
-            });
+                userPromise.then( (result)=>{
+                        utils.sendJson(200, res, {data:result});
+                });
+            }
+            else{
+                utils.sendJson(401,res,{"error":"You are not logged in"});
+            }
         }
         else if(router.is('/getUserFiles')){
-            const email = router.getParam("email");
-            let userPromise = MetadataDB.getUserFiles(email)
-            userPromise.then((result)=>{
-                utils.sendJson(200,res,{data: result})
-            }).catch(err=>console.log(err))
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token) != undefined){
+                const email = router.getParam("email");
+                let userPromise = MetadataDB.getUserFiles(email)
+                userPromise.then((result)=>{
+                    utils.sendJson(200,res,{data: result})
+                }).catch(err=>console.log(err));
+            }
+            else{
+                utils.sendJson(401,res,{"error":"You are not logged in"});
+            }
         }
         else if(router.is("/get-providers-for-files")) {
-            const fileNames = JSON.parse(req.headers["data"])["names"];
-            console.log(fileNames);
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token) != undefined){
+                const fileNames = JSON.parse(req.headers["data"])["names"];
+                console.log(fileNames);
 
-            let providerNames = [];
-            let providers = ["G", "D", "O"];
-            let counter = 0;
-            for(name of fileNames) {
-                providerNames.push(providers[counter%providers.length]);
-                counter++;
-            }
+                let providerNames = [];
+                let providers = ["G", "D", "O"];
+                let counter = 0;
+                for(name of fileNames) {
+                    providerNames.push(providers[counter%providers.length]);
+                    counter++;
+                }
 
-            let raspuns = {
-                "names": providerNames
+                let raspuns = {
+                    "names": providerNames
+                }
+                utils.sendJson(200, res, raspuns);
+            }else{
+                utils.sendJson(401,res,{"error":"You are not logged in"});
             }
-            utils.sendJson(200, res, raspuns);
         }
         else if (router.is('/welcomePage/onRegister',"POST")){
             const email=requestBody.email;
             const password=requestBody.password;
             const name=requestBody.name;
             const surname=requestBody.surname;
-            console.log(requestBody);
-            UserDB.getUserByEmail(email).then(
-                (user)=>{
-                    if(user[0]==undefined){
-                        UserDB.insertUser(email, password, name, surname);
-                        const token = utils.randomString();
-                        loggedInUsers.addUser(token,email,name,surname);
-                        if(email=="admin.admin@admins.com"){
-                            utils.sendTemplate(req, res, "templates/adminScreen.html", { "email": email  }, 200 , token);
-                        }else{
-                            utils.sendTemplate(req, res, "templates/user-files.html", { 
-                                "email": email ,
-                                "name": user[0].name + " " + user[0].surname,
-                                "smallname":  user[0].name[0] + user[0].surname[0]
-                            }, 200 , token);
-                        }
-                        }
-                        else{
-                            res.writeHead(301,{"Location":"https://localhost:8000/"});
-                            res.end();
-                        }
-                }
-            ).catch((err) => {
-                console.log(err);
-            });
+            if(utils.validateInput(email+password+name+surname)==true){
+                UserDB.getUserByEmail(email).then(
+                    (user)=>{
+                        if(user[0]==undefined){
+                            UserDB.insertUser(email, password, name, surname);
+                            const token = utils.randomString();
+                            loggedInUsers.addUser(token,email,name,surname);
+                            if(email=="admin.admin@admins.com"){
+                                utils.sendTemplate(req, res, "templates/adminScreen.html", { "email": email  }, 200 , token);
+                            }else{
+                                utils.sendTemplate(req, res, "templates/user-files.html", { 
+                                    "email": email ,
+                                    "name": user[0].name + " " + user[0].surname,
+                                    "smallname":  user[0].name[0] + user[0].surname[0]
+                                }, 200 , token);
+                            }
+                            }
+                            else{
+                                res.writeHead(301,{"Location":"https://localhost:8000/"});
+                                res.end();
+                            }
+                    }
+                ).catch((err) => {
+                    console.log(err);
+                });
+            }
+            else{
+                res.writeHead(301,{"Location":"https://localhost:8000/"});
+                res.end();
+            }
+            
         }
         else if(router.is('/sendMetadata',"POST")){
-            const fileName=requestBody.fileName;
-            const size=requestBody.size;
-            const files=requestBody.files;
-            const email=requestBody.email;
-            MetadataDB.insertUserFile(fileName,size,files,email);
- 
+            const token = req.headers.cookie.split("=")[1];
+            if(loggedInUsers.findUser(token) != undefined){
+                const fileName=requestBody.fileName;
+                const size=requestBody.size;
+                const files=requestBody.files;
+                const email=requestBody.email;
+                MetadataDB.insertUserFile(fileName,size,files,email);
+            }
+            else{
+                utils.sendJson(401,res,{"error":"You are not logged in"});
+            }
         }
         else if (router.is('/welcomePage/onLogin',"POST")){
             email=requestBody.email;
             password = requestBody.password;
-            UserDB.getUserByEmail(email).then(
-               (user)=>{
-                   if(user[0] !== undefined && password === user[0].password){
-                   // res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
-                    //res.end();
-                    const token = utils.randomString();
-                    loggedInUsers.addUser(token,user[0].email,user[0].name,user[0].surname);
-                    if(user[0].email=="admin.admin@admins.com"){
-                        utils.sendTemplate(req, res, "templates/adminScreen.html", { "email": email }, 200 , token);
-                    }else{
-                        utils.sendTemplate(req, res, "templates/user-files.html", { 
-                            "email": email ,
-                            "name": user[0].name + " " + user[0].surname,
-                            "smallname":  user[0].name[0] + user[0].surname[0]
-                        }, 200 , token);
-                    }
-                    
-                   }else{
-                    
-                    res.writeHead(301,{"Location":"https://localhost:8000/"});
-                    res.end(); 
-                   }
-                    
-                })
-                .catch(err => console.log(err));
+            if(utils.validateInput(email+password) == true){
+                UserDB.getUserByEmail(email).then(
+                    (user)=>{
+                        if(user[0] !== undefined && password === user[0].password){
+                        // res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
+                         //res.end();
+                         const token = utils.randomString();
+                         loggedInUsers.addUser(token,user[0].email,user[0].name,user[0].surname);
+                         if(user[0].email=="admin.admin@admins.com"){
+                             utils.sendTemplate(req, res, "templates/adminScreen.html", { "email": email }, 200 , token);
+                         }else{
+                             utils.sendTemplate(req, res, "templates/user-files.html", { 
+                                 "email": email ,
+                                 "name": user[0].name + " " + user[0].surname,
+                                 "smallname":  user[0].name[0] + user[0].surname[0]
+                             }, 200 , token);
+                         }
+                         
+                        }else{
+                         
+                         res.writeHead(301,{"Location":"https://localhost:8000/"});
+                         res.end(); 
+                        }
+                         
+                     })
+                     .catch(err => console.log(err));
+            }
+            else{
+                res.writeHead(301,{"Location":"https://localhost:8000/"});
+                res.end();
+            }
+            
         }
         else if (router.is('/settings/changeSettings',"POST")){
             const email=requestBody.email;
@@ -291,43 +331,45 @@ let resolver = (req, res) => {
             const Third = requestBody.Third;
             const token = req.headers.cookie.split("=")[1];
             const user = loggedInUsers.findUser(token);
-            if(user != undefined) {
-                UserDB.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
-                    (result)=>{
-                        if(result==true){
-                            utils.sendTemplate(req,res,"templates/settings-page.html",{
-                                "mesaj": "Succes!",
-                                "name": (user["name"] + " " + user["surname"]),
-                                "smallname": (user["name"][0] + user["surname"][0]),
-                                
-                            }, 200);
+            if(utils.validateInput(email+name+surname+oldpass+pass) == true){
+                if(user != undefined) {
+                    UserDB.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
+                        (result)=>{
+                            if(result==true){
+                                utils.sendTemplate(req,res,"templates/settings-page.html",{
+                                    "mesaj": "Succes!",
+                                    "name": (user["name"] + " " + user["surname"]),
+                                    "smallname": (user["name"][0] + user["surname"][0]),
+                                    
+                                }, 200);
+                            }
+                            else{
+                                utils.sendTemplate(req,res,"templates/settings-page.html",{
+                                    "mesaj": "Wrong passowrd",
+                                    "name": (user["name"] + " " + user["surname"]),
+                                    "smallname": (user["name"][0] + user["surname"][0]),
+                                    
+                                }, 200);
+                            }
                         }
-                        else{
-                            utils.sendTemplate(req,res,"templates/settings-page.html",{
-                                "mesaj": "Wrong passowrd",
-                                "name": (user["name"] + " " + user["surname"]),
-                                "smallname": (user["name"][0] + user["surname"][0]),
-                                
-                            }, 200);
-                        }
-                    }
-                ).catch(
-                    (err)=>console.log(err)
-                );
+                    ).catch(
+                        (err)=>console.log(err)
+                    );
+                }
+                else{
+                    utils.redirect(res, "/");
+                }
             }
             else{
-                utils.redirect(res, "/");
+                utils.sendTemplate(req,res,"templates/settings-page.html",{
+                    "mesaj": "Au fost introduse caractere invalide cum ar fi:< , > , ; , '",
+                    "name": (user["name"] + " " + user["surname"]),
+                    "smallname": (user["name"][0] + user["surname"][0]),
+                    
+                }, 200); 
             }
             
             
-        }
-        else if(router.is('/upload', "POST")) {
-            // nu tin minte ce i cu asta. got help. probabil trb sa dispara
-            utils.upload(requestBody, res);
-        }
-
-        else if(router.is("/get-files")) {
-            utils.sendTemplate(req, res, "templates/get-files.html", {}, 200);
         } 
         else if(router.is("/olt")) {
             
@@ -336,7 +378,7 @@ let resolver = (req, res) => {
                 utils.redirect(res,onedrive.login_link());
             }
             else{
-                utils.redirect("/");
+                utils.sendJson(401,res,{"error":"You are not logged in"});
             }
             
         }
@@ -347,7 +389,7 @@ let resolver = (req, res) => {
                 utils.redirect(res, google.login_link());
             }
             else{
-                utils.redirect("/");
+                utils.sendJson(401,res,{"error":"You are not logged in"});
             }
             
         }
@@ -358,7 +400,7 @@ let resolver = (req, res) => {
                 utils.redirect(res, dropbox.login_link());
             }
             else{
-                utils.redirect("/");
+                utils.sendJson(401,res,{"error":"You are not logged in"});
             }
             
         }
@@ -445,52 +487,78 @@ let resolver = (req, res) => {
         }
 
         else if(router.is("/getfileid")) {
-            const email = router.getParam("email");
-            const filename = router.getParam("filename");
-            console.log(email, filename);
-            const rezult = await FileDB.getFileId(email, filename);
-            utils.sendJson(200, res, {
-                "id": rezult[0]
-            }); 
+            const token = req.headers.cookie.split("=")[1];
+            const user = loggedInUsers.findUser(token)
+            if(user != undefined) {
+                const email = router.getParam("email");
+                const filename = router.getParam("filename");
+                console.log(email, filename);
+                const rezult = await FileDB.getFileId(email, filename);
+                utils.sendJson(200, res, {
+                    "id": rezult[0]
+                }); 
+            }
+            else{
+                utils.sendJson(401,res,"You are not logged in!");
+            }
         }
 
         // VALIDARE AICI. in momentul asta se pot adauga la infinit fara problema
         else if(router.is("/insertfileid", "POST")) {
-            const email = requestBody.email;
-            const filename = requestBody.filename;
-            const id = requestBody.id;
-            console.log(email,filename, id);
-            FileDB.insertFile(email, filename, id);
-            res.writeHead(200);
-            res.end();
+            const token = req.headers.cookie.split("=")[1];
+            const user = loggedInUsers.findUser(token)
+            if(user != undefined){
+                const email = requestBody.email;
+                const filename = requestBody.filename;
+                const id = requestBody.id;
+                console.log(email,filename, id);
+                FileDB.insertFile(email, filename, id);
+                res.writeHead(200);
+                res.end();
+            }else{
+                utils.sendJson(401,res,{"error":"You are not logged in"});
+            } 
         }
         else if(router.is("/getCSV","POST")){
-            let email=requestBody.emails.split(',');
-            console.log(email)
-            MetadataDB.toCSV(email).then(
-                (csv) => {
-                    console.log(csv);
-                    utils.sendJson(200,res,{data:csv});
-                }
-            ).catch(
-                (err)=>console.log(err)
-            );    
-            
+            const token = req.headers.cookie.split("=")[1];
+            const user = loggedInUsers.findUser(token)
+            if(user != undefined){
+                let email=requestBody.emails.split(',');
+                console.log(email)
+                MetadataDB.toCSV(email).then(
+                    (csv) => {
+                        console.log(csv);
+                        utils.sendJson(200,res,{data:csv});
+                    }
+                ).catch(
+                    (err)=>console.log(err)
+                );    
+            }
+            else{
+                utils.sendJson(401,res,{"error":"You are not logged in"});
+            }
         }
         else if(router.is("/metadataExisits")){
-            size = router.getParam("size");
-            name = router.getParam("file_name");
-            MetadataDB.getFile(name,size).then(
-                (file)=>{
-                    if(file[0]!=undefined){
+            const token = req.headers.cookie.split("=")[1];
+            const user = loggedInUsers.findUser(token)
+            if(user != undefined){
+                size = router.getParam("size");
+                name = router.getParam("file_name");
+                MetadataDB.getFile(name,size).then(
+                    (file)=>{
+                        if(file[0]!=undefined){
+
+                        }
+                    }
+                ).catch(
+                    (err)=>{
 
                     }
-                }
-            ).catch(
-                (err)=>{
-
-                }
-            );
+                );
+            }
+            else{
+                utils.sendJson(401,res,{"error":"You are not logged in"});
+            }
         }
 
         else if(router.is("/logout")){
