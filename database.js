@@ -22,46 +22,46 @@ function DataBase(){
         //         console.log(`A row has been inserted with rowid ${this.lastID}`);
         //     }
         // });
-        this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul1", "mare", "chunk1 chunk2 chunk3 chunk4 chunk5 chunk6 chunk7" , 'paul_man70@yahoo.com'], (err)=> {
-            if (err) {
-              return console.log(err.message);
-            }
-            else{
-                console.log(`A row has been inserted with rowid ${this.lastID}`);
-            }
-        });
-        this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul2", "mediu", "chunk1 chunk2 chunk3 chunk4" , 'paul_man70@yahoo.com'], (err)=> {
-            if (err) {
-              return console.log(err.message);
-            }
-            else{
-                console.log(`A row has been inserted with rowid ${this.lastID}`);
-            }
-        });
-        this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul3", "mic", "chunk1 chunk2 chunk3" , 'paul_man70@yahoo.com'], (err)=> {
-            if (err) {
-              return console.log(err.message);
-            }
-            else{
-                console.log(`A row has been inserted with rowid ${this.lastID}`);
-            }
-        });
-        this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul4", "mediu", "chunk1 chunk2 chunk3 chunk4 chunk5 chunk6" , 'paul_man7@yahoo.com'], (err)=> {
-            if (err) {
-              return console.log(err.message);
-            }
-            else{
-                console.log(`A row has been inserted with rowid ${this.lastID}`);
-            }
-        });
-        this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul5", "mic", "chunk1 chunk2 " , 'paul_man0@yahoo.com'], (err)=> {
-            if (err) {
-              return console.log(err.message);
-            }
-            else{
-                console.log(`A row has been inserted with rowid ${this.lastID}`);
-            }
-        });
+        // this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul1", "mare", "chunk1 chunk2 chunk3 chunk4 chunk5 chunk6 chunk7" , 'paul_man70@yahoo.com'], (err)=> {
+        //     if (err) {
+        //       return console.log(err.message);
+        //     }
+        //     else{
+        //         console.log(`A row has been inserted with rowid ${this.lastID}`);
+        //     }
+        // });
+        // this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul2", "mediu", "chunk1 chunk2 chunk3 chunk4" , 'paul_man70@yahoo.com'], (err)=> {
+        //     if (err) {
+        //       return console.log(err.message);
+        //     }
+        //     else{
+        //         console.log(`A row has been inserted with rowid ${this.lastID}`);
+        //     }
+        // });
+        // this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul3", "mic", "chunk1 chunk2 chunk3" , 'paul_man70@yahoo.com'], (err)=> {
+        //     if (err) {
+        //       return console.log(err.message);
+        //     }
+        //     else{
+        //         console.log(`A row has been inserted with rowid ${this.lastID}`);
+        //     }
+        // });
+        // this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul4", "mediu", "chunk1 chunk2 chunk3 chunk4 chunk5 chunk6" , 'paul_man7@yahoo.com'], (err)=> {
+        //     if (err) {
+        //       return console.log(err.message);
+        //     }
+        //     else{
+        //         console.log(`A row has been inserted with rowid ${this.lastID}`);
+        //     }
+        // });
+        // this.db.run(`INSERT INTO uploaded_files(file_name,size,chunks,user_email) VALUES(?,?,?,?)`, ["fisierul5", "mic", "chunk1 chunk2 " , 'paul_man0@yahoo.com'], (err)=> {
+        //     if (err) {
+        //       return console.log(err.message);
+        //     }
+        //     else{
+        //         console.log(`A row has been inserted with rowid ${this.lastID}`);
+        //     }
+        // });
     },
     
     dropTable:function() {

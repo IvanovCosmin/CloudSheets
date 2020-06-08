@@ -2,6 +2,7 @@
 <html lang="en">
 
     <head>
+        <meta charset="UTF-8">
         <title>Your account</title>
         <link rel="stylesheet" type="text/css" href="../static/mainScreen/styles.css">
         <script src='../static/mainScreen/options.js'></script>
@@ -15,12 +16,11 @@
                     <img src='../assets/sigla.svg' alt="logo image" />
                 </div>
                 <div class="profileDetails">
-                    <span class="userName" id="numeUtilizator">Ioana Maniga</span>
+                    <span class="userName" id="numeUtilizator">{{ name }}</span>
                     <button onclick="showMenu(); " class="userCircle">
-                        <span class="userInitials" id="initialeUtilizator">IM</span>
+                        <span class="userInitials" id="initialeUtilizator">{{ smallname }}</span>
                     </button>
                     <div id="dropdown-content" class="dropdown-content">
-                        <a href="/adminPage">Admin page</a>
                         <a href="/oauth-redirect">Upload a file</a>
                         <a href="/userFiles">Your files</a>
                         <a href="/settings"> Settings </a>
@@ -41,7 +41,7 @@
 
 
 
-
+            <input onchange="showName();" style="display: none;" type="file" id = "file-input">
 
             <div id="upload-files" class="upload-files">
                 <!--<button onclick="readFile()">Read file</button>-->
@@ -55,17 +55,6 @@
                         onclick=" readFile(); showProgressBar(); progressBar.run();" style="display:none ;">Upload your
                         file
                         here</button>
-                    <!-- <a class="metadataDownloadButton" download="metadata.txt" id="metadata-link" href="#">Download
-                        metadata</a> -->
-                    <!--<button hidden class="startButton" type="submit" onclick="window.open('metadata.txt')" id="metadata-link" href="#">Download metadata</button>
-                <br>
-                <input type="file" id="metadata-input" value="/metadata">
-                
-                <input type="file" id="file-input" class="fileChooser" onchange="showname()" name="myfile">-->
-                </div>
-
-
-                <!-- showProgressBar(); progressBar.run(); -->
                 <div id="progressBarContainer" class="progressBarContainer">
                     <div class="uploadDetails">
                         <span class="progressText" id="fileTitle">Name</span>

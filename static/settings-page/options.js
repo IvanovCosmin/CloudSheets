@@ -12,14 +12,15 @@ function notShowPriorities(){
     document.getElementById("priorities").style.display = "none";
 }
 
-document.getElementById("numeUtilizator").innerHTML = localStorage.getItem("name") + " " + localStorage.getItem("surname");
-document.getElementById("initialeUtilizator").innerHTML = localStorage.getItem("name")[0] + localStorage.getItem("surname")[0];
-if("{{ mesaj }}" == "undefined"){
-    document.getElementById("uplmsg").style.visibility= "hidden";
-}else
-if("{{ mesaj }}" != "Succes!"){
-    document.getElementById("uplmsg").style.color= "red";
-}
 
-document.getElementById("email").value=localStorage.getItem("email");
-document.getElementById("email").style.display = "none";
+
+function setPageUp () { 
+    console.log("loaded")
+    document.getElementById("email").value=localStorage.getItem("email");
+    document.getElementById("email").style.display = "none";
+    if(document.getElementById("uplmsg").innerHTML === ""){
+        document.getElementById("uplmsg").style.visibility= "hidden";
+    }else if(document.getElementById("uplmsg").innerHTML != "Succes!"){
+        document.getElementById("uplmsg").style.color= "red";
+    }
+}
