@@ -11,3 +11,13 @@ function showPriorities(){
 function notShowPriorities(){
     document.getElementById("priorities").style.display = "none";
 }
+
+if("{{ mesaj }}" == "undefined"){
+    document.getElementById("uplmsg").style.visibility= "hidden";
+}else
+if("{{ mesaj }}" != "Succes!"){
+    document.getElementById("uplmsg").style.color= "red";
+}
+
+document.getElementById("email").value=localStorage.getItem("email");
+document.getElementById("email").style.display = "none";

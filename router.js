@@ -77,7 +77,7 @@ let resolver = (req, res) => {
                 "gheiString": "Paul ultra ghei", 
                 "orNot" : "E doar o gluma ca sa demonstrez templateurile :)"
             };
-            utils.sendTemplate(req, res,"static/welcomePage/index.html", testContext, 200);
+            utils.sendTemplate(req, res,"templates/welcome-page.html", testContext, 200);
         }
         else if (router.is('/user')) {
             console.log(router.getParam('username'));
@@ -97,6 +97,9 @@ let resolver = (req, res) => {
 
         else if(router.is('/adminPage')){
             utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);
+        }
+        else if(router.is('/userFiles')){
+            utils.sendTemplate(req, res, "templates/user-files.html", {}, 200);
         }
         else if(router.is('/allusers')) {
             let userPromise = UserDB.getAllUsers();
@@ -119,7 +122,7 @@ let resolver = (req, res) => {
         }
         else if(router.is('/getUserFiles')){
             const email = router.getParam("email");
-            let userPromise = bazadate.getUserFiles(email)
+            let userPromise = MetadataDB.getUserFiles(email)
             userPromise.then((result)=>{
                 utils.sendJson(200,res,{data: result})
             }).catch(err=>console.log(err))

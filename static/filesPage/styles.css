@@ -99,10 +99,10 @@ table {
     display: none;
     position: absolute;
     background-color: #f1f1f1;
-    border-radius: 6px;;
+    border-radius: 6px;
     min-width: 200px;
     z-index: 1;
-    margin-top: 50px;
+    margin-top: 70px;
   }
 
   .dropdown-content a {
