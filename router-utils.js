@@ -1,6 +1,6 @@
 let fs = require('fs');
 
-let macacpeviata = () =>
+let randomString = () =>
 {
     var output = "";
     var options = "1234567890FABCDEF";
@@ -54,8 +54,13 @@ let prepareServita = (templateBody, context) => {
 
 // context represents a object that contains the variables that will be
 // used in the template
-let sendTemplate = (req, res, path, context, statusCode) => {
-    res.writeHead(statusCode, {'Content-type': 'text/html',"Cache-Control": "no-cache", "Last-Modified": new Date(), "ETag": macacpeviata(),"max-age":"1" })
+let sendTemplate = (req, res, path, context, statusCode ,token=undefined) => {
+    if(token == undefined){
+        res.writeHead(statusCode, {'Content-type': 'text/html',"Cache-Control": "no-cache", "Last-Modified": new Date(), "ETag": randomString(),"max-age":"1" })
+    }
+    else{
+        res.writeHead(statusCode, {'Set-Cookie':`token=${token};path=/`,'Content-type': 'text/html',"Cache-Control": "no-cache", "Last-Modified": new Date(), "ETag": randomString(),"max-age":"1" })
+    }
     let content = fs.readFileSync(path);
     
     res.end(prepareServita(content, context));
@@ -131,6 +136,6 @@ module.exports = {
     "staticResourceDropper": staticResourceDropper,
     "wasmResourceDropper": wasmResourceDropper,
     "svgResourceDropper": svgResourceDropper,
-    "randomString": macacpeviata,
+    "randomString": randomString,
     "parseBodyFormData": parseBodyFormData
 };
