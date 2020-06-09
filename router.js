@@ -185,6 +185,9 @@ let resolver = (req, res) => {
         else if(router.is('/documentation')){
             utils.sendTemplate(req, res, "templates/documentation.html", {}, 200);
         }
+        else if(router.is('/userGuide')){
+            utils.sendTemplate(req, res, "templates/user-guide.html", {}, 200);
+        }
         else if(router.is('/allusers')) {
             const token = req.headers.cookie.split("=")[1];
             if(loggedInUsers.findUser(token) != undefined){
@@ -485,6 +488,7 @@ let resolver = (req, res) => {
                 utils.redirect(res, "/");
             }
         }
+
 
         else if(router.is("/getfileid")) {
             const token = req.headers.cookie.split("=")[1];
