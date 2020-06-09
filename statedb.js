@@ -6,9 +6,9 @@ let tokens = {
 
 function addUserId(userid, grt, ort, d, uploadmode) {
     tokens[userid] = {}
-    tokens[userid]["grefreshtoken"] = grt;
+    tokens[userid]["grefreshtoken"] = grt; // google refresh token
     tokens[userid]["orefreshtoken"] = ort;
-    tokens[userid]["d"] = d;
+    tokens[userid]["d"] = d; // dropbox access token
     tokens[userid]["uploadmode"] = uploadmode;
 }
 

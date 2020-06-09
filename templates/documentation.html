@@ -73,27 +73,37 @@
                     <ol role="directory">
                         
                         <li><a href="#pages"><span>1.1. </span>Paginile proiectului</a></li>
-                        <li><ol role="directory">
-                            <li><a href="#welcome"><span>1.1.1. </span>Welcome page</a></li>
-                            <li><a href="#main"><span>1.1.2. </span>Main page</a></li>
-                            <li><a href="#files"><span>1.1.3. </span>Your Files</a></li>
-                            <li><a href="#settings"><span>1.1.4. </span>Settings</a></li>
-                            <li><a href="#admin"><span>1.1.5. </span>Admin page</a></li>
-                        </ol>
-                        </li>
-                        <li><a href="#header"><span>1.2. </span>Headerul</a></li>
-                <li><a href="#doc-back"><span>2. </span>Documentare end-end</a></li>
-                    <li><a href="#pages"><span>1.1. </span>Paginile proiectului</a></li>
-                            <li><ol role="directory">
+                        <li>
+                            <ol role="directory">
                                 <li><a href="#welcome"><span>1.1.1. </span>Welcome page</a></li>
                                 <li><a href="#main"><span>1.1.2. </span>Main page</a></li>
                                 <li><a href="#files"><span>1.1.3. </span>Your Files</a></li>
                                 <li><a href="#settings"><span>1.1.4. </span>Settings</a></li>
                                 <li><a href="#admin"><span>1.1.5. </span>Admin page</a></li>
                             </ol>
-                            </li>
-                            <li><a href="#header"><span>1.2. </span>Headerul</a></li>
+                        </li>
+                        <li><a href="#header"><span>1.2. </span>Headerul</a></li>
                     </ol>
+                
+                <li><a href="#doc-back"><span>3. </span>Documentare back-end</a></li>
+                <ol role="directory">
+                    <li><a href="#arhitectura"><span>3.1. </span>Arhitectura generala</a></li>
+                            <li><ol role="directory">
+                                <li><a href="#router"><span>3.1.1. </span>Router</a></li>
+                                <li><a href="#templateuri"><span>3.1.2. </span>Templateuri</a></li>
+                                <li><a href="#login"><span>3.1.3. </span>Login</a></li>
+                                <li><a href="#token"><span>3.1.4. </span>Token autentificare</a></li>
+                                <li><a href="#cacheuri"><span>3.1.5. </span>Cacheuri</a></li>
+                                <li><a href="#modele"><span>3.1.6. </span>Models</a></li>
+                            </ol>
+                            <li><a href="#oauth"><span>3.2. </span>OAuth</a></li>
+                            </li>
+                            <li><a href="#wasm"><span>3.3. </span>WebAssembly</a></li>
+                            <li><ol role="directory">
+                                <li><a href="#splitter"><span>3.1.1. </span>Splitter</a></li>
+                            </ol>
+                        </ol>
+                <li><a href="#etape"><span>4. </span>Etape de dezvoltare</a></li>
                 
                 
         </section>
@@ -207,5 +217,99 @@
             <img src="../static/assets/documentation/dropdown-menu.png" alt="cod13" class="center">
             <p>Pentu admin, in acelasi va fi titlul de "Administrator page" impreuna cu un icon ce indica rolul de administrator, folosit tot in format svg</p>   
             <img src="../static/assets/admin.svg" alt="admin" class="center">
+
+            <h2 id="doc-back">Back-endul</h2>
+            <h2 id="arhitectura">Arhitectura proiectului</h2>
+            <pre>
+                Arhitectura proiectului este una clasica asemanatoare cu o arhitectura generala de proiect de Express.js, 
+                dar totul a fost construit de noi, fara a ne folosi de alte biblioteci/frameworkuri.
+           </pre>
+           <h2>Diagrama arhitecturala:</h2>
+           <img src="../static/assets/documentation/arhitectura.jpg" alt="arhitectura" class="center">
+           <h3 id="router">Router</h3>
+           <pre>
+               Rutarea se face prin parsarea requestului prin mai multe metode, in functie de tipul lui.
+               Ea suporta orice fel de verbe HTTP, default-ul fiind "GET"
+           </pre>
+           <h3>Obiectul router:</h3>
+           <img src="../static/assets/documentation/router.jpg" alt="router" class="center">
+           <h3>Tratarea unui request:</h3>
+           <img src="../static/assets/documentation/request.jpg" alt="request" class="center">
+           <h3>Parsarea body-ului de tip FormData</h3>
+           <img src="../static/assets/documentation/formdata.jpg" alt="formdata" class="center">
+
+
+           <h3 id="templateuri">Templateuri</h3>
+           <pre>
+               Templateurile noastre sunt simple, ele permit doar servirea parametrilor de tipuri string, number, fara posibilitatea de a face instructiuni repetitive.
+            </pre>
+            <h3>Cod servire templateuri:</h3>
+           <img src="../static/assets/documentation/template.jpg" alt="router" class="center">
+
+           <h3 id="login">Login</h3>
+           <pre>
+               Loginul se face cu ajutorul clasicei combinatii de email si parola. Aici au fost facute verificari simple impotriva sqlinjection si cross site scripting
+            </pre>
+           <h3 id="token">Token</h3>
+           <pre>
+               Odata cu logarea se genereaza un token random de lungime (disputabil) mare.
+               Acesta este adaugat intr-un cache pe server, impreuna cu alte date despre user pentru o viteza mai mare a verificarilor. 
+               Acest lucru a fost inspirat de la aplicatiile de anvergura mare care folosesc asta pentru a rezolva probleme de scalabilitate.
+               Tokenul este verificat la fiecare ruta si este pus in headere cu ajutorul "Set-Cookie".
+               El este sters in momentul in care utilizatorul foloseste ruta de logout.
+            </pre>
+           <h3 id="cacheuri">Cacheuri</h3>
+           <pre>
+               Siteul dispune de doua tipuri de cacheuri. 
+               Unul este cel presentat mai devreme la sectiunea token, iar al doilea este folosit pentru salvarea refresh-tokenurilor de Onedrive si Google Drive,
+               respectiv access-tokenului pentru Dropbox (aceasta platforma nu implementeaza conceptul de refresh-token).
+            </pre>
+            <img src="../static/assets/documentation/cache1.jpg" alt="cache1" class="center">
+            <img src="../static/assets/documentation/cache2.jpg" alt="cache2" class="center">
+            <h3 id = "modele">Modele</h3>
+            <pre>
+                Pentru baza de date am ales sa folosim SQLite3 din cauza modului usor in care este folosit si instalat.
+                Aceasta se poate schimba relativ usor in multe alte tipuri de BD-uri relationale.
+                Interactiunile cu tabelele din baza de date au fost separate logic in mai multe modele cu care interactioneaza
+                direct routerul (joaca rolul unui controller).
+            <pre>
+            <img src="../static/assets/documentation/usermodel.jpg" alt="Model user" class="center">
+           <h2 id="oauth">OAuth2</h2>
+           <pre>
+               Aplicatia este bazata pe OAuth2 si se foloseste de capabilitatile de Upload si Download ale providerilor GoogleDrive, Onedrive si Dropbox.
+               Aplicatia este usor extensibila sa suporte mai multi provideri atata timp cat se respecta formatul impus initial-scale
+               Sunt necesare doua implementari una pe backend si una pe frontend.
+            </pre>
+            <img src="../static/assets/documentation/oauthfront.jpg" alt="Obiect de handling oauth pentru client">
+            <img src="../static/assets/documentation/oauthback.jpg" alt="Obiect de handling oauth pentru backend">
+             <h2 id="wasm">WebAssembly</h2>
+            <pre>
+                Am ales sa folosim WebAssembly pentru o impartire eficienta a fisierelor in chunkuri direct la client.
+                Aceasta permite viteze mai mari decat folosirea directa a JavaScript.
+             </pre>
+             <h3 id="splitter">Splitter-ul de fisiere</h3>
+             <pre>
+                 El reprezinta un cod simplu de C++ care ia ca input un fisier si scrie in FileSystemul din browser
+                 o sumedenie de 1MB care au ca nume SHA-ul lor si contin un header pentru validare.
+                 Acest header nu este folosit la momentul scrierii acestor randuri, dar isi poate gasi intrebuintare usor.
+                 Fisierele sunt trimise apoi la fiecare cloud provider dupa doua metode: Egal sau Redundant. Aceasat modalitate
+                 se schimba in pagina de setari. Default este egal.
+                 Egal: 1/3 din chunkuri pentru fiecare cloud provider.
+                 Redundant: fiecare cloud provider primeste fiecare chunk.
+             
+                 Codul a fost compilat utilizand emscripten  <a href="https://emscripten.org/docs/getting_started/downloads.html"></a>
+            </pre>
+            <img src="../static/assets/documentation/splitter.jpg" alt="Cod splitter" class="center">
+            <h2 id="etape">Etapele de dezvoltare</h2>
+            <ol>
+                <li>1. Gandirea initiala a arhitecturii, crearea routerului, creatul templateurilor, integrearea minimala a unei baze de date. Crearea primei iteratii de pagini de front</li> 
+                <li>2. Integrarea pe client a unei modalitati de impartire a unui fisier in chunckuri. A doua iteratie de frontend.</li>
+                <li>3. Investigarea api-urilor expuse de cloud provideri si implementarea unor Proof Of Concepts</li>
+                <li>4. Integrarea tuturor componentelor create, implemetarea loginului</li>
+                <li>5. Refactorizarea mare a codului, implementarea cacheurilor</li>
+            
+            </ol>
+
+        
 </section>
 </body>

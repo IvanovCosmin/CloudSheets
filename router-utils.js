@@ -10,16 +10,13 @@ let randomString = () =>
     return output;
 }
 
+// aceste requesturi vin atunci cand se trimite un xmlhttprequest cu formdata ca payload.
 let parseBodyFormData = (body) => {
-    console.log("aici:"+body);
     const lines = body.split("\r\n");
     const separtor = lines[0];
     const properties = body.split(separtor);
     properties.pop();
     properties.shift();
-    console.log("lines", lines);
-    console.log("separator", separtor);
-    console.log("properties", properties);
     let returnObj = {}
 
     for (let prop of properties) {
@@ -37,7 +34,6 @@ let parseBodyFormData = (body) => {
 
 // the function that parses the template
 let prepareServita = (templateBody, context) => {
-    // TODO sa se faca tempalteuri care sa poata si evalua anumite expresii sau un for :P
     let parsedResult = String(templateBody);
     let objectFindRegEx = /\{\{(?<objdata>.*?)\}\}/g; // this regex finds words inside {{ }}
 

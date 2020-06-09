@@ -14,6 +14,7 @@ if(document.getElementById("user-email").innerHTML != "undefined") {
 var Dropbox = {
     code: window.localStorage.getItem("D"),
     URL_DOWNLOAD_DROPBOX: "https://content.dropboxapi.com/2/files/download",
+    URL_UPLOAD_DROPBOX: "https://content.dropboxapi.com/2/files/upload",
     writeToDownloadStream: async function(name) {
         var fetchSettings = {
             headers: {
@@ -46,7 +47,7 @@ var Dropbox = {
         var payload = new FormData();
         payload.append('file', content);
         xhr = new XMLHttpRequest();
-        xhr.open('post', 'https://content.dropboxapi.com/2/files/upload');
+        xhr.open('post', this.URL_DOWNLOAD_DROPBOX);
         xhr.setRequestHeader('Authorization', 'Bearer ' + this.code);
         xhr.setRequestHeader('Dropbox-API-Arg', meta);
         xhr.setRequestHeader('Content-Type', "application/octet-stream");
@@ -491,15 +492,14 @@ function readFile() {
     var fileReader = new FileReader();
     fileReader.onload = function() {
         var data = new Uint8Array(fileReader.result);
-        console.log(data);
         Module['FS_createDataFile']('/', 'fileinput', data, true, true, true);
         Module['FS_createDataFile']('/', 'metadata', new Uint8Array([]), true, true, true);
-        var nrOfFiles = Module.ccall('readFile', 'number', [], null);
-        console.log("nrOfFiles returned by readFile", nrOfFiles);
+        var nrOfFiles = Module.ccall('readFile', 'number', [], null); // creates the chunks
         for(var i = 0; i < nrOfFiles; i++) {
             Module.ccall('generateNthSplitFile', 'boolean', ['number'], [i + 1]);
         }
         deleteFileFromFS('fileinput');
+
         Module.ccall('showMetadata', null, [], []);
         var stream = FS.open("/metadata", "r");
         var textStream = new TextDecoder("utf-8").decode(stream.node.contents);

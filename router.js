@@ -55,6 +55,7 @@ let routerObjectConstructor = (req) => {
     requestInfo.method = req.method;
     requestInfo.parsedParams = {};
     
+    // split parametri url
     if(requestInfo.urlQuery !== null) {
         let params = requestInfo.urlQuery.split("&");
         for(par of params) {
