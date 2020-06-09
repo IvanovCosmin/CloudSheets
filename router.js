@@ -412,7 +412,6 @@ let resolver = (req, res) => {
             }
             
         }
-        
 
         else if(router.is("/oauth-redirect")) {
             const token = req.headers.cookie.split("=")[1];
@@ -494,7 +493,7 @@ let resolver = (req, res) => {
                             "email": user["email"],
                             "g": rtokens[0],
                             "o": rtokens[1],
-                            "d": statedb.tokens[token]["d"],
+                            "d": statedb.tokens[token]["d"] == null ? undefined : statedb.tokens[token]["d"],
                             "strategy": statedb.tokens[token]['uploadmode']
                         },
                         200);
