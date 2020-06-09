@@ -387,6 +387,18 @@ var UploadManger = {
     _mockFileIndex: 0,
     _strategy: "equal",
     uploadFile: function(blob, element) {
+        if (this._strategy == "redundant") {
+            Google.upload(element, blob);
+            
+            setTimeout(() => {
+                Dropbox.upload(element, blob);
+            }, this._fileIndex * 100); // dropbox are o limita de requesturi pe o anumita unitate de timp
+            
+            Onedrive.upload(element, blob);
+            this._fileIndex++;
+            return;
+
+        }
         if (this._fileIndex % 3 == 0) {
             console.log("Uploading google element", element);
             Google.upload(element, blob);
@@ -395,7 +407,7 @@ var UploadManger = {
             console.log("Uploading dropbox element", element);
             setTimeout(() => {
                 Dropbox.upload(element, blob);
-            }, this._fileIndex * 100); // uneori dropbox se sperie de prea multe operatii de write
+            }, this._fileIndex * 100); // dropbox are o limita de requesturi pe o anumita unitate de timp
         }
         else {
             console.log("Uploading onedrive element", element);
@@ -406,9 +418,12 @@ var UploadManger = {
     },
     // used before the files are uploaded to get the names of the cloud providers
     getNextUploadLocationMocked: function() {
+        if(this._strategy == "redundant") {
+            return "Google Drive, Dropbox, Onedrive"
+        }
         this._mockFileIndex++;
         if ((this._mockFileIndex - 1) % 3 == 0) {
-            return "GoogleDrive";
+            return "Google Drive";
         }
         else if ((this._mockFileIndex - 1) % 3 == 1){
             return "Dropbox";
@@ -417,6 +432,12 @@ var UploadManger = {
             return "OneDrive";
             
         }
+    },
+    setStrategyEqual: function() {
+        this._strategy = "equal";
+    },
+    setStrategyRedundant: function() {
+        this._strategy = "redundant";
     }
     
 }
@@ -447,13 +468,15 @@ function createLoadingBarsForSplitFiles(metadataFile) {
     });
     html = html + '</table>'
     myDiv.innerHTML = html;
-    ProgressBarController.initController(files.length);
+    if(UploadManger._strategy == "redundant") {
+        ProgressBarController.initController(files.length * 3);
+    }
+    else {
+        ProgressBarController.initController(files.length);
+    }
     files.forEach(element => {
         var stream = FS.open("/" + element, "r");
-        console.log(stream);
-        var filestats = FS.stat('/' + element);
         var blob = new Blob([stream.node.contents], {type: "application/octet-stream"});
-        console.log(blob);
         UploadManger.uploadFile(blob, element);
         FS.close(stream);
         deleteFileFromFS(element);
@@ -489,4 +512,11 @@ function readFile() {
     
 
     return fileReader;
+}
+
+if(document.getElementById("upload-strategy").innerHTML != "undefined") {
+    if(document.getElementById("upload-strategy").innerHTML == "redundant") {
+        UploadManger.setStrategyRedundant();
+
+    }
 }

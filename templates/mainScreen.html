@@ -55,7 +55,7 @@
             </div>
             
                 <button hidden id='startButton' class='startButton'
-                        onclick=" readFile(); showProgressBar();" style="display:none ;">Upload your
+                        onclick="readFile(); showProgressBar();" style="display:none;">Upload your
                         file
                         here</button>
                 <div id="progressBarContainer" class="progressBarContainer">
@@ -76,6 +76,7 @@
         <p hidden id="google-token">{{ g }}</p>
         <p hidden id="dropbox-token">{{ d }}</p>
         <p hidden id="user-email">{{ email }}</p>
+        <p hidden id="upload-strategy">{{ strategy }}</p>
         <script src="stollib.js"></script>
     </body>
 
