@@ -5,7 +5,7 @@ function UserModel(db){
     var obj={
         db:db,
         insertUser :function(email, password, name, surname)  {
-            this.db.run(`INSERT INTO user(email, password, name, surname , uploadmode , first ,second ,third) VALUES(?,?,?,?,?,?,?,?)`, [email, password, name, surname , 'Smart Sheet' , 'Google Drive' , 'Onedrive' , 'Dropbox'], (err)=> {
+            this.db.run(`INSERT INTO user(email, password, name, surname , uploadmode ) VALUES(?,?,?,?,?)`, [email, password, name, surname , 'Equal Distribution'], (err)=> {
                 console.log("coita???");
                 if (err) {
                   return console.log(err.message);
@@ -101,6 +101,27 @@ function UserModel(db){
                 } 
             });
             
+        },
+        addOnedriveRefreshToken :function(email,token){
+            this.db.run(`UPDATE user SET ort = ? where email = ?`, [token,email],function(err){
+                if(err){
+                    console.log(err);
+                }
+            });
+        },
+        addGoogleRefreshToken :function(email,token){
+            this.db.run(`UPDATE user SET grt = ? where email = ?`, [token,email],function(err){
+                if(err){
+                    console.log(err);
+                }
+            });
+        },
+        addDropboxRefreshToken :function(email,token){
+            this.db.run(`UPDATE user SET drt = ? where email = ?`, [token,email],function(err){
+                if(err){
+                    console.log(err);
+                }
+            });
         }
     
     };

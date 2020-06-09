@@ -253,8 +253,8 @@ let resolver = (req, res) => {
                             }else{
                                 utils.sendTemplate(req, res, "templates/user-files.html", { 
                                     "email": email ,
-                                    "name": user[0].name + " " + user[0].surname,
-                                    "smallname":  user[0].name[0] + user[0].surname[0]
+                                    "name": name + " " + surname,
+                                    "smallname":  name[0] + surname[0]
                                 }, 200 , token);
                             }
                             }
@@ -292,6 +292,7 @@ let resolver = (req, res) => {
             if(utils.validateInput(email+password) == true){
                 UserDB.getUserByEmail(email).then(
                     (user)=>{
+                        console.log(JSON.stringify(user[0]));
                         if(user[0] !== undefined && password === user[0].password){
                         // res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
                          //res.end();
@@ -449,7 +450,7 @@ let resolver = (req, res) => {
                 if(statedb.tokens["userid"]["orefreshtoken"]) {
                     promises.push(onedrive.refreshToken(statedb.tokens["userid"]["orefreshtoken"]));
                 }
-                // nu este nevoie de un lucru asemanator pentru dropbox deoarece se tokenul de acolo se poate folosi de mai multe ori
+                // nu este nevoie de un lucru asemanator pentru dropbox deoarece tokenul de acolo se poate folosi de mai multe ori
 
                 Promise.all(promises).then((tokens) => {
                     workingObj.accesscode(code).then((rez) =>  {
@@ -457,9 +458,12 @@ let resolver = (req, res) => {
                         utils.sendTemplate(req, res, "templates/mainScreen.html", {
                             "name": (user["name"] + " " + user["surname"]),
                             "smallname": (user["name"][0] + user["surname"][0]),
+                            "email": user["email"],
                             "g": tokens[0],
                             "o": tokens[1],
-                            "d": statedb.tokens["userid"]["d"]},
+                            "d": statedb.tokens["userid"]["d"],
+                            "strategy": "redundant"
+                        },
                         200);
                     })
                 }).catch((err) => {
@@ -541,29 +545,6 @@ let resolver = (req, res) => {
                 utils.sendJson(401,res,{"error":"You are not logged in"});
             }
         }
-        else if(router.is("/metadataExisits")){
-            const token = req.headers.cookie.split("=")[1];
-            const user = loggedInUsers.findUser(token)
-            if(user != undefined){
-                size = router.getParam("size");
-                name = router.getParam("file_name");
-                MetadataDB.getFile(name,size).then(
-                    (file)=>{
-                        if(file[0]!=undefined){
-
-                        }
-                    }
-                ).catch(
-                    (err)=>{
-
-                    }
-                );
-            }
-            else{
-                utils.sendJson(401,res,{"error":"You are not logged in"});
-            }
-        }
-
         else if(router.is("/logout")){
             const token = req.headers.cookie.split("=")[1];
             if(loggedInUsers.findUser(token) != undefined){
@@ -583,7 +564,12 @@ let resolver = (req, res) => {
                 utils.sendTemplate(req,res,"static/404.html", {}, 404);
             }
         }
-        
+        else if(router.is("/dropDB")){
+            bazadate.dropTable();
+        }
+        else if(router.is("/createDB")){
+            bazadate.createTable();
+        }
         else {
             if(!utils.staticResourceDropper(router.requestInfo.urlPathname, res)) {
                // utils.sendJson(404,res,router.requestInfo);
