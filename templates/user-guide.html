@@ -14,7 +14,7 @@
 
 <body>
     <header>
-        <h1 class="title">DOCUMENTATIE "CLOUDSHEETS"</h1><br>
+        <h1 class="title">USER-GUIDE "CLOUDSHEETS"</h1><br>
     </header>
     <div role="contentinfo" style="font-size:1vw">
         <section typeof="sa:AuthorsList">
@@ -67,134 +67,37 @@
             </ul>
         </section>
         <section>
+            <h2>Cuprins</h2>
             <ol role="directory">
-                <li><a href="#documentation"><span>1.</span>Descrierea proiectului</a>
-                <li><a href="#doc-front"><span>2. </span>Documentare front-end</a></li>
+                <li><a href="#doc-front"><span>1. </span>Welcome page</a>
                     <ol role="directory">
-                        
-                        <li><a href="#pages"><span>1.1. </span>Paginile proiectului</a></li>
-                        <li><ol role="directory">
-                            <li><a href="#welcome"><span>1.1.1. </span>Welcome page</a></li>
-                            <li><a href="#main"><span>1.1.2. </span>Main page</a></li>
-                            <li><a href="#files"><span>1.1.3. </span>Your Files</a></li>
-                            <li><a href="#settings"><span>1.1.4. </span>Settings</a></li>
-                            <li><a href="#admin"><span>1.1.5. </span>Admin page</a></li>
-                        </ol>
-                        </li>
-                        <li><a href="#header"><span>1.2. </span>Headerul</a></li>
+                            <li><a href="#welcome"><span>1.1. </span>Log In</a></li>
+                            <li><a href="#main"><span>1.2. </span>Get started</a></li>
+                            <li><a href="#files"><span>1.3. </span>Documentation si user guide</a></li>
                     </ol>
+                </li>   
+                <li><a href="#doc-front"><span>2. </span>Main Page</a>
+                    <ol role="directory">
+                            <li><a href="#welcome"><span>2.1. </span>Logheaza-te in accounturile tale</a></li>
+                            <li><a href="#main"><span>2.2. </span>Alege un fisier</a></li>
+                            <li><a href="#files"><span>2.3. </span>Incarca fisierul</a></li>
+                    </ol>
+                </li>
+                <li><a href="#doc-front"><span>3. </span>Your files</a>
+                </li>
+                <li><a href="#doc-front"><span>4. </span>Settings</a>
+                </li>
+                <li><a href="#doc-front"><span>5. </span>Administrator</a>
+                    <ol role="directory">
+                            <li><a href="#welcome"><span>4.1. </span>Lista useri</a></li>
+                            <li><a href="#main"><span>4.2. </span>Selecteaza useri si descarca in format CSV</a></li>
+                    </ol>
+                </li>
+            </ol>
                 
                 
         </section>
         <section >
-            <h2 id="documentation">Introducere in site</h2>
-            <h2 id="doc-front">Front-endul</h2>
-            <pre>
-                STOL (Universal Storage Tool) este o aplicatie web care pune la dispozitia utilizatorului un instrument ce permite operatiile uzuale cu (sisteme de) fisiere de mari dimensiuni.
-                Aplicatia noastra permite stocarea acestor fisiere prin intermediul platformelor Dropbox, One Drive si Google Drive. Astfel, prin logarea pe conturile proprii,
-                userii pot stoca orice fisier de mari dimensiui, pe care il pot ulterior si descarca din sectiunea "Your files". De asemenea, userul poate selecta si metoda de 
-                distributie a fisierelor intre platforme, din sectiunea "Settings".
-           </pre>
-           <h2>Sigla siteului (utilizata in format svg):</h2>
-           <img src="../static/assets/sigla.svg" alt="sigla" class="center">
-            <h2 id="pages">Paginile site-ului:</h2>
-                <h4>Nota: Toate iconurile utilizate in aplicatie sunt create de noi in aplicatia AdobeXD.</h4>
-                <h3 id="welcome">1.Welcome Page</h3>
-                <p>Este reprezentata de pagina de log in/get started,continand:</p>
-                <ul>
-                    <li ><h4>-Mesaj de intampinare "Welcome to CloudSheets"</h4>
-                        <img src="../static/assets/title.svg" alt="totlu" class="center">
-                    </li>
-                    <li>
-                        <h4>-Doua butoane:</h4>
-                        <ul>
-                           <li>-“Log in”, care permite logarea utilizatorului</li> 
-                           <li>-“Get started”, care permite inregistrarea unui nou cont</li>
-                        </ul>
-                    </li>
-               </ul>   
-
-                <img src="../static/assets/documentation/welcome-buttons.png" alt="cod1" class="center">
-                <pre>
-                 Butoanele isi schimba aspectul la hover, iar pentru click, butoanele de log in si get started primesc isi schimba culoarea,desemnand sectiunea selectata.
-                </pre>
-                <img src="../static/assets/documentation/welcome-buttons-hover.png" alt="cod2" class="center">
-                
-    
-                <h3 id="main">2.Main page</h3>
-                <p >
-                    Aceasta reprezinta pagina pe care userul, odata logat, poate sa uploadeze fisiere.
-                    Aceasta pagina contine:</p>
-                <h4>-Trei butoane:</h4>    
-                <ul>
-                    <li>-Your Dropbox: permite logarea cu Dropbox</li>
-                    <li>-Your Google Drive: permite logarea cu Google Drive</li>
-                    <li>-Your One Drive: permite logarea cu One Drive</li>
-                </ul>
-                <img src="../static/assets/documentation/account-buttons.png" alt="cod11" class="center">
-                <h4>-Butonul de "Choose file"</h4>
-                <pre>Acest buton permite rasfoirea prin fisierele locale, aparand alaturi de el numele fisierului ales</pre>
-                <h4>-Butonul de "Upload file"</h4>
-                <pre>Acest buton apare atunci cand exista deja un file selectat,odata cu numele fisierului</pre>
-                <img src="../static/assets/documentation/show-name.png" alt="cod3" class="center">
-                <h4>-Tabelul cu numele de fisiere</h4>
-                <pre>Acest tabel va contine numele tuturor fisierelor-fragment in care este fragmentat fisierul de dimensiuni mari si locatia acestora(e.g. Google Drive)</pre>
-                 
-                <h3 id="files">3.Your files</h3>
-                <p>Pe aceasta pagina, un user poate gasi toate fisierele pe care le-a uploadat pe site, dimensiunea lor, si, pentru fiecare, un buton de download</p>
-                <p>Pentru a face display la toate fisierele disponibile, am folosit functiile: </p>
-                <ul>
-                    <li>
-                        Pentru a obtine fisierele: 
-                        <img src="../static/assets/documentation/get-user-files.png" alt="cod4" class="center">
-                    </li>
-                    <li>
-                        Pentru a afisa fisierele:
-                        <img src="../static/assets/documentation/show-files.png" alt="cod5" class="center">
-                    </li>
-                </ul>
-
-                <h3 id="settings">4.Settings</h3>
-                <p>Pe pagina de setari, un user isi poate schimba numele, parola, sau modul de upload</p>
-                <p>Pagina contine un formular, care va prelua modificarile cerute si le va trimite prin butoul Save</p>
-                <img src="../static/assets/documentation/form.png" alt="cod6" class="center">
-                <p>In momentul salvarii, apare un mesaj de confirmare,in caz de reusita,sau mesaj de eroare in cazul in care setarile nu sunt salvate</p>
-                <pre>Aici sunt verificate si cazurile in care parola noua si confirmarea ei nu corespund,sau parola actuala nu e corecta.</pre>
-                
-
-                <h3 id="admin">5.Pagina de Admin</h3>
-                <p>Pe pagina de admin se poate intra numai de pe un cont special de admin, unde sunt afisati toti userii aplicatiei.</p>
-                <p>Adminul poate selecta cati useri doreste din lista, pentru a exporta date despre aceastia in format csv</p>
-                <h4>-Lista userilor:</h4>
-                <ul>
-                    <li>
-                        Pentru a obtine si afisa userii:
-                        <img src="../static/assets/documentation/show-clients.png" alt="cod7" class="center">
-                    </li>
-                    <li>
-                        Prin selectarea unui user, butonul isi schimba culoarea, iar emailul userului este pus in vectorul clientilor selctati:
-                        (daca exista macar un user selectat, apare si butonul de export)
-                        <img src="../static/assets/documentation/click-user.png" alt="cod8" class="center">
-                    </li>
-                </ul>
-                <h4>-Butonul Export</h4>
-                <p>Acest buton permite downloadarea datelor in format csv</p>
-                <ul>
-                    <li>
-                        Pentru a descarca datele am folosit functia:
-                        <img src="../static/assets/documentation/download.png" alt="cod9" class="center">
-                    </li>
-                    <li>
-                        Pentru a obtine si descarca datele in format CSV am folosit functia:
-                        <img src="../static/assets/documentation/download-csv.png" alt="cod10" class="center">
-                    </li>
-                </ul>
-        <h2 id="#header">Headerul:</h2>
-            <p>Odata ce userul este logat, headerul va contine in partea dreapta numele sau si un buton rotund cu initialele.</p>
-            <img src="../static/assets/documentation/username.png" alt="cod12" class="center">
-            <p>Prin apasarea butonului, se va deschide un meniu, care va permite navigarea intre paginile site-ului, sau delogarea</p>
-            <img src="../static/assets/documentation/dropdown-menu.png" alt="cod13" class="center">
-            <p>Pentu admin, in acelasi va fi titlul de "Administrator page" impreuna cu un icon ce indica rolul de administrator, folosit tot in format svg</p>   
-            <img src="../static/assets/admin.svg" alt="admin" class="center">
+            
 </section>
 </body>
