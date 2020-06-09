@@ -434,12 +434,7 @@ let resolver = (req, res) => {
                 // this can be google/dropbox/onedrive module
                 let workingObj = stollib.emptyWorkingObject;
                 if(codeType == "O"){
-                    if(statedb.tokens[token]["grefreshtoken"] == null) {
-                        workingObj = onedrive;
-                    }
-                    else {
-                        codeType = "empty";
-                    }
+                    workingObj = onedrive;
                 }
                 else if(codeType == "G") {
                     if(statedb.tokens[token]["grefreshtoken"] == null) {
@@ -464,6 +459,11 @@ let resolver = (req, res) => {
                 if(statedb.tokens[token]["grefreshtoken"]) {
                     promises.push(google.refreshToken(statedb.tokens[token]["grefreshtoken"]));
                 }
+                else {
+                    promises.push(new Promise((resolve, reject) => {
+                        resolve(undefined); // asta e aici pentru ca functia de mai jos se asteapta sa primeasca tot timpul al doilea element de la onedrive
+                    }))
+                }
                 if(statedb.tokens[token]["orefreshtoken"]) {
                     promises.push(onedrive.refreshToken(statedb.tokens[token]["orefreshtoken"]));
                 }
@@ -473,7 +473,7 @@ let resolver = (req, res) => {
                     workingObj.accesscode(code).then((rez) =>  {
                         console.log(rez);
                         console.log("intru in if")
-                        if(codeType == "O" && statedb.tokens[token]["orefreshtoken"] === null) {
+                        if(codeType == "O") {
                             statedb.tokens[token]["orefreshtoken"] = rez["refresh_token"];
                             UserDB.addOnedriveRefreshToken(user["email"], rez["refresh_token"]);
                             utils.redirect(res, "/oauth-redirect");
