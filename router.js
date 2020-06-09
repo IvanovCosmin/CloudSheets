@@ -134,7 +134,7 @@ let resolver = (req, res) => {
                 utils.sendTemplate(req, res, "templates/mainScreen.html", {}, 200);
             }
             else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html", {}, 200);
+                utils.sendTemplate(req, res,"templates/welcome-page.html", {}, 200);
             }
         }
             
@@ -145,7 +145,7 @@ let resolver = (req, res) => {
                 utils.sendTemplate(req, res, "templates/user_page.html", {}, 200);
             }
             else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+                utils.sendTemplate(req, res,"templates/welcome-page.html", {}, 200);
             }
             
         }
@@ -161,7 +161,7 @@ let resolver = (req, res) => {
                 }
             }
             else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html", {}, 200);
+                utils.sendTemplate(req, res,"templates/welcome-page.html", {}, 200);
             }
             
         }
@@ -178,7 +178,7 @@ let resolver = (req, res) => {
                 
             }
             else{
-                utils.sendTemplate(req, res,"static/welcomePage/index.html", {}, 200);
+                utils.sendTemplate(req, res,"templates/welcome-page.html", {}, 200);
             }
         }
 
@@ -337,8 +337,12 @@ let resolver = (req, res) => {
                     UserDB.updateProfile(email,name,surname,oldpass,pass,mode).then(
                         (result)=>{
                             if(result==true){
-                                user["name"]=name;
-                                user["surname"]=surname;
+                                if(name != ""){
+                                    user["name"]=name;
+                                }
+                                if(surname != ""){
+                                    user["surname"]=surname;
+                                }
                                 utils.sendTemplate(req,res,"templates/settings-page.html",{
                                     "mesaj": "Succes!",
                                     "name": (user["name"] + " " + user["surname"]),
@@ -411,7 +415,6 @@ let resolver = (req, res) => {
         else if(router.is("/oauth-redirect")) {
             const token = req.headers.cookie.split("=")[1];
             const user = loggedInUsers.findUser(token);
-            console.log(user);
             if(user !== undefined){
                 const code = decodeURIComponent(router.getParam('code'));
                 console.log(user);
@@ -419,50 +422,78 @@ let resolver = (req, res) => {
                 console.log(code.length);
                 let codeType = stollib.getCodeType(code);
                 console.log(codeType);
+                console.log(user);
+                if(statedb[token] === undefined) {
+                    await statedb.initStatedDb(user["email"], token, UserDB);
+                }
+
+                console.log(statedb.tokens)
 
                 // this can be google/dropbox/onedrive module
                 let workingObj = stollib.emptyWorkingObject;
                 if(codeType == "O"){
-                    if(statedb.tokens["userid"]["grefreshtoken"] == undefined) {
+                    if(statedb.tokens[token]["grefreshtoken"] == null) {
                         workingObj = onedrive;
                     }
                     else {
-                        codeType = "undefined";
+                        codeType = "empty";
                     }
                 }
                 else if(codeType == "G") {
-                    if(statedb.tokens["userid"]["grefreshtoken"] == undefined) {
+                    if(statedb.tokens[token]["grefreshtoken"] == null) {
                         workingObj = google;
                     }
                     else {
-                        codeType = "undefined";
+                        codeType = "empty";
                     }
                 }
-                else if(statedb.tokens["userid"]["d"] == undefined) {
-                    workingObj = dropbox;
+                else if(codeType == "D") {
+                    if(statedb.tokens[token]["d"] == null) {
+                        workingObj = dropbox;
+                    }
+                    else {
+                        codeType = "empty"
+                    }
                 }
+                
 
                 let promises = [];
                 
-                if(statedb.tokens["userid"]["grefreshtoken"]) {
-                    promises.push(google.refreshToken(statedb.tokens["userid"]["grefreshtoken"]));
+                if(statedb.tokens[token]["grefreshtoken"]) {
+                    promises.push(google.refreshToken(statedb.tokens[token]["grefreshtoken"]));
                 }
-                if(statedb.tokens["userid"]["orefreshtoken"]) {
-                    promises.push(onedrive.refreshToken(statedb.tokens["userid"]["orefreshtoken"]));
+                if(statedb.tokens[token]["orefreshtoken"]) {
+                    promises.push(onedrive.refreshToken(statedb.tokens[token]["orefreshtoken"]));
                 }
                 // nu este nevoie de un lucru asemanator pentru dropbox deoarece tokenul de acolo se poate folosi de mai multe ori
 
-                Promise.all(promises).then((tokens) => {
+                Promise.all(promises).then((rtokens) => {
                     workingObj.accesscode(code).then((rez) =>  {
-                        console.log("rezultat", rez);
+                        console.log(rez);
+                        console.log("intru in if")
+                        if(codeType == "O" && statedb.tokens[token]["orefreshtoken"] === null) {
+                            statedb.tokens[token]["orefreshtoken"] = rez["refresh_token"];
+                            UserDB.addOnedriveRefreshToken(user["email"], rez["refresh_token"]);
+                            utils.redirect(res, "/oauth-redirect");
+                        }
+                        if(codeType == "G" && statedb.tokens[token]["grefreshtoken"] === null) {
+                            statedb.tokens[token]["grefreshtoken"] = rez["refresh_token"];
+                            UserDB.addGoogleRefreshToken(user["email"], rez["refresh_token"]);
+                            utils.redirect(res, "/oauth-redirect");
+                        }
+                        if(codeType == "D") {
+                            statedb.tokens[token]["d"] = rez["access_token"];
+                            UserDB.addDropboxRefreshToken(user["email"], rez["access_token"]);
+                            utils.redirect(res, "/oauth-redirect");
+                        }
                         utils.sendTemplate(req, res, "templates/mainScreen.html", {
                             "name": (user["name"] + " " + user["surname"]),
                             "smallname": (user["name"][0] + user["surname"][0]),
                             "email": user["email"],
-                            "g": tokens[0],
-                            "o": tokens[1],
-                            "d": statedb.tokens["userid"]["d"],
-                            "strategy": "redundant"
+                            "g": rtokens[0],
+                            "o": rtokens[1],
+                            "d": statedb.tokens[token]["d"],
+                            "strategy": statedb.tokens[token]['uploadmode']
                         },
                         200);
                     })
@@ -506,11 +537,10 @@ let resolver = (req, res) => {
                 }); 
             }
             else{
-                utils.sendJson(401,res,"You are not logged in!");
+                utils.sendJson(401,res,{"error":"You are not logged in!"});
             }
         }
 
-        // VALIDARE AICI. in momentul asta se pot adauga la infinit fara problema
         else if(router.is("/insertfileid", "POST")) {
             const token = req.headers.cookie.split("=")[1];
             const user = loggedInUsers.findUser(token)
@@ -550,7 +580,7 @@ let resolver = (req, res) => {
             if(loggedInUsers.findUser(token) != undefined){
                 loggedInUsers.removeUser(token);
             }
-            utils.sendTemplate(req, res,"static/welcomePage/index.html",{}, 200);
+            utils.sendTemplate(req, res,"templates/welcome-page.html",{}, 200);
         }
 
         else if(router.endswith(".wasm")) {
@@ -563,12 +593,6 @@ let resolver = (req, res) => {
             if(!utils.svgResourceDropper(router.requestInfo.urlPathname, res)) {
                 utils.sendTemplate(req,res,"static/404.html", {}, 404);
             }
-        }
-        else if(router.is("/dropDB")){
-            bazadate.dropTable();
-        }
-        else if(router.is("/createDB")){
-            bazadate.createTable();
         }
         else {
             if(!utils.staticResourceDropper(router.requestInfo.urlPathname, res)) {

@@ -1,11 +1,34 @@
+// obiect global care are rolul unui cache.
+// asa se evita interogarea excesiva a bazei de date
+
 let tokens = {
-    "userid": {
-        "grefreshtoken": "1//03EGCLXIV5RcmCgYIARAAGAMSNwF-L9Ir0lewVpxq8fV60GthA8n-BRhG_8AuM9pAq9xIPHiscqWJbNEZ6KJHPzIe-eRu8-wHc6M",
-        "orefreshtoken": "MCUL7bxBrd0P3Ts0Y7xbyKWsx*Uq3tjUdLdx9LEI2!S!Ld2xOVwCBZ3NNpCS!P8vhduhWm8bWW8y*3mRFR5IgMA6H2fVMeM!*5eIBhxsntwuKap47ApcmHBaJ2FGf6gLS28v!l7cN2lu6iiSqaeOf1XdoLwa6nJShgcOBzB7N7yEfQQf09JAXpRKdTGOClptmoct0GMmeFzaNbIVZF*PpTXH89i6*RUCrBepzBKXUBq5z0xKktwpx7aWU9TK0lMH1QQ9831TmAtG0Kml1YEOX2E5CNO8vsoRxgko88EshkKawG7!Bp79Yt5LFzA!NEbJqIGGVZhgDznw!aieP6SW80Llc2H3xzq1eWDq2zQ7ePDo5m2k3yJld*y9W!1RMS6oOJQg6AAym79qCLghS!cYd1wGyfMeLGPAnVlR1aCdUNfjUd4JmEZeZz5gThI1srRh5hohqESRKSHPjCjAZYFLQjUE$",
-        "d": "BQOYyAxkcAkAAAAAAAAQl37oN9070rUptuQz_A7bz8p7Bkz2MbcNcq68LfFe6Pfm"
+}
+
+function addUserId(userid, grt, ort, d, uploadmode) {
+    tokens[userid] = {}
+    tokens[userid]["grefreshtoken"] = grt;
+    tokens[userid]["orefreshtoken"] = ort;
+    tokens[userid]["d"] = d;
+    tokens[userid]["uploadmode"] = uploadmode;
+}
+
+async function initStatedDb(email, userid, userModel) {
+    console.log(userid);
+    console.log(email);
+    tokens[userid] = {}
+    const users = await userModel.getUserByEmail(email);
+    const user = users[0]
+    if(user !== undefined) {
+        console.log(user);
+        tokens[userid]["grefreshtoken"] = user.grt;
+        tokens[userid]["orefreshtoken"] = user.ort;
+        tokens[userid]["d"] = user.drt;
+        tokens[userid]["uploadmode"] = user.uploadmode;
     }
 }
 
 module.exports = {
-    "tokens": tokens
+    "tokens": tokens,
+    "addUserIdData": addUserId,
+    "initStatedDb": initStatedDb
 }

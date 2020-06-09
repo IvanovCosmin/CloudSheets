@@ -10,7 +10,7 @@
         <script src="wasm/splitter.js"></script>
     </head>
 
-    <body>
+    <body onload="setOauthButtons();">
         <div class="mainContainer">
             <header>
                 <div class="imgContainer">
@@ -37,7 +37,7 @@
 
                 <button class="accountBtn" id="dlt" onclick="window.location.replace('https://localhost:8000/dlt')">Your Dropbox</button>
                 <button class="accountBtn" id="glt" onclick="window.location.replace('https://localhost:8000/glt')">Your Google Drive</button>
-                <button class="accountBtn" id="olt" onclick="window.location.replace('https://localhost:8000/olt')">Your One Drive</button>
+                <button class="accountBtn" id="olt" onclick="window.location.replace('https://localhost:8000/olt')">Your OneDrive</button>
 
                 <span id="errorMessage" class="errorMessage"></span>
             </div>

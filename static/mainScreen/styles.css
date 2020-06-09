@@ -241,6 +241,9 @@ table {
      font-size: 110%;
     border-radius: 6px;
   }
+  .green {
+    background-color: #0BD54F !important;
+  }
 
   .labelTitle {
     font-weight: 100;

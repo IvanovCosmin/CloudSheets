@@ -5,8 +5,7 @@ function UserModel(db){
     var obj={
         db:db,
         insertUser :function(email, password, name, surname)  {
-            this.db.run(`INSERT INTO user(email, password, name, surname , uploadmode ) VALUES(?,?,?,?,?)`, [email, password, name, surname , 'Equal Distribution'], (err)=> {
-                console.log("coita???");
+            this.db.run(`INSERT INTO user(email, password, name, surname , uploadmode ) VALUES(?,?,?,?,?)`, [email, password, name, surname , 'redundant'], (err)=> {
                 if (err) {
                   return console.log(err.message);
                 }
@@ -21,7 +20,7 @@ function UserModel(db){
     
             return new Promise((resolve, reject) => {
                 let result = [];
-                this.db.each(`select * from user where email='${email}' LIMIT 1;`, (err, row) => {
+                this.db.each(`select * from user where email='${email}';`, (err, row) => {
                     if(err) { reject(err); }
                     result.push(row);
                 }, () => {

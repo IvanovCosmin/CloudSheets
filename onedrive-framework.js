@@ -129,7 +129,7 @@ let askForFirstToken = (code, redirectUri = REDIRECT_URI) => {
                 res.on('data', (d) => {data += d});
                 res.on('end', () => {
                     console.log(data);
-                    resolve((JSON.parse(data))['access_token'])
+                    resolve(JSON.parse(data))
                 });
             }
         );
@@ -157,6 +157,7 @@ let listFiles = () => {
 
 module.exports={
     "login_link": login,
-    "accesscode": accessCode,
-    "refreshToken": refreshToken
+    "accesscode": askForFirstToken,
+    "refreshToken": refreshToken,
+    "askForFirstToken": askForFirstToken
 };

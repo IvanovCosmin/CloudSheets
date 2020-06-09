@@ -55,7 +55,7 @@ let accessCode = (code, redirectUri = "https://localhost:8000/oauth-redirect") =
                 res.on('data', (d) => {data += d});
                 res.on('end', () => {
                     console.log(data);
-                    resolve((JSON.parse(data))['access_token'])
+                    resolve((JSON.parse(data)))
                 });
             }
         );
