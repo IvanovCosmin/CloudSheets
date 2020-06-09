@@ -101,8 +101,9 @@ let resolver = (req, res) => {
                     if(loggedInUsers.findUser(token).email=="admin.admin@admins.com"){
                         utils.sendTemplate(req, res, "templates/adminScreen.html", {}, 200);    
                     }
-                    else
-                    utils.sendTemplate(req, res, "templates/mainScreen.html", {}, 200);
+                    else {
+                        utils.redirect(res, "/oauth-redirect");
+                    }
                 }
                 else{
                     utils.sendTemplate(req, res,"templates/welcome-page.html", {}, 200);
