@@ -412,6 +412,7 @@ let resolver = (req, res) => {
             }
             
         }
+        
 
         else if(router.is("/oauth-redirect")) {
             const token = req.headers.cookie.split("=")[1];
