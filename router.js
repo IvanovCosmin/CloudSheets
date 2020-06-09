@@ -447,7 +447,7 @@ let resolver = (req, res) => {
                 if(statedb.tokens["userid"]["orefreshtoken"]) {
                     promises.push(onedrive.refreshToken(statedb.tokens["userid"]["orefreshtoken"]));
                 }
-                // nu este nevoie de un lucru asemanator pentru dropbox deoarece se tokenul de acolo se poate folosi de mai multe ori
+                // nu este nevoie de un lucru asemanator pentru dropbox deoarece tokenul de acolo se poate folosi de mai multe ori
 
                 Promise.all(promises).then((tokens) => {
                     workingObj.accesscode(code).then((rez) =>  {
@@ -455,9 +455,12 @@ let resolver = (req, res) => {
                         utils.sendTemplate(req, res, "templates/mainScreen.html", {
                             "name": (user["name"] + " " + user["surname"]),
                             "smallname": (user["name"][0] + user["surname"][0]),
+                            "email": user["email"],
                             "g": tokens[0],
                             "o": tokens[1],
-                            "d": statedb.tokens["userid"]["d"]},
+                            "d": statedb.tokens["userid"]["d"],
+                            "strategy": "redundant"
+                        },
                         200);
                     })
                 }).catch((err) => {
@@ -538,29 +541,6 @@ let resolver = (req, res) => {
                 utils.sendJson(401,res,{"error":"You are not logged in"});
             }
         }
-        else if(router.is("/metadataExisits")){
-            const token = req.headers.cookie.split("=")[1];
-            const user = loggedInUsers.findUser(token)
-            if(user != undefined){
-                size = router.getParam("size");
-                name = router.getParam("file_name");
-                MetadataDB.getFile(name,size).then(
-                    (file)=>{
-                        if(file[0]!=undefined){
-
-                        }
-                    }
-                ).catch(
-                    (err)=>{
-
-                    }
-                );
-            }
-            else{
-                utils.sendJson(401,res,{"error":"You are not logged in"});
-            }
-        }
-
         else if(router.is("/logout")){
             const token = req.headers.cookie.split("=")[1];
             if(loggedInUsers.findUser(token) != undefined){
