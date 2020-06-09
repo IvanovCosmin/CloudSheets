@@ -157,7 +157,7 @@ input {
     min-height: 3vh;
 }
 
-input[type=text]  {
+input[type=text], input[type=password] {
     background-color: #FFFFF0;
     display: flex;
     width:80%;
