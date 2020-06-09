@@ -69,29 +69,32 @@
         <section>
             <h2>Cuprins</h2>
             <ol role="directory">
-                <li><a href="#doc-front"><span>1. </span>Welcome page</a>
+                <li><a href="#welcome"><span>1. </span>Welcome page</a>
                     <ol role="directory">
-                            <li><a href="#welcome"><span>1.1. </span>Log In</a></li>
-                            <li><a href="#main"><span>1.2. </span>Get started</a></li>
-                            <li><a href="#files"><span>1.3. </span>Documentation si user guide</a></li>
+                            <li><a href="#welcome-login"><span>1.1. </span>Log In</a></li>
+                            <li><a href="#welcome-getstarted"><span>1.2. </span>Get started</a></li>
+                            <li><a href="#welcome-doc"><span>1.3. </span>Documentation si user guide</a></li>
                     </ol>
                 </li>   
-                <li><a href="#doc-front"><span>2. </span>Main Page</a>
+                <li><a href="#main"><span>2. </span>Main Page</a>
                     <ol role="directory">
-                            <li><a href="#welcome"><span>2.1. </span>Logheaza-te in accounturile tale</a></li>
-                            <li><a href="#main"><span>2.2. </span>Alege un fisier</a></li>
-                            <li><a href="#files"><span>2.3. </span>Incarca fisierul</a></li>
+                            <li><a href="#main-not-logged"><span>2.1. </span>Logheaza-te in accounturile tale</a></li>
+                            <li><a href="#main-choose-file"><span>2.2. </span>Alege un fisier</a></li>
+                            <li><a href="#main-upload"><span>2.3. </span>Incarca fisierul</a></li>
                     </ol>
                 </li>
-                <li><a href="#doc-front"><span>3. </span>Your files</a>
+                <li><a href="#your-files"><span>3. </span>Your files</a>
                 </li>
-                <li><a href="#doc-front"><span>4. </span>Settings</a>
+                <li><a href="#settings"><span>4. </span>Settings</a>
                 </li>
-                <li><a href="#doc-front"><span>5. </span>Administrator</a>
+                <li><a href="#admin"><span>5. </span>Administrator</a>
                     <ol role="directory">
-                            <li><a href="#welcome"><span>4.1. </span>Lista useri</a></li>
-                            <li><a href="#main"><span>4.2. </span>Selecteaza useri si descarca in format CSV</a></li>
+                            <li><a href="#unselect-admin"><span>5.1. </span>Lista useri</a></li>
+                            <li><a href="#select-admin"><span>5.2. </span>Selecteaza useri si descarca in format CSV</a></li>
                     </ol>
+                </li>
+                <li>
+                    <a href="#menu"><span>6. </span>Meniul utilizatorului</a>
                 </li>
             </ol>
                 
@@ -99,5 +102,76 @@
         </section>
         <section >
             
+                <h3 id="welcome">1.Welcome Page</h3>
+                <p>Pagina de logare/creare cont ofera urmatoarele functionalitati:</p>
+                <ul>
+                    <li >
+                        <h4 id="welcome-login">-Apasa Log in pentru a intra in contul tau:</h4>
+                        <img src="../static/assets/documentation/login-ss.png" alt="login" class="center">
+                    </li>
+                    <li>
+                        <h4 id="welcome-getstarted">-Apasa Get started pentru a crea un cont nou: </h4>
+                        <img src="../static/assets/documentation/getstarted-ss.png" alt="getstarted" class="center">
+                    </li>
+                    <li>
+                        <h4 id="welcome-doc">-Acces documentatie si ghid utilizator</h4>
+                        <img src="../static/assets/documentation/welcome-doc.png" alt="doc" class="center">
+                    </li>
+               </ul>   
+
+               <h3 id="main">2.Main page</h3>
+                <p>Pagina principala ofera urmatoarele functionalitati:</p>
+                <ul>
+                    <li >
+                        <h4 id="main-not-logged">-Logheaza-te in conturile tale, apasand urmatoarele butoane:</h4>
+                        <img src="../static/assets/documentation/no-logged-ss.png" alt="not-logged" class="center">
+                    </li>
+                    <li>
+                        <h4 id="main-choose-file">-Odata ce te-ai logat, poti alege un fisier local pe butonul choose file:</h4>
+                        <img src="../static/assets/documentation/all-logged.png" alt="choose-file" class="center">
+                    </li>
+                    <li>
+                        <h4 id="main-upload">-Apasa upload pentru a incarca fisierul, si vezi fisierele-fragment in care a fost impartit:</h4>
+                        <img src="../static/assets/documentation/file-uploaded.png" alt="upload" class="center">
+                    </li>
+               </ul> 
+
+               <h3 id="your-files">3.Your files</h3>
+                <p>Pagina "your files" ofera urmatoarele functionalitati:</p>
+                <ul>
+                    <li >
+                        <h4 >-Poti vedea si descarca (apasand pe download) fisierele deja uploadate de tine:</h4>
+                        <img src="../static/assets/documentation/your-files.png" alt="your-files" class="center">
+                    </li>
+               </ul> 
+
+               <h3 id="settings">4.Settings</h3>
+                <p>Pagina de setari ofera urmatoarele functionalitati:</p>
+                <ul>
+                    <li >
+                        <h4 >-Poti sa iti schimbi numele, parola si poti selecta modul de upload al fisierelor,apasand pentru finalizare butonul Submit:</h4>
+                        <img src="../static/assets/documentation/settings-ss.png" alt="settings" class="center">
+                    </li>
+               </ul> 
+
+               <h3 id="admin">5.Administrator</h3>
+               <p>Daca esti logat pe un cont de administrator:</p>
+               <ul>
+                   <li >
+                       <h4 id="unselect-admin">-Poti sa vezi lista utilizatorilor existenti :</h4>
+                       <img src="../static/assets/documentation/unselect-admin-ss.png" alt="unselect-admin" class="center">
+                   </li>
+                   <li >
+                    <h4 id="select-admin">-Si poti descarca date in format csv despre userii selectati de tine(prin click pe adresele lor de email) :</h4>
+                    <img src="../static/assets/documentation/select-admin-ss.png" alt="select-admin" class="center">
+                </li>
+              </ul>   
+
+              <h3 id="menu">6.Meniul utilizatorului</h3>
+               <p>Intre aceste pagini, se poate naviga folosind meniul utilizatorului:</p>
+               <img src="../static/assets/documentation/dropdown-ss.png" alt="menu" class="center">
+</section>
+<section>
+    <h2>Navigare placuta!</h2>
 </section>
 </body>
