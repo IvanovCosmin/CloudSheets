@@ -3,8 +3,9 @@ var fs = require("fs");
 // checks if a code comes from google/dropbox/onedrive.
 // poate fi facuta cu un state in url, dar nu e necesar
 let getCodeType = (code) => {
-    if(code == undefined) {
-        return "empty";
+    console.log("cod", code);
+    if(code == "undefined"){
+        return "empty"
     }
     if(code.length===37){
         return "O";
