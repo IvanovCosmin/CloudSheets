@@ -5,7 +5,7 @@ function UserModel(db){
     var obj={
         db:db,
         insertUser :function(email, password, name, surname)  {
-            this.db.run(`INSERT INTO user(email, password, name, surname , uploadmode , first ,second ,third) VALUES(?,?,?,?,?,?,?,?)`, [email, password, name, surname , 'Smart Sheet' , 'Google Drive' , 'Onedrive' , 'Dropbox'], (err)=> {
+            this.db.run(`INSERT INTO user(email, password, name, surname , uploadmode ) VALUES(?,?,?,?,?)`, [email, password, name, surname , 'Equal Distribution'], (err)=> {
                 console.log("coita???");
                 if (err) {
                   return console.log(err.message);
@@ -42,7 +42,7 @@ function UserModel(db){
             });
     
         },
-        _smallUpdate :function(email,name,surname,uploadmode,first,second,third){
+        _smallUpdate :function(email,name,surname,uploadmode){
             return new Promise((resolve,reject)=>{
     
                 if(name!=""){
@@ -66,34 +66,11 @@ function UserModel(db){
                         }
                     });
                 }
-                if(uploadmode == "Priority"){
-                    if(first!=""){
-                        this.db.run(`UPDATE user SET first = ? where email = ?`, [first,email],function(err){
-                            if(err){
-                                reject(err);
-                            }
-                        });
-                    }
-                    if(second!=""){
-                        this.db.run(`UPDATE user SET second = ? where email = ?`, [second,email],function(err){
-                            if(err){
-                                reject(err);
-                            }
-                        });
-                    }
-                    if(third!=""){
-                        this.db.run(`UPDATE user SET third = ? where email = ?`, [third,email],function(err){
-                            if(err){
-                                reject(err);
-                            }
-                        });
-                    }   
-                }
                 resolve(true);
             });
             
         },
-        updateProfile :function(email,name,surname,oldpassword,newpassword,uploadmode,first,second,third){
+        updateProfile :function(email,name,surname,oldpassword,newpassword,uploadmode){
             return new Promise((resolve,reject)=>{
                 if(newpassword!=""){
                     this.getUserByEmail(email).then(
@@ -106,7 +83,7 @@ function UserModel(db){
                                         reject(err);
                                     }
                                 });
-                                this._smallUpdate(email,name,surname,uploadmode,first,second,third).then(
+                                this._smallUpdate(email,name,surname,uploadmode).then(
                                     (res)=> resolve(res)
                                 ).catch(
                                     (err)=>reject(err)
@@ -119,11 +96,32 @@ function UserModel(db){
                     );
                 }
                 else{
-                    this._smallUpdate(email,name,surname,uploadmode,first,second,third);
+                    this._smallUpdate(email,name,surname,uploadmode);
                     resolve(true);
                 } 
             });
             
+        },
+        addOnedriveRefreshToken :function(email,token){
+            this.db.run(`UPDATE user SET ort = ? where email = ?`, [token,email],function(err){
+                if(err){
+                    console.log(err);
+                }
+            });
+        },
+        addGoogleRefreshToken :function(email,token){
+            this.db.run(`UPDATE user SET grt = ? where email = ?`, [token,email],function(err){
+                if(err){
+                    console.log(err);
+                }
+            });
+        },
+        addDropboxRefreshToken :function(email,token){
+            this.db.run(`UPDATE user SET drt = ? where email = ?`, [token,email],function(err){
+                if(err){
+                    console.log(err);
+                }
+            });
         }
     
     };

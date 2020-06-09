@@ -185,6 +185,9 @@ let resolver = (req, res) => {
         else if(router.is('/documentation')){
             utils.sendTemplate(req, res, "templates/documentation.html", {}, 200);
         }
+        else if(router.is('/userGuide')){
+            utils.sendTemplate(req, res, "templates/user-guide.html", {}, 200);
+        }
         else if(router.is('/allusers')) {
             const token = req.headers.cookie.split("=")[1];
             if(loggedInUsers.findUser(token) != undefined){
@@ -250,8 +253,8 @@ let resolver = (req, res) => {
                             }else{
                                 utils.sendTemplate(req, res, "templates/user-files.html", { 
                                     "email": email ,
-                                    "name": user[0].name + " " + user[0].surname,
-                                    "smallname":  user[0].name[0] + user[0].surname[0]
+                                    "name": name + " " + surname,
+                                    "smallname":  name[0] + surname[0]
                                 }, 200 , token);
                             }
                             }
@@ -289,6 +292,7 @@ let resolver = (req, res) => {
             if(utils.validateInput(email+password) == true){
                 UserDB.getUserByEmail(email).then(
                     (user)=>{
+                        console.log(JSON.stringify(user[0]));
                         if(user[0] !== undefined && password === user[0].password){
                         // res.writeHead(301,{"Location":"https://localhost:8000/oauth-redirect"});
                          //res.end();
@@ -326,16 +330,15 @@ let resolver = (req, res) => {
             const oldpass = requestBody.oldpass;
             const pass = requestBody.pass;
             const mode = requestBody.mode;
-            const First = requestBody.First;
-            const Second = requestBody.Second;
-            const Third = requestBody.Third;
             const token = req.headers.cookie.split("=")[1];
             const user = loggedInUsers.findUser(token);
             if(utils.validateInput(email+name+surname+oldpass+pass) == true){
                 if(user != undefined) {
-                    UserDB.updateProfile(email,name,surname,oldpass,pass,mode,First,Second,Third).then(
+                    UserDB.updateProfile(email,name,surname,oldpass,pass,mode).then(
                         (result)=>{
                             if(result==true){
+                                user["name"]=name;
+                                user["surname"]=surname;
                                 utils.sendTemplate(req,res,"templates/settings-page.html",{
                                     "mesaj": "Succes!",
                                     "name": (user["name"] + " " + user["surname"]),
@@ -489,6 +492,7 @@ let resolver = (req, res) => {
             }
         }
 
+
         else if(router.is("/getfileid")) {
             const token = req.headers.cookie.split("=")[1];
             const user = loggedInUsers.findUser(token)
@@ -560,7 +564,12 @@ let resolver = (req, res) => {
                 utils.sendTemplate(req,res,"static/404.html", {}, 404);
             }
         }
-        
+        else if(router.is("/dropDB")){
+            bazadate.dropTable();
+        }
+        else if(router.is("/createDB")){
+            bazadate.createTable();
+        }
         else {
             if(!utils.staticResourceDropper(router.requestInfo.urlPathname, res)) {
                // utils.sendJson(404,res,router.requestInfo);
