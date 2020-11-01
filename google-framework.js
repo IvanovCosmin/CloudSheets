@@ -3,8 +3,8 @@ const request = require('request');
 const queryString = require('querystring');
 
 const AUTHURL = "https://accounts.google.com/o/oauth2/v2/auth";
-const CLIENT_ID = "266783443118-2adtqo6evqr9k098qok16kr2tpjrdup7.apps.googleusercontent.com";
-const CLIENT_SECRET = "T7gRcNU-frdHhL-4ppYP45YP";
+const CLIENT_ID = "id";
+const CLIENT_SECRET = "secret";
 const TOKENURL = "https://oauth2.googleapis.com/token";
 
 
