@@ -3,8 +3,8 @@ const request = require('request');
 const queryString = require('querystring');
 
 const AUTHURL = "https://www.dropbox.com/oauth2/authorize";
-const APP_KEY = "pz5akpcc0yc3mc3";
-const APP_SECRET = "qer0wpi81ifx91v";
+const APP_KEY = "key";
+const APP_SECRET = "secret";
 
 
 let download = () => {
