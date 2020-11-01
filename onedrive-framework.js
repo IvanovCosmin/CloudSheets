@@ -4,8 +4,8 @@ const queryString = require('querystring');
 
 const AUTHURL = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize";
 const RESPONSE_TYPE = "code";
-const CLIENT_ID = "2c83ac7a-b215-4514-b1ea-ecdccc10a903";
-const CLIENT_SECRET = "R.Sb1-8IpF8mtEAe_I8KWhPgb6J7.-MYrp";
+const CLIENT_ID = "id";
+const CLIENT_SECRET = "secret";
 const SCOPE = "Files.ReadWrite,offline_access,files.read,files.read.all,files.readwrite.all";
 const REDIRECT_URI = "https://localhost:8000/oauth-redirect";
 const TOKENURL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
